@@ -6,15 +6,21 @@
 \usepackage{dcolumn} % stĺpce tabuľky s číselnými hodnotami
 \usepackage{subfig} % makrá pre "podobrázky" a "podtabuľky"
 \usepackage[csharp]{diplomalst} % sádzanie
-\usepackage{tcolorbox} % oramovanie
+%\usepackage[python]{diplomalst}
+%\usepackage{tcolorbox} % oramovanie
+
+% ------------------------------------------------------
+
+% Definované vlastné metódy, triedy a príslušné farby
+% viz bakalarka
 
 % ------------------------------------------------------
 
 % Nový druh tabuľkového stĺpca, v ktorom sú čísla zarovnané podľa desetinnej čiarky
-\newcolumntype{d}[1]{D{,}{,}{#1}}
+%\newcolumntype{d}[1]{D{,}{,}{#1}}
 
 % Odstranenie warningov s underfull vbox
-\raggedbottom
+%\raggedbottom
 
 % Nastavenie tex color boxu
 %\newtcbox{\mybox}[2][black]{outer arc=0pt,  boxsep=0pt, left=0pt, right=0pt, top=0pt, bottom=0pt, boxrule=2pt}
@@ -22,16 +28,60 @@
 % ------------------------------------------------------
 
 %Zásady pro vypracování
-%TODO: Dopln
+% S umělou inteligencí, která je zodpovědná za rozhodování, se setkáme ve většině počítačových her, ať už jde o hry deskové, plošinové nebo např. tahové. Cílem této diplomové práce je naimplementovat herní prostředí, v němž budou pro rozhodování použity klasické algoritmy jako např. ID3, C4.5, CART (regresní stromy), CHAID (Chi-square, automatic interaction detection), MARS ( (multivariate adaptive regression splines), náhodný les (random forest) a algoritmy jako Deep Q-learning, Double Deep Q-learning, popř. hluboké neuronové sítě a tyto metody porovnat na základě experimentů a následné statistické analýzy. Metody budou porovnány na základě výkonu a úspěšnosti z hlediska řešení daných problémů.
+
+% Zásady pro vypracování:
+% 1. Seznamte se s algoritmy jmenovanými výše a způsobem jejich použití v počítačových hrách.
+% 2. Navrhněte vlastní netriviální počítačovou hru, kde budou vybrané algoritmy použity pro rozhodování tzv. NPC (non-playing character). Při výběru algoritmů je potřeba, aby byly zastoupeny obě kategorie výše zmíněných algoritmů - tzn. klasické i algoritmy strojového učení. Celkem by mělo být použito aspoň 5 algoritmů, kde aspoň 2 budou patřit do kategorie strojového učení. Ve hře bude implementována postava hráče, který bude proti NPC bojovat.
+% 3. Naimplementujte zvolené algoritmy a proveďte jejich srovnání na základě opakovaných experimentů. Během implementace klaďte důraz na efektivitu. Žádný z algoritmů nesmí být proti jinému zvýhodněn. Proveďte statistickou analýzu a s použitím vhodných statistických testů vyhodnoťte kvalitu poskytovaného řešení těchto algoritmů a jejich výkon.
+% 4. Výsledky zpracujte v podobě tabulek a grafů a na jejich základě proveďte vyhodnocení testů. Shrňte výhody a nevýhody jednotlivých algoritmů. V závěru uveďte, který algoritmus dosáhl nejlepšího výkonu a který byl při řešení daných úkolů nejúspěšnější.
+
 % ------------------------------------------------------
 
 % Titulná strana
 \ThesisAuthor{Bc. Miroslav Kačeriak}
 \ThesisSupervisor{prof. Ing. Jan Platoš, Ph.D.}
+\CzechThesisTitle{Rozhodování v počítačových hrách - srovnání metod umělé inteligence}
+\EnglishThesisTitle{Decision Making in Computer Games - a Comparison of Artificial Intelligence Methods}
 \SubmissionYear{2023}
 
+% ------------------------------------------------------
+
+% Abstrakty
+\CzechAbstract{TODO}
+
+\CzechKeywords{TODO}
+
+\EnglishAbstract{TODO}
+
+\EnglishKeywords{TODO}
+
+% ------------------------------------------------------
+
+% Poďakovanie
+\Acknowledgement{TODO}
+
+% ------------------------------------------------------
+
+% Skratky
+\AddAcronym{TODO}{TODOOOOOO}
+%...
+
+% ------------------------------------------------------
+
+% Literatúra
+%\addbibresource{literature.bib}
+
+% ------------------------------------------------------
+
+% Samotný dokument
 \begin{document}
 \MakeTitlePages
-\section{Introduction}
 
+% Chapter 1
+\chapter{Úvod}
+\label{sec:Introduction}
+%...
+
+%\printbibliography[title={Literatúra}, heading=bibintoc]
 \end{document}

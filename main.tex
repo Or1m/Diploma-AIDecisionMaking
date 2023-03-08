@@ -1,0 +1,37 @@
+\documentclass[slovak, master]{diploma}
+
+% Packages (balíky makier)
+\usepackage[autostyle=true, czech=quotes]{csquotes} % korektná sadzba úvozoviek, podpora pre balík biblatex
+\usepackage[backend=biber, style=iso-numeric, alldates=iso]{biblatex} % bibliografia
+\usepackage{dcolumn} % stĺpce tabuľky s číselnými hodnotami
+\usepackage{subfig} % makrá pre "podobrázky" a "podtabuľky"
+\usepackage[csharp]{diplomalst} % sádzanie
+\usepackage{tcolorbox} % oramovanie
+
+% ------------------------------------------------------
+
+% Nový druh tabuľkového stĺpca, v ktorom sú čísla zarovnané podľa desetinnej čiarky
+\newcolumntype{d}[1]{D{,}{,}{#1}}
+
+% Odstranenie warningov s underfull vbox
+\raggedbottom
+
+% Nastavenie tex color boxu
+%\newtcbox{\mybox}[2][black]{outer arc=0pt,  boxsep=0pt, left=0pt, right=0pt, top=0pt, bottom=0pt, boxrule=2pt}
+
+% ------------------------------------------------------
+
+%Zásady pro vypracování
+%TODO: Dopln
+% ------------------------------------------------------
+
+% Titulná strana
+\ThesisAuthor{Bc. Miroslav Kačeriak}
+\ThesisSupervisor{prof. Ing. Jan Platoš, Ph.D.}
+\SubmissionYear{2023}
+
+\begin{document}
+\MakeTitlePages
+\section{Introduction}
+
+\end{document}

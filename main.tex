@@ -43,6 +43,7 @@
 \ThesisSupervisor{prof. Ing. Jan Platoš, Ph.D.}
 \CzechThesisTitle{Rozhodování v počítačových hrách - srovnání metod umělé inteligence}
 \EnglishThesisTitle{Decision Making in Computer Games - a Comparison of Artificial Intelligence Methods}
+\ThesisAssignmentFileName{ThesisSpecification_KAC0067_vsboee22026009.pdf}
 \SubmissionYear{2023}
 
 % ------------------------------------------------------
@@ -50,22 +51,21 @@
 % Abstrakty
 \CzechAbstract{TODO}
 
-\CzechKeywords{TODO}
+\CzechKeywords{spätnoväzobné učenie, rozhodovacie stromy, ID3, D4.5, CART, Unity engine, C\#, Python}
 
 \EnglishAbstract{TODO}
 
-\EnglishKeywords{TODO}
+\EnglishKeywords{reinforcement learning, decision trees, ID3, D4.5, CART, Unity engine, C\#, Python}
 
 % ------------------------------------------------------
 
 % Poďakovanie
-\Acknowledgement{TODO}
+\Acknowledgement{Rád by som na tomto mieste poďakoval prof. Ing. Jánovi Platošovi, Ph.D. za pomoc a ochotu prejavenú popri vedení tejto diplomovej práce a mojej priateľke Zdenke za trpezlivosť a prínosné rady, bez ktorých by výsledná práca bola o niečo chudšia.}
 
 % ------------------------------------------------------
 
 % Skratky
 \AddAcronym{TODO}{TODOOOOOO}
-%...Testik
 
 % ------------------------------------------------------
 
@@ -78,10 +78,151 @@
 \begin{document}
 \MakeTitlePages
 
+% Zoznam obrázkov
+\listoffigures
+\clearpage
+
+% Zoznam tabuliek
+\listoftables
+\clearpage
+
+% Zoznam zdrojakov
+\lstlistoflistings
+\clearpage
+
 % Chapter 1
 \chapter{Úvod}
 \label{sec:Introduction}
+%TODO
+
+% ------------------------------------------------------
+
+% Teória
+% Chapter 2
+\chapter{Umelá inteligencia v hrách}
+\label{sec:AI in games}
+%TODO
+
+\section{Rozhodovacie stromy}
+\label{sec:DecisionTreesOverview}
+
+\section{Strojové učenie}
+\label{sec:MachineLearningOverview}
+%TOOD
+\subsection{Spätnoväzobné učenie}
+\label{sec:ReinforcemenLearningOverview}
+%TODO
+
+% ------------------------------------------------------
+
+% Vypracovanie
+% Chapter 3
+\chapter{Použité technológie}
+\label{sec:Tech}
+%TODO
+\section{Unity Engine}
+\label{sec:Unity}
+%TODO
+\section{Nástroj ML-Agents}
+\label{sec:ML-Agents}
+%TODO
+%...?
+
+% Chapter 4
+\chapter{Hra a herné prostredie}
+\label{sec:GameOverview}
+%TODO
+\section{Štruktúra hry}
+\label{sec:GameStructure}
+%TODO
+
+\section{Štruktúra hráča}
+\label{sec:Player}
+%TODO
+\section{Štruktúra agentov}
+\label{sec:Agents}
+%TODO
+\subsection{Percepcia (zmyslové vnímanie) agentov}
+\label{sec:Perception}
+%TODO
+
+% Chapter 5
+\chapter{Rozhodovanie agentov s využitím rozhodovacích stromov}
+\label{sec:ImplDecisionTrees}
+%TODO
+\section{Algoritmus ID3}
+\label{sec:ID3}
+%TODO
+\section{Algoritmus D4.5}
+\label{sec:D45}
+%TODO
+\section{Algoritmus CART}
+\label{sec:CART}
+%TODO
+
+% Chapter 6
+\chapter{Rozhodovanie agentov s využitím spätnoväzobného učenia}
+\label{sec:ImplReinforcement learning}
+%TODO
+\section{Inštalácia prvotné nastavenie nástroja ML-Agents}
+\label{sec:Agents}
+%TODO
+\section{Trénovanie agentov}
+\label{sec:Training}
+%TODO
+\subsection{Prvý trénovací scenár}
+\label{sec:FirstScenario}
+%TODO
 %...
+\subsection{N-tý trénovací scenár}
+\label{sec:LastScenario}
+%TODO
+
+% Chapter 7
+\chapter{Porovnanie prístupov}
+\label{sec:ImplReinforcement learning}
+%TODO
+\section{Porovnanie z hľadiska výkonu}
+\label{sec:Performance}
+%TODO
+\section{Empirické porovnanie}
+\label{sec:Gameplay}
+%TODO
+
+% Chapter 8
+\chapter{Záver}
+\label{sec:Conclusion}
+
+%Template/Testing
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[width=.5\textwidth]{Figures/FEI_CZ.pdf}
+	\caption{Test}
+	\label{pic:Teeest}
+\end{figure}
+
+\begin{center}
+\begin{tabular}{ c c c }
+ cell1 & cell2 & cell3 \\ 
+ cell4 & cell5 & cell6 \\  
+ cell7 & cell8 & cell9    
+\end{tabular}
+\end{center}
+
+\begin{lstlisting}[label=src:Test,caption={Test}]
+// Hello World! program
+namespace HelloWorld
+{
+    class Hello {         
+        static void Main(string[] args)
+        {
+            System.Console.WriteLine("Hello World!");
+        }
+    }
+}
+\end{lstlisting}
+%End of Template/Testing
 
 %\printbibliography[title={Literatúra}, heading=bibintoc]
+% Prílohy
 \end{document}

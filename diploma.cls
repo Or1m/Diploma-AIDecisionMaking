@@ -387,7 +387,10 @@ Ostrava,~\ifthenelse{\equal{\the\Dipl@SubmissionYear}{\empty}}{\number\year}{\th
 }
 {
 \selectlanguage{slovak}
-}
+\def\lstlistlistingname{Zoznam výpisov zdrojového kódu}
+\def\lstlistingname{Výpis}
+}{}
+\renewcommand{\lstlistoflistings}{\begingroup\tocfile{\lstlistlistingname}{lol}\endgroup}
 {
 \selectlanguage{english}
 }

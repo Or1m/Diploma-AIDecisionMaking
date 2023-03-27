@@ -65,7 +65,8 @@
 % ------------------------------------------------------
 
 % Skratky
-\AddAcronym{TODO}{TODOOOOOO}
+\AddAcronym{NPC}{Non-Playable Character}
+\AddAcronym{CART}{Classification and Regression Tree}
 
 % ------------------------------------------------------
 
@@ -131,18 +132,69 @@
 % Chapter 4
 \chapter{Hra a herné prostredie}
 \label{sec:GameOverview}
-%TODO
+Táto kapitola je venovaná vytvorenej hre a všetkým jej aspektom, či princípom fungovania. Prvá sekcia tejto kapitoly si kladie za cieľ popísať žánrové aj príbehové zasadenie hry. V ďalších sekciách je potom podrobne prebraté fungovanie jednotlivých aspektov a herných mechaník, s dôrazom na zmyslové vnímanie jednotlivých NPC agentov.
+
+\section{Žáner a príbehové zasadenie}
+\label{sec:GenreAndSetting}
+Hra samotná má svojou hrateľnosťou najbližšie k žánru stealth. Tento žáner sa vyznačuje tým, že hráč sa snaží vyhnúť odhaleniu a následnému priamemu stretu s nepriateľom. K dosiahnutiu cieľa je teda využívaný pomalý a tichý postup, kde každý krok by mal byť dobre premyslený a načasovaný. 
+
+Príbeh hry je zasadený do pirátskeho prostredia. Hráč sa ocitá v roli radového člena pirátskej posádky, ktorá bola napadnutá flotilou anglického námorníctva. S vypätím všetkých síl sa mu na poškodenom záchrannom člne podarilo dostať na najbližší obývaný ostrov, kde však zisťuje, že nie je všetko v poriadku. Namiesto obyvateľov ostrova nachádza len agresívnych kostlivcov. 
+
+Hráčovou úlohou je nájsť na ostrove funkčný čln, pozbierať zásoby nutné na ďalšiu plavbu a pokiaľ možno pri tom nevzbudiť pozornosť.
+
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[width=.9\textwidth]{Figures/game_compressed.png}
+	\caption{Vyrenderovaná snímka z hry}
+	\label{pic:GameScreenshot}
+\end{figure}
+
 \section{Štruktúra hry}
 \label{sec:GameStructure}
 %TODO
+%spomenut synty tu
+%manazeri overview
+Hra je rozdelená do dvoch samostatných scén. Konkrétne ide o hlavnú scénu, kde sa odohráva samotná herná slučka a scénu s hlavnou ponukou. V editore Unity je možné medzi jednotlivými scénami ľubovoľne prepínať, prípadne mať aktívnych niekoľko scén naraz. V samostatnom zostavení aplikácie je však nutné vybrať, ktoré konkrétne scény budú prítomné. Každá scéna potom dostane poradové číslo, tzv. build index a scéna s číslom nula, v tomto prípade hlavná ponuka, bude spustená ako prvá. Scéna s hlavnou ponukou je bližšie popísaná v sekcií \ref{sec:MainMenuAndUI}.
 
-\section{Štruktúra hráča}
+Scénu je potom možné chápať ako koreňový adresár pre hierarchiu herných objektov. Jednotlivé herné objekty je teda možné vložiť do scény samostatne alebo ako potomka iného herného objektu. Manipulácia s pozíciou, rotáciou či mierkou rodiča sa teda aplikuje aj na potomka. Naopak to však neplatí. Z tohto dôvodu sa rozlišujú dve súradnicové sústavy, a síce globálna (celková) a lokálna (relatívna voči predkovi). Využitie globálnej súradnicovej sústavy však vyžaduje vziať do úvahy parametre všetkých predkov daného objektu v scéne, čo nie je ideálne z hľadiska výkonu. Preto bol v projekte preferovaný lokálny súradnicový systém napríklad na herných NPC agentov či predmety, ktoré je v hre možné zbierať a je pre nás zaujímavá ich pozícia. Predkovia týchto objektov sú potom umiestnení v počiatku súradnicovej sústavy, čo zaisťuje konzistenciu.
+
+V každej scéne sa nachádza objekt MainManager, ktorý slúži ako prístupový bod k ostatným manažérom. Typicky ide o objekty ConfigManager, GameManager, InputManager a SoundManager, nie všetky sú však nutné v každej scéne. 
+
+Krátky popis jednotlivých manažérov:
+\begin{itemize}
+  \item \textbf{Objekt ConfigManager} -- je prístupovým bodom k nastaveniam hry, zaisťuje serializáciu a deserializáciu dát, rovnako ako ich perzistentnosť po každej zmene.
+  \item \textbf{Objekt GameManager} -- reštartuje scénu pri smrti alebo výhre hráča, kontroluje prerekvizity výhry, aktualizuje grafické užívateľské rozhranie pri získaní predmetu a zobrazuje kontextovú ponuku na ukončenie hry či návrat do hlavnej ponuky po stlačení príslušnej klávesy.
+  \item \textbf{Objekt InputManager} -- je abstrakciou nad konkrétnou implementáciou získavania hráčskeho vstupu, čo umožňuje na jednom centrálnom mieste zmeniť tzv. starý input systém za nový, či naopak, prípadne z testovacích dôvodov hráčsky vstup úplne ignorovať. 
+  \item \textbf{Objekt SoundManager} -- Vyvoláva simuláciu zvuku, na ktorý môžu zareagovať NPC agenti v dosahu.
+\end{itemize}
+
+\subsection{Herná slučka}
+\label{sec:GameLoop}
+%TODO
+\subsection{Hlavná ponuka a užívateľské rozhranie}
+\label{sec:MainMenuAndUI}
+%TODO
+%TODO
+\subsection{Perzistentné nastavenia hry}
+\label{sec:Settings}
+%TODO
+%\subsection{Ovládanie hry} % Nie je to skor do hraca?
+%\label{sec:Input}
+%TODO
+
+%TODO
+
+\section{Štruktúra hráčskej postavy}
 \label{sec:Player}
 %TODO
-\section{Štruktúra agentov}
+\subsection{Ovládanie hry}
+\label{sec:Input}
+%TODO
+\section{Štruktúra NPC agentov}
 \label{sec:Agents}
 %TODO
-\subsection{Percepcia (zmyslové vnímanie) agentov}
+%NAVMESH
+\subsection{Zmyslové vnímanie agentov}
 \label{sec:Perception}
 %TODO
 

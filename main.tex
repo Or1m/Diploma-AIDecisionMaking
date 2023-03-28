@@ -201,7 +201,7 @@ V hre je možné nastaviť typ umelej inteligencie NPC agentov. Jednotlivé mož
 
 Základnú hernú slučku obstaráva objekt GameManager popísaný v sekcií \ref{sec:GameStructure}. Po hernej ploche je ručne rozmiestnených päť fliaš, z ktorých musí hráč nájsť a zobrať aspoň tri a tridsaťpäť mincí, pričom je pre dosiahnutie výhry nutné mať aspoň dvadsaťpäť. 
 
-Oba typy objektov dedia z triedy Pickup vo výpise \ref{src:Pickup}. Tá potom dedí priamo z triedy UnityEngine.MonoBehaviour, čo je bázová trieda, z ktorej dedia musia dediť všetky triedy, ktoré nejakým spôsobom využívajú Unity API. Typicky ide o metódy ako napríklad Awake(), Start(), Update(), či FixedUpdate(), ktoré sú definované v životnom cykle Unity objektu, ale aj metódy sprístupňujúce prácu s korutinami apod.
+Oba typy objektov dedia z triedy Pickup vo výpise \ref{src:Pickup}. Tá potom dedí priamo z triedy UnityEngine.MonoBehaviour, čo je bázová trieda, z ktorej dedia musia dediť všetky triedy, ktoré nejakým spôsobom využívajú Unity API \cite{MonoBehaviour}. Typicky ide o metódy ako napríklad Awake(), Start(), Update(), či FixedUpdate(), ktoré sú definované v životnom cykle Unity objektu, ale aj metódy sprístupňujúce prácu s korutinami apod.
 \vspace{8pt}
 \begin{lstlisting}[label=src:Pickup,caption={Trieda Pickup slúžiaca ako predok všetkých zberateľných predmetov v hre}]
 public class Pickup : MonoBehaviour

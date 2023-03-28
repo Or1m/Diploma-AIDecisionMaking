@@ -353,7 +353,14 @@ private void OnUpdate()
 	\label{pic:PauseUI}
 \end{figure}
 
-Obe tlačidlá na UI elemente zobrazenom na obrázku \ref{pic:PauseUI} obsahujú Unity komponentu Button, ktorá vie napríklad zmeniť farebnú schému elementu, keď nad ním hráč nadíde myšou ale dôležitejšou funkcionalitou je event OnClick, ktorému je možné priamo v editore predať ľubovoľný objekt a tlačidlo na ňom dokáže zavolať určenú verejnú metódu. V tomto prípade bol tlačidlám predaný objekt GameManager a volané boli jeho dve verejné metódy OpenMainMenu() a QuitGame() zobrazené vo výpise \ref{src:MMQuit}. 
+Obe tlačidlá na UI elemente zobrazenom na obrázku \ref{pic:PauseUI} obsahujú Unity komponentu Button, ktorá vie napríklad zmeniť farebnú schému elementu, keď nad ním hráč nadíde myšou ale dôležitejšou funkcionalitou je event OnClick, ktorému je možné priamo v editore predať ľubovoľný objekt a tlačidlo na ňom dokáže zavolať určenú verejnú metódu, čo demonštruje obrázok \ref{pic:OnClick}. V tomto prípade bol tlačidlám predaný objekt GameManager a volané boli jeho dve verejné metódy OpenMainMenu() a QuitGame() zobrazené vo výpise \ref{src:MMQuit}. 
+
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[width=.8\textwidth]{Figures/OnClick.png}
+	\caption{Nastavenie OnClick eventu tlačidla v editore}
+	\label{pic:OnClick}
+\end{figure}
 
 \vspace{8pt}
 \begin{lstlisting}[label=src:MMQuit,caption={Metódy na návrat do hlavnej ponuky a ukončenie hry}]
@@ -372,9 +379,9 @@ public void OpenMainMenu()
 
 Metóda OpenMainMenu() načíta scénu s build indexom 0. Tento postup je vhodné aplikovať, keď máme fixne dané poradie scén v zostavení aplikácie. Je to efektívnejšia metóda ako vyhľadávanie scény podľa mena. Poradie scén bolo popísané v sekcií \ref{sec:GameStructure}. 
 
-Ukončenie hry potom prebieha jednoduchým zavolaním metódy Application.Quit(). Problém tohto prístupu spočíva v tom, že to nevypne hru bežiacu v rámci editora Unity. Z tohto dôvodu je v rámci direktivy preprocesoru \mbox{UNITY\_EDITOR} nutné aj nastavenie premennej isPlaying v triede UnityEditor.EditorApplication na hodnotu false.
+Ukončenie hry potom prebieha jednoduchým zavolaním metódy Application.Quit(). Problém tohto prístupu spočíva v tom, že to nevypne hru bežiacu v rámci editora Unity. Z tohto dôvodu je v rámci direktivy preprocesoru UNITY\_EDITOR, nutné aj nastavenie premennej isPlaying v triede UnityEditor.EditorApplication na hodnotu false. Direktívy preprocesoru v C\# obecne umožňujú selektívne zahrnúť alebo vylúčiť kód z kompilácie na základe toho, či sú alebo nie sú definované určité skriptovacie symboly. Editor Unity ná na tieto účely preddefinované symboly pre rozlíšenie rôznych platforiem či práve zostavenia aplikácie od behu v editore \cite{ConditionalCompilation}.
 
-Jednotlivé UI elementy či obrazovky sú v triedach referencované pomocou atribútu [SerializeField], ktorý vynúti serializáciu u neverejných členských premenných, čím sa neporušuje princíp zapuzdrenia a zároveň to umožňuje jednoducho referencovať medzi sebou objekty priamo v editore Unity pomocou metódy Drag & Drop či výberu z rolovacej ponuky. Nie je teda nutné prehľadávať objekty v scéne alebo riešiť prístup k danému objektu architektonicky na úrovni kódu. 
+Jednotlivé UI elementy či obrazovky sú v triedach referencované pomocou atribútu [SerializeField], ktorý vynúti serializáciu u neverejných členských premenných \cite{SerializeField}, čím sa neporušuje princíp zapuzdrenia a zároveň to umožňuje jednoducho referencovať medzi sebou objekty priamo v editore Unity pomocou metódy Drag & Drop či výberu z rolovacej ponuky. Nie je teda nutné prehľadávať objekty v scéne alebo riešiť prístup k danému objektu architektonicky na úrovni kódu. 
 
 \subsection{Hlavná ponuka a užívateľské rozhranie}
 \label{sec:MainMenuAndUI}

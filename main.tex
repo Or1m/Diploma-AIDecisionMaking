@@ -146,7 +146,7 @@ Hra samotná má svojou hrateľnosťou najbližšie k žánru stealth. Tento ž�
 
 Príbeh hry je zasadený do pirátskeho prostredia. Hráč sa ocitá v roli radového člena pirátskej posádky, ktorá bola napadnutá flotilou anglického námorníctva. S vypätím všetkých síl sa mu na poškodenom záchrannom člne podarilo dostať na najbližší obývaný ostrov, kde však zisťuje, že nie je všetko v poriadku. Namiesto obyvateľov ostrova nachádza len agresívnych kostlivcov. 
 
-Hráčovou úlohou je nájsť na ostrove funkčný čln, pozbierať zásoby nutné na ďalšiu plavbu a pokiaľ možno pri tom nevzbudiť pozornosť.
+Hráčovou ovláda postavu z pohľadu tretej osoby a jeho úlohou je nájsť na ostrove funkčný čln, pozbierať zásoby nutné na ďalšiu plavbu a pokiaľ možno pri tom nevzbudiť pozornosť.
 
 \begin{figure}[!htbp]
 	\centering
@@ -164,7 +164,7 @@ Hra je rozdelená do dvoch samostatných scén. Konkrétne ide o hlavnú scénu,
 
 Scénu je potom možné chápať ako koreňový adresár pre hierarchiu objektov v hre. Jednotlivé herné objekty je možné vložiť do scény priamo alebo ako potomka iného herného objektu. Manipulácia s pozíciou, rotáciou či mierkou objektu sa teda aplikuje aj na všetkých jeho potomkov. Naopak to však neplatí. Z tohto dôvodu sa rozlišujú dve súradnicové sústavy, a síce globálna (celková) a lokálna (relatívna voči predkovi). Využitie globálnej súradnicovej sústavy však vyžaduje vziať do úvahy parametre všetkých predkov daného objektu v scéne, čo nie je ideálne z hľadiska výkonu. Preto bol v projekte preferovaný lokálny súradnicový systém napríklad u herných NPC agentov či predmetov, ktoré je v hre možné zbierať. Predkovia týchto objektov sú potom umiestnení v počiatku súradnicovej sústavy, čo zaisťuje konzistenciu so zvyškom objektov v scéne.
 
-V každej scéne sa nachádza objekt MainManager, ktorý slúži ako prístupový bod k ostatným manažérom, ktorí spravujú centrálne prvky hry. Tento typ architektúry sa kvôli svojej jednoduchosti často uplatňuje medzi malými až strednými projektami. V tomto projekte sú použité objekty ConfigManager, GameManager, InputManager a SoundManager, nie všetky sú však vyžadované v oboch scénach. 
+V každej scéne sa nachádza objekt MainManager, ktorý slúži ako prístupový bod k ostatným manažérom, ktorí spravujú centrálne prvky hry. Tento typ architektúry sa kvôli svojej jednoduchosti často uplatňuje medzi malými až strednými projektami. V tomto projekte sú použité objekty ConfigManager, GameManager, InputManager a SoundManager, nie všetky sú však vyžadované v každej scéne. 
 
 Krátky popis jednotlivých manažérov:
 \begin{itemize}
@@ -328,9 +328,8 @@ Ukončenie hry potom prebieha jednoduchým zavolaním metódy Application.Quit()
 
 Direktívy preprocesoru v jazyku C\# umožňujú selektívne zahrnúť alebo vylúčiť kód z kompilácie na základe toho, či sú alebo nie sú definované určité skriptovacie symboly. Editor Unity ná na tieto účely preddefinované symboly umožňujúce rozlíšiť rôzne platformy či práve zostavenie aplikácie od behu v editore \cite{ConditionalCompilation}.
 
-\subsection{Hlavná ponuka a užívateľské rozhranie}
+\section{Hlavná ponuka hry}
 \label{sec:MainMenuAndUI}
-%TODO main menu, pickupy, ...
 
 Ako už bolo spomenuté v predchádzajúcich sekciách vytvorená hra obsahuje scénu s hlavnou ponukou. Táto scéna obsahuje informačnú tabuľu s aktuálnymi nastaveniami a štyri aktívne prvky užívateľského rozhrania. Ide o tlačidlá Play, Options, Credits a Exit. Tieto tlačidlá opäť obsahujú Unity komponentu Button a referenciu na objekt, ktorého verejné metódy volajú. Hlavnú ponuku je možné vidieť na obrázku \ref{pic:MainMenu}.
 
@@ -345,7 +344,7 @@ Informačná tabuľa na ľavej strane obrazovky zobrazuje, či budú NPC agenti 
 
 Tlačidlo Exit ukončí beh aplikácie a tlačidlo Play spustí hlavnú scénu hry. Obdobná funkcionalita bola demonštrovaná už vo výpise \ref{src:MMQuit}.
 
-Tlačidlo Credits zavolá metódu SetActive() so vstupným parametrom nastaveným na false na objekte svojho potomka, ktorý združuje všetky tlačidlá, informačnú tabuľu a tabuľu s menom aktuálnej ponuky. Zároveň obdobným spôsobom aktivuje ponuku Credits, ktorá mu bola referencovaná v editore. 
+Tlačidlo Credits zavolá metódu SetActive() so vstupným parametrom nastaveným na false na svojom predkovi, ktorý združuje všetky tlačidlá, informačnú tabuľu a tabuľu s menom aktuálnej ponuky. Zároveň obdobným spôsobom aktivuje ponuku Credits, ktorá mu bola referencovaná v editore. 
 
 Tlačidlo Options potom využíva rovnaký prístup na zobrazenie ponuky s výberom typu NPC agenta proti ktorému chce hráč hrať. V prípade, že hráč vyberie možnosť Decision Trees je mu ešte zobrazená ponuka s výberom algoritmu, ktorý chce použiť na zostavenie rozhodovacieho stromu.
 
@@ -371,23 +370,61 @@ public class SubMenu : MonoBehaviour
 }
 \end{lstlisting}
 
-Jednotlivé ponuky sú v triede referencované pomocou atribútu \textit{SerializeField} a na jednotlivých objektoch boli nastavené ručne v editore. Atribút \textit{SerializeField} vynúti serializáciu u neverejných členských premenných \cite{SerializeField}, čím sa neporušuje princíp zapuzdrenia a zároveň to umožňuje jednoducho referencovať medzi sebou objekty priamo v editore Unity pomocou tzv. Drag \& Drop či výberu z rolovacej ponuky. Nie je teda nutné prehľadávať objekty v scéne alebo riešiť prístup k danému objektu architektonicky na úrovni kódu. Tento prístup však nie je možné použiť na prepojenie dvoch objektov, pričom jeden z nich je prítomný v scéne od začiatku a druhý je inštancovaný za behu aplikácie. Všetky jednotlivé ponuky sú súčasťou hierarchie scény od jej spustenia. Diagram všetkých ponúk je možné vidieť na obrázku \ref{pic:MainMenuScheme}.
+Jednotlivé ponuky sú v triede referencované pomocou atribútu \textit{SerializeField} a na jednotlivých objektoch boli nastavené ručne v editore. Atribút \textit{SerializeField} vynúti serializáciu u neverejných členských premenných \cite{SerializeField}, čím sa neporušuje princíp zapuzdrenia a zároveň to umožňuje jednoducho referencovať medzi sebou objekty priamo v editore Unity pomocou tzv. Drag \& Drop či výberu z rolovacej ponuky. Nie je teda nutné prehľadávať objekty v scéne alebo riešiť prístup k danému objektu architektonicky na úrovni kódu. Tento prístup však nie je možné použiť na prepojenie dvoch objektov, pričom jeden z nich je prítomný v scéne od začiatku a druhý je inštancovaný za behu aplikácie. Všetky jednotlivé ponuky sú súčasťou hierarchie scény od jej spustenia, takže nebol s týmto prístupom problém. Diagram všetkých ponúk je možné vidieť na obrázku \ref{pic:MainMenuScheme}.
 
 \begin{figure}[!htbp]
 	\centering
-	\includegraphics[width=.8\textwidth]{Figures/mainMenuScheme.png}
+	\includegraphics[width=.85\textwidth]{Figures/mainMenuScheme.png}
 	\caption{Diagram obrazoviek hlavnej ponuky}
 	\label{pic:MainMenuScheme}
 \end{figure}
 
-%Pickupy + healthbar
-
 \section{Štruktúra hráčskej postavy}
 \label{sec:Player}
-%TODO
-\subsection{Ovládanie hry}
-\label{sec:Input} %+ input manager + camera
-%TODO
+Jednou z najdôležitejších súčasti hier ovládaných z pohľadu tretej osoby je práve hráčska postava. Tá reaguje na hráčov vstup zmenou smeru alebo rýchlosti pohybu, akciami ako skok, útok, úhyb či kontextuálnou interakciou s nejakým objektom v hre a podobne. Na postavu hráča pôsobí určitá forma gravitácie a s tým súvisiaca kolízia s hernou plochou a ostatnými statickými či dynamickými objektami. Hráčska postava má spravidla nastavenú nejakú hodnotu zdravia či života, ktorá sa v čase mení napríklad po páde z veľkej výšky či po zásahu od nepriateľa. Hodnota ostávajúceho zdravia je často hráčovi prezentovaná vo forme GUI ukazovateľa. 
+
+Táto sekcia popisuje akým spôsobom bolo k jednotlivým problémom pristupované v tomto projekte. Niektoré princípy je možné s väčšími či menšími úpravami aplikovať obecne, iné sú poplatné editoru Unity. 
+
+\subsection{Prehľad komponentov hráčskej postavy}
+\label{sec:PlayerComponentOverview} 
+Samotný objekt hráčskej postavy sa skladá z dvoch objektov, ktoré sa zvyknú nazývať kontroler a model. 
+
+Model reprezentuje vizuálnu stránku objektu, teda postavu samotnú a ďalšie menšie objekty, ktoré má táto postava na sebe. Pri zložitejších modeloch ide o hierarchiu čítajúcu stovky objektov reprezentujúce jednotlivé časti tela. V tomto prípade je využitý tzv. low poly model, ktorý je vcelku a pod sebou má iba zopár vizuálnych doplnkov, ktoré postava nosí okolo pása.
+
+Kontroler, na druhú stranu obsahuje sadu komponentov, ktoré obstarávajú pohyb, gravitáciu, kolíziu a ľubovoľnú ďalšiu funkcionalitu. Dôležitou komponentou kontrolera je práve Unity komponenta \textit{Character Controller}. Na nej je možné nastaviť rôzne parametre definujúce tvar kolíznej kapsule, maximálnu výšku kroku, ktorý môže postava vykonať bez nutnosti vyskočiť apod. Túto kapsulu s kompletnou vizuálnou stránkou hráča je možné vidieť na obrázku \ref{pic:PlayerController}.
+
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[width=0.54\textwidth]{Figures/controller.png}
+	\caption{Hráčka postava s komponentou Character Controller}
+	\label{pic:PlayerController}
+\end{figure}
+
+Na objekte kontroler sa ďalej nachádzajú komponenty PlayerBrain, PlayerBody, PlayerMovement, PlayerAutomaticMovement a NavMeshAgent. Posledné dve spomenuté komponenty sú v predvolenom stave vypnuté a zapína ich komponenta PlayerBrain v prípade, že má objekt ConfigManager v editore nastavenú premennú PlayerControll na hodnotu Automatic. Toto je využívané primárne v trénovacích scenároch, ktoré sú bližšie popísané v sekcií \ref{sec:Training}. V tomto prípade taktiež komponenta PlayerBrain vypne komponentu PlayerMovement, čím znemožní ovládať hráča pomocou vstupu z periférií. 
+
+Poslednou kompetenciou komponenty PlayerBrain je držať referencie na zvyšné komponenty a inicializovať ich. Počas inicializačnej fázy sú jednotlivým komponentám predané referencie na iné komponenty ktoré potrebujú pre svoje fungovanie. Tento prístup umožňuje centrálne riadiť prepojenia medzi komponentami bez nutnosti ich rôzne referencovať navzájom v editore.
+
+\subsection{Prijímanie poškodenia a smrť hráčskej postavy}
+\label{sec:DealingDamage}
+% handlovanie damagu + healthbar 
+% Komponenty: player body - IDamageable
+
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[width=.8\textwidth]{Figures/youDied.png}
+	\caption{GUI elementy v hlavnej scéne}
+	\label{pic:YouDied}
+\end{figure}
+
+\subsection{Pohyb hráča}
+\label{sec:PlayerMovement} 
+%TODO PlayerMovement + input manager? + Noise
+
+\subsection{Kamera}
+\label{sec:Camera}
+
+
+
 \section{Štruktúra NPC agentov}
 \label{sec:Agents}
 %TODO + enemy spawner
@@ -446,7 +483,7 @@ Aby mohol teda GameManager získať dáta z ConfigManagera musíme sa uistiť, �
 \subsection{Prvý trénovací scenár}
 \label{sec:FirstScenario}
 %TODO
-%...
+%... Player automatic movement, navmesh, waypointy
 \subsection{N-tý trénovací scenár}
 \label{sec:LastScenario}
 %TODO

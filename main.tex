@@ -391,7 +391,7 @@ Samotný objekt hráčskej postavy sa skladá z dvoch objektov, ktoré sa zvykn�
 
 Model reprezentuje vizuálnu stránku objektu, teda postavu samotnú a ďalšie menšie objekty, ktoré má táto postava na sebe. Pri zložitejších modeloch ide o hierarchiu čítajúcu stovky objektov reprezentujúce jednotlivé časti tela. V tomto prípade je využitý tzv. low poly model, ktorý je vcelku a pod sebou má iba zopár vizuálnych doplnkov, ktoré postava nosí okolo pása.
 
-Kontroler, na druhú stranu obsahuje sadu komponentov, ktoré obstarávajú pohyb, gravitáciu, kolíziu a ľubovoľnú ďalšiu funkcionalitu. Dôležitou komponentou kontrolera je práve Unity komponenta \textit{Character Controller}. Na nej je možné nastaviť rôzne parametre definujúce tvar kolíznej kapsule, maximálnu výšku kroku, ktorý môže postava vykonať bez nutnosti vyskočiť apod. Túto kapsulu s kompletnou vizuálnou stránkou hráča je možné vidieť na obrázku \ref{pic:PlayerController}.
+Kontroler, na druhú stranu obsahuje sadu komponentov, ktoré obstarávajú pohyb, gravitáciu, kolíziu a ľubovoľnú ďalšiu funkcionalitu. Dôležitou komponentou kontrolera je práve Unity komponenta Character Controller. Na nej je možné nastaviť rôzne parametre definujúce tvar kolíznej kapsule, maximálnu výšku kroku, ktorý môže postava vykonať bez nutnosti vyskočiť apod. Túto kapsulu s kompletnou vizuálnou stránkou hráča je možné vidieť na obrázku \ref{pic:PlayerController}.
 
 \begin{figure}[!htbp]
 	\centering
@@ -400,14 +400,35 @@ Kontroler, na druhú stranu obsahuje sadu komponentov, ktoré obstarávajú pohy
 	\label{pic:PlayerController}
 \end{figure}
 
-Na objekte kontroler sa ďalej nachádzajú komponenty PlayerBrain, PlayerBody, PlayerMovement, PlayerAutomaticMovement a NavMeshAgent. Posledné dve spomenuté komponenty sú v predvolenom stave vypnuté a zapína ich komponenta PlayerBrain v prípade, že má objekt ConfigManager v editore nastavenú premennú PlayerControll na hodnotu Automatic. Toto je využívané primárne v trénovacích scenároch, ktoré sú bližšie popísané v sekcií \ref{sec:Training}. V tomto prípade taktiež komponenta PlayerBrain vypne komponentu PlayerMovement, čím znemožní ovládať hráča pomocou vstupu z periférií. 
+Na objekte kontroler sa ďalej nachádzajú komponenty PlayerBrain, PlayerBody, PlayerMovement, PlayerAutomaticMovement a NavMeshAgent. Posledné dve spomenuté komponenty sú v predvolenom stave deaktivované a aktivuje ich komponenta PlayerBrain v prípade, že má objekt ConfigManager v editore nastavenú premennú PlayerControll na hodnotu Automatic. Toto je využívané primárne v trénovacích scenároch, ktoré sú bližšie popísané v sekcií \ref{sec:Training}. V tomto prípade taktiež komponenta PlayerBrain vypne komponentu PlayerMovement, čím znemožní ovládať hráča pomocou vstupu z periférií. 
 
 Poslednou kompetenciou komponenty PlayerBrain je držať referencie na zvyšné komponenty a inicializovať ich. Počas inicializačnej fázy sú jednotlivým komponentám predané referencie na iné komponenty ktoré potrebujú pre svoje fungovanie. Tento prístup umožňuje centrálne riadiť prepojenia medzi komponentami bez nutnosti ich rôzne referencovať navzájom v editore.
 
 \subsection{Prijímanie poškodenia a smrť hráčskej postavy}
 \label{sec:DealingDamage}
-% handlovanie damagu + healthbar 
-% Komponenty: player body - IDamageable
+Hráčska postava je zraniteľná voči útoku nepriateľského NPC agenta. Maximálna hodnota poškodenia, ktorú hráč môže inkasovať je nastavená v komponente PlayerBody. Táto komponenta teda obsahuje maximálnu hodnotu zdravia, ktorá sa hráčovi nastaví na začiatku hry a aktuálnu hodnotu zdravia, ktorá klesá s prijímaným poškodením. Všetká potrebná funkcionalita súvisiaca s prijímaním poškodenia vrátane propagovania informácie o zmene hodnoty zdravia či smrti danej postavy bola zjednotená pod rozhranie IDamageable. Toto rozhranie okrem komponenty PlayerBody implementuje aj abstraktná komponenta NPCBody, ktorá bude bližšie popísaná v sekcií \ref{sec:Agents}. Spomínané rozhranie je možné vidieť vo výpise \ref{src:IDamageable}. 
+
+\vspace{8pt}
+\begin{lstlisting}[label=src:IDamageable,caption={Rohranie IDamageable}]
+public interface IDamageable
+{
+    public float MaxHealth { get; }
+    public float Health { get; }
+
+    public event Action<float> OnHealthChanged;
+    public event Action OnDied;
+
+    public void DealDamage(float damage);
+}
+\end{lstlisting}
+
+Komponenta PlayerBody sa pri spustení hry zaregistruje pod objekt GameManager ako implementácia rozhrania IDamageable. GameManager sa v tomto momente stane odberateľom eventu OnHealthChanged za účelom aktualizácie GUI elementu zobrazujúceho aktuálny stav zdravia hráčskej postavy. Tento element sa zvykne nazývať Health bar.
+
+Zavolanie metódy DealDamage() na hráčskej postave teda spôsobí odrátanie hodnoty poškodenia od aktuálnej hodnoty zdravia a vyvolanie spomínaného eventu. Pokiaľ táto hodnota zdravia klesne na nulu je na hráčskej postave deaktivované ovládanie pohybu a vyvolá sa event OnDied. Na tento event zareaguje odberateľ GameManager, ktorý vyvolá event OnGameEnded, na základe ktorého sa deaktivuje ovládanie kamery a následne je hráčovi zobrazená informácia o konci hry. Po určitom čase je scéna reštartovaná a hráč to môže skúsiť znova a lepšie. 
+
+Informáciu o konci hry spolu s prázdnym GUI elementom Health bar je možné vidieť na obrázku \ref{pic:YouDied}. Na tomto obrázku je možné povšimnúť si aj GUI elementy zobrazujúce hráčovi počet nazbieraných predmetov spolu s minimálnym počtom, ktorý je vyžadovaný na úspešné dokončenie hry. Aktualizácia počtu zozbieraných predmetov v GUI záležitosťou nastavenia reťazca v premennej text príslušného objektu. 
+
+GUI element Health bar sa skladá z troch častí: výplň, obrys a ikona srdca. Na aktualizáciu hodnoty v tomto GUI elemente je využívaná Unity komponenta Slider. Táto komponenta má množstvo nastavení a parametrov vrátane objektu, ktorého rozmery bude Slider ovplyvňovať (v tomto prípade výplň elementu) a maximálnej hodnoty. Tá sa pri spustení hry nastaví na hodnotu maximálneho zdravia hráčskej postavy a je teda možné priamo bez prepočtu nastavovať hodnotu Slideru v reakcii na zmenu zdravia hráča.
 
 \begin{figure}[!htbp]
 	\centering

@@ -18,10 +18,10 @@
 % ------------------------------------------------------
 
 % Nový druh tabuľkového stĺpca, v ktorom sú čísla zarovnané podľa desetinnej čiarky
-%\newcolumntype{d}[1]{D{,}{,}{#1}}
+\newcolumntype{d}[1]{D{,}{,}{#1}}
 
 % Odstranenie warningov s underfull vbox
-%\raggedbottom
+\raggedbottom
 
 % Nastavenie tex color boxu
 %\newtcbox{\mybox}[2][black]{outer arc=0pt,  boxsep=0pt, left=0pt, right=0pt, top=0pt, bottom=0pt, boxrule=2pt}
@@ -428,8 +428,6 @@ Zavolanie metódy DealDamage() na hráčskej postave teda spôsobí odrátanie h
 
 Informáciu o konci hry spolu s prázdnym GUI elementom Health bar je možné vidieť na obrázku \ref{pic:YouDied}. Na tomto obrázku je možné povšimnúť si aj GUI elementy zobrazujúce hráčovi počet nazbieraných predmetov spolu s minimálnym počtom, ktorý je vyžadovaný na úspešné dokončenie hry. Aktualizácia počtu zozbieraných predmetov v GUI záležitosťou nastavenia reťazca v premennej text príslušného objektu. 
 
-GUI element Health bar sa skladá z troch častí: výplň, obrys a ikona srdca. Na aktualizáciu hodnoty v tomto GUI elemente je využívaná Unity komponenta Slider. Táto komponenta má množstvo nastavení a parametrov vrátane objektu, ktorého rozmery bude Slider ovplyvňovať (v tomto prípade výplň elementu) a maximálnej hodnoty. Tá sa pri spustení hry nastaví na hodnotu maximálneho zdravia hráčskej postavy a je teda možné priamo bez prepočtu nastavovať hodnotu Slideru v reakcii na zmenu zdravia hráča.
-
 \begin{figure}[!htbp]
 	\centering
 	\includegraphics[width=.8\textwidth]{Figures/youDied.png}
@@ -437,14 +435,78 @@ GUI element Health bar sa skladá z troch častí: výplň, obrys a ikona srdca.
 	\label{pic:YouDied}
 \end{figure}
 
-\subsection{Pohyb hráča}
+GUI element Health bar sa skladá z troch častí: výplň, obrys a ikona srdca. Na aktualizáciu hodnoty v tomto GUI elemente je využívaná Unity komponenta Slider. Táto komponenta má množstvo nastavení a parametrov vrátane objektu, ktorého rozmery bude Slider ovplyvňovať (v tomto prípade výplň elementu) a maximálnej hodnoty. Tá sa pri spustení hry nastaví na hodnotu maximálneho zdravia hráčskej postavy a je teda možné priamo bez prepočtu nastavovať hodnotu Slideru v reakcii na zmenu zdravia hráča.
+
+\subsection{Pohyb hráčskej postavy a kamery}
 \label{sec:PlayerMovement} 
-%TODO PlayerMovement + input manager? + Noise
+Jednou z najdôležitejších súčastí hráčskej postavy je práve možnosť jej ovládania pomocou periférií. Pre tento účel bola vytvorená komponenta PlayerMovement. Táto komponenta teda periodicky obstaráva komunikáciu s objektom InputManager a komponentou Character Controller a získané vstupy transformuje na pohyb postavy v trojrozmernom hernom priestore.
 
-\subsection{Kamera}
-\label{sec:Camera}
+Existuje množstvo prístupov k tejto problematike a v závislosti od typu hry či členitosti herného prostredia môže byť práve pohyb hráča veľmi komplexnou témou hlavne v kombinácií s realistickými animáciami.
 
+V tomto projekte bol využitý základný systém využívajúci možností vstavanej Unity komponenty Character Controller a to ako na pohyb tak aj na zisťovanie, či sa hráč nachádza na pevnej zemi. Hráčovi je okrem základného pohybu do rôznych smerov umožnené skákať, či spomaliť svoj pohyb, čím sa zníži rozsah šírenia zvuku jeho krokov. Pohyb hráča taktiež podlieha základnej simulácií gravitácie. Metódu Update() komponenty PlayerMovement, ktorá obstaráva vyššie popísanú funkcionalitu je možné vidieť vo výpise \ref{src:PlayerMovement}.
 
+\vspace{8pt}
+\begin{lstlisting}[label=src:PlayerMovement,caption={Metóda Update() komponenty PlayerMovement obstarávajúca pohyb hráčskej postavy}]
+void Update()
+{
+    var currentSpeed = speed;
+
+    if (controller.isGrounded)
+    {
+        ySpeed = defaultYSpeed;
+
+        horizontal = inputManager.Horizontal;
+        vertical = inputManager.Vertical;
+
+        if (inputManager.WasJumpingThisFrame)
+            ySpeed = jumpHeight;
+
+        if (inputManager.IsCrounching)
+            currentSpeed /= 2;
+    }
+
+    Vector3 direction = new Vector3(horizontal, 0, vertical);
+    float magnitude = Mathf.Clamp01(direction.magnitude) * currentSpeed;
+    direction.Normalize();
+
+    float angle = SmoothAngleFromDirection(direction);
+    if (direction != Vector3.zero)
+        transform.localRotation = Quaternion.Euler(0f, angle, 0f);
+
+    Vector3 moveDirection = Quaternion.Euler(0f, angle, 0f) * Vector3.forward;
+    Vector3 velocity = moveDirection.normalized * magnitude;
+
+    ySpeed += Physics.gravity.y * Time.deltaTime;
+    velocity.y = ySpeed;
+
+    controller.Move(velocity * Time.deltaTime);
+    MakeNoise(velocity);
+}
+\end{lstlisting}
+
+Vo výpise \ref{src:PlayerMovement} je možné si povšimnúť, že pokiaľ sa hráčska postava nachádza na zemi, je možné zmeniť jej smer na osách X a Z, vyskočiť, či znížiť rýchlosť pohybu na polovicu, čo sa prejaví pri šírení zvuku krokov. V tomto prípade je aj vyresetovaná rýchlosť postavy na ose Y a to na 0, prípadné na malé záporné desatinné číslo. V momente kedy hráč stlačí tlačidlo skoku, je táto rýchlosť nastavená na hodnotu výšky skoku a počas nasledujúcich snímkov bude klesať rýchlosťou danou hodnotou gravitačnej konštanty vynásobenej časom medzi jednotlivými snímkami. Keď postava dopadne na zem je táto rýchlosť opäť vyresetovaná a medzi jednotlivými snímkami sa mení len minimálne v závislosti na hodnote FPS a teda mierne tlačí postavu k zemi, čím sa eliminujú problémy s prípadnou zlou detekciu zeme pri nerovnom teréne.
+
+Následne sa na základe hráčskeho vstupu vypočíta smer a rýchlosť pohybu, ktorým sa má postava vydať a výsledná hodnota, opäť vynásobená časom medzi jednotlivými snímkami, je odoslaná do metódy Move() komponenty Character Controller. Táto metóda vykoná pohyb postavy, pokiaľ to kolízna kapsula či výška nerovného terénu dovolí. Násobenie hodnotou Time.deltaTime, teda časom medzi jednotlivými snímkami spôsobí, že rýchlosť pohybu bude nezávislá od snímkovej frekvencie hry.
+
+Taktiež je vhodné neaplikovať smer na rotáciu postavy priamo, ale vziať do úvahy aktuálnu rotáciu kamery, teda smer, do ktorého sa hráč pozerá. Z dôvodu eliminácie instantnej zmeny rotácie, čo spôsobí nepríjemný efekt teleportácie modelu do daného smeru je tiež vhodné robiť veľké zmeny postupne. Tento prístup je znázornený vo výpise \ref{src:SmoothAngleFromDirection}.
+
+Poslednou kompetenciou komponenty PlayerMovement je vydávanie zvuku pri pohybe. To je realizované pomocou metódy MakeNoise() vo výpise \ref{src:PlayerMovement}. Táto metóda na základe vstupného parametru, ktorý reprezentuje rýchlosť pohybu vypočíta druhú mocninu dĺžky X a Z zložky vstupného vektoru. Tú spolu s aktuálnou pozíciou vloží ako parametre koštruktora readOnly štruktúry Noise a následne zavolá na objekte SoundManager metódu MakeNoise, ktorej danú inštanciu štruktúry odošle ako parameter. Tento postup sa vykonáva v pravidelných intervaloch, ktorých dĺžka je daná konštantou stepDelay a za splnenia podmienky, že hráč nie je statický. 
+
+SoundManager následne vytvorí tzv. SphereCast a teda získa všetky kolidery v rádiuse daného bodu v priestore. Všetky nájdené objekty sú skontrolované na prítomnosť komponenty Hearing. Ak objekt obsahuje túto komponentu je na nej zavolaná metóda RespondToNoise(), ktorej je predaná pozícia danej inštancie zvuku. Reakcia na tento podnet je bližšie popísaná v sekcií \ref{sec:Perception}. Pomocou Unity metódy OnDrawGizmosSelected() bola taktiež v editore vytvorená jednoduchá vizualizácia zvuku za účelom ladenia
+
+\vspace{8pt}
+\begin{lstlisting}[label=src:SmoothAngleFromDirection,caption={Postupná zmena rotácie postavy v súlade s rotáciu kamery}]
+private float SmoothAngleFromDirection(Vector3 direction)
+{
+    var cameraY = (cameraTransform == null) ? 
+    cameraTransform.eulerAngles.y : 0.0f;
+
+    float tempAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cameraY;
+    return Mathf.SmoothDampAngle(transform.eulerAngles.y, tempAngle, ref turnSmoothVelocity, turnSmoothTime);
+}
+\end{lstlisting}
+
+%TODO PlayerMovement + input manager? + Noise, spojit s kamerou?
 
 \section{Štruktúra NPC agentov}
 \label{sec:Agents}
@@ -473,9 +535,10 @@ Vo výpise \ref{src:GameManOnStart} je možné si povšimnúť, že pre využiti
 Aby mohol teda GameManager získať dáta z ConfigManagera musíme sa uistiť, že jeho inicializácia už prebehla a v tomto prípade boli deserializované potrebné dáta z perzistentného úložiska nastavení. 
 
 %NAVMESH
-\subsection{Zmyslové vnímanie agentov}
+\subsection{Percepcia NPC agentov}
 \label{sec:Perception}
 %TODO + soundManager + noise
+% ze to je zmyslove vnimanie
 
 % Chapter 5
 \chapter{Rozhodovanie agentov s využitím rozhodovacích stromov}

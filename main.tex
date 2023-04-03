@@ -73,6 +73,7 @@
 \AddAcronym{GUI}{Graphic User Interface}
 \AddAcronym{FPS}{Frames Per Second}
 \AddAcronym{NPC}{Non-Playable Character}
+\AddAcronym{FOV}{Field of view}
 
 % ------------------------------------------------------
 
@@ -437,7 +438,7 @@ Informáciu o konci hry spolu s prázdnym GUI elementom Health bar je možné vi
 
 GUI element Health bar sa skladá z troch častí: výplň, obrys a ikona srdca. Na aktualizáciu hodnoty v tomto GUI elemente je využívaná Unity komponenta Slider. Táto komponenta má množstvo nastavení a parametrov vrátane objektu, ktorého rozmery bude Slider ovplyvňovať (v tomto prípade výplň elementu) a maximálnej hodnoty. Tá sa pri spustení hry nastaví na hodnotu maximálneho zdravia hráčskej postavy a je teda možné priamo bez prepočtu nastavovať hodnotu Slideru v reakcii na zmenu zdravia hráča.
 
-\subsection{Pohyb hráčskej postavy a kamery}
+\subsection{Pohyb hráčskej postavy}
 \label{sec:PlayerMovement} 
 Jednou z najdôležitejších súčastí hráčskej postavy je práve možnosť jej ovládania pomocou periférií. Pre tento účel bola vytvorená komponenta PlayerMovement. Táto komponenta teda periodicky obstaráva komunikáciu s objektom InputManager a komponentou Character Controller a získané vstupy transformuje na pohyb postavy v trojrozmernom hernom priestore.
 
@@ -506,7 +507,25 @@ private float SmoothAngleFromDirection(Vector3 direction)
 }
 \end{lstlisting}
 
-%TODO PlayerMovement + input manager? + Noise, spojit s kamerou?
+\subsection{Kamera}
+\label{sec:Camera}
+
+Kamera je veľmi dôležitým prvkom každej hry. Nielenže hráč pomocou nej môže sledovať dianie v hernom svete ale už samotným pohybom tejto kamery môže ovplyvňovať napríklad smer pohybu hráčskej postavy, čo bolo demonštrované v predchádzajúcej sekcií. 
+
+V editore Unity je možné využiť na snímanie diania v hre predpripravenú komponentu Camera. Tá umožňuje nastavenie rôznych parametrov od FOV, typu projekcie, vzdialenosti orezávacích rovín až po napríklad anti-aliasing. Bez prítomnosti kamery v scéne je renderovaná iba čierna obrazovka s varovným nápisom a GUI. Kamier v scéne môže byť niekoľko a je možné medzi nimi plynulo prepínať napríklad v rámci filmových sekvencií čí mierenia so zbraňou.
+
+Ovládanie kamery bolo realizované pomocou modulu Cinemachine od spločonosťou Unity, ktorá vytvára samotný editor. Tento modul je zdarma dostupný z oficiálneho repozitára a obsahuje niekoľko typov kamier, ktoré je možné použiť. V tomto projekte je využitá tzv. Free Look Camera. Po výbere kamery je na objekt obsahujúci Unity komponentu Camera pridaná komponenta z tohto modulu s názvom CinemachineBrain a následne je vytvorený nový herný objekt, ktorý obsahuje komponentu s názvom odpovedajúcim vybranému typu kamery. Komponenta CinemachineBrain sa prepojí s komponentou tohto nového objektu, a ten prevezme kontrolu nad pozíciou a rotáciou pôvodnej kamery bez nutnosti ručného nastavovania týchto parametrov zo skriptu.
+
+Komponenta ovládajúca kameru má veľké množstvo nastavení, ktorých popis by presahoval rámec tejto práce. Dôležitým parametrami sú hlavne referencie na objekt, ktorý má kamera prenasledovať a na ktorý sa má zamerať. V tomto prípade bola na oba prípady použitá referencia hráčskej postavy. Ďalej boli na tomto mieste nastavené rýchlosti či rozsah pohybu kamery na jednotlivých osách, ktoré boli zároveň namapované na príslušné osy vstupných periférií. Kvôli kolízií kamery s hernými objektami bola ešte pridaná a nastavená komponenta Cinemachine Collider.
+
+Samotná kamera sa potom pohybuje po troch obručiach - spodnej, strednej a hornej. Výšku a priemer týchto obručí je taktiež možné upraviť a každá z nich má separátne nastavenia, ktoré určujú stred pohľadu kamery, mŕtvu zónu, rýchlosť s akou sa kamera snaží dohnať svoj cieľ apod. Tieto obruče sú pre lepšiu predstavu znázornené na obrázku \ref{pic:Cinemachine}.
+
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[width=.8\textwidth]{Figures/obruce.png}
+	\caption{Vizualizácia obručí, po ktorých sa pohybuje herná kamera}
+	\label{pic:Cinemachine}
+\end{figure}
 
 \section{Štruktúra NPC agentov}
 \label{sec:Agents}

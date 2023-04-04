@@ -529,7 +529,16 @@ Samotná kamera sa potom pohybuje po troch obručiach - spodnej, strednej a horn
 
 \section{Štruktúra NPC agentov}
 \label{sec:Agents}
-%TODO + enemy spawner
+Ako už bolo spomenuté v predchádzajúcich sekciách, projekt obsahuje dva typy NPC agentov. Prvý typ sa rozhoduje na základe rozhodovacieho stromu zostrojeného zo vstupných dát a druhý typ agentov využíva na rozhodovanie model natrénovaný pomocou spätnoväzobného učenia. Jednotlivé typy NPC sa líšia aj v prístupe k navigácií priestorom či kolízií a ďalšími detailami v skladbe či funkcionalite jednotlivých komponentov. 
+
+\subsection{Spoločné prvky oboch typov agentov}
+\label{sec:AgentsBoth}
+
+Prvým spoločným prvkom NPC agentov je okrem iného aj ich inštancovanie. Túto funkcionalitu obstaráva objekt EnemySpawner nachádzajúci sa v scéne. Potomkami tohto objektu v hierarchií sú prázdne objekty, tzv. spawn pointy, ktoré sú ručne rozmiestnené po hernej ploche. V momente spustenia scény sú získané Transform komponenty týchto objektov, ktoré združujú pozíciu, rotáciu a mierku objektu. Tie potom pri procese inštancovania zabezpečujú, že objekt bude inštancovaný na určenú pozíciu v hernom svete a s určenou rotáciou. Pri tomto procese je ešte nutná referencia na tzv. prefab herného objektu a voliteľným prvkom je objekt, ktorý sa stane rodičom novo inštancovaných objektov. 
+
+Prefab v editore Unity je možné chápať ako šablónu herného objektu spolu s jeho komponentami, nastavenými hodnotami a podradenými hernými objektami. Túto šablónu je možné opakovane použiť v rámci jednej scény ale aj vo viacerých scénach. Tento systém ponúka efektívny spôsob správy herných objektov a synchronizáciu zmien bez nutnosti opakovaných úprav každej kópie. Túto synchronizáciu je možné vyvolať aj ručne, čo umožňuje robiť zmeny len na konkrétnych kópiách a nepropagovať ich ďalej, či priamo vytvárať prefab ako variantu už existujúceho. Taktiež umožňujú jednoduché inštancovanie herných objektov za behu bez nutnosti opakovane im nastavovať rovnaké hodnoty či priraďovať určité komponenty alebo podradené herné objekty po inštancovaní. Jednotlivé prefaby je možné aj hierarchicky zanorovať do seba \cite{Prefabs}.
+
+Proces inštancovania NPC agentov, ktorý je možné vidieť vo výpise \ref{src:GameManOnStart}, vyvoláva už spomínaný objekt GameManager na základe nastavení uložených v objekte ConfigManager. Volaná metóda určuje, ktorý konkrétny prefab bude pri inštancovaní použitý.
 
 \vspace{8pt}
 \begin{lstlisting}[label=src:GameManOnStart,caption={Inštancovanie NPC agentov na základe nastavení}]
@@ -549,9 +558,15 @@ public void OnStart()
 }
 \end{lstlisting}
 
-Vo výpise \ref{src:GameManOnStart} je možné si povšimnúť, že pre využitie možností životného cyklu objektu nie je využitá metóda Start() ale vlastná metóda OnStart(), ktorá je volaná z metódy Start() objektu MainManager. Tento postup je využitý z dôvodu lepšieho výkonu, nakoľko stačí z natívneho C++ kódu volať určitú metódu životného cyklu iba na jednom hlavnom objekte a ten sa postará o volanie vo zvyšných objektoch, ktoré spravuje. Tento postup je opäť často využívaný v rámci optimalizácie projektu. Ďalšou výhodou je však aj možnosť riadiť poradie, v akom budú metódy zavolané na konkrétnych objektoch a nenechávame to na rozhodnutí herného enginu. 
+Vo výpise \ref{src:GameManOnStart} je možné si povšimnúť, že pre využitie možností životného cyklu objektu nie je využitá metóda Start() ale vlastná metóda OnStart(), ktorá je volaná z metódy Start() objektu MainManager. Tento prístup má dve hlavné výhody. Prvou je dosiahnutie lepšieho výkonu, nakoľko stačí z natívneho C++ kódu volať určitú metódu životného cyklu iba na jednom hlavnom objekte a ten sa postará o volanie vo zvyšných objektoch, ktoré spravuje. Ďalšou výhodou, ktorá bola v tomto prípade dôležitejšou je možnosť riadiť poradie, v akom budú metódy zavolané na konkrétnych objektoch a nenechávať to na rozhodnutí herného enginu. Ak by sa v tomto prípade objekt GameManager inicializoval skôr ako ConfigManager boli by použité prednastavené hodnoty a nie dáta deserializované z perzistentného úložiska nastavení. 
 
-Aby mohol teda GameManager získať dáta z ConfigManagera musíme sa uistiť, že jeho inicializácia už prebehla a v tomto prípade boli deserializované potrebné dáta z perzistentného úložiska nastavení. 
+Ďalším spoločným prvkom oboch typov NPC
+
+\subsection{Štruktúra NPC ovládaných rozhodovacím stromom}
+\label{sec:AgentsWithTrees}
+
+\subsection{Štruktúra NPC netrénovaných spätnoväzobným učením}
+\label{sec:AgentsWithBrain}
 
 %NAVMESH
 \subsection{Percepcia NPC agentov}
@@ -582,7 +597,7 @@ Aby mohol teda GameManager získať dáta z ConfigManagera musíme sa uistiť, �
 %TODO
 \section{Trénovanie agentov}
 \label{sec:Training}
-%TODO
+%TODO + PlayerAutomatic movement, scriptedPath, waypointy
 \subsection{Prvý trénovací scenár}
 \label{sec:FirstScenario}
 %TODO

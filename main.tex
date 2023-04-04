@@ -98,7 +98,7 @@
 \lstlistoflistings
 \clearpage
 
-% Chapter 1
+% Chapter 0
 \chapter{Úvod}
 \label{sec:Introduction}
 %TODO
@@ -106,18 +106,28 @@
 % ------------------------------------------------------
 
 % Teória
-% Chapter 2
+% Chapter 1
 \chapter{Umelá inteligencia v hrách}
 \label{sec:AI in games}
+
+\chapter{Strojové učenie}
+\label{sec:MachineLearningOverview}
 %TODO
 
 \section{Rozhodovacie stromy}
 \label{sec:DecisionTreesOverview}
+%TODO
+\subsection{Algoritmus ID3}
+\label{sec:ID3}
+%TODO
+\subsection{Algoritmus D4.5}
+\label{sec:D45}
+%TODO
+\subsection{Algoritmus CART}
+\label{sec:CART}
+%TODO
 
-\section{Strojové učenie}
-\label{sec:MachineLearningOverview}
-%TOOD
-\subsection{Spätnoväzobné učenie}
+\section{Spätnoväzobné učenie}
 \label{sec:ReinforcemenLearningOverview}
 %TODO
 
@@ -131,6 +141,9 @@
 \section{Unity Engine}
 \label{sec:Unity}
 %TODO
+\section{Programovacie jazyky}
+\label{sec:langs}
+%TODO + c# + python?
 \section{Nástroj ML-Agents}
 \label{sec:ML-Agents}
 %TODO
@@ -139,7 +152,7 @@
 % Chapter 4
 \chapter{Hra a herné prostredie}
 \label{sec:GameOverview}
-Táto kapitola je venovaná vytvorenej hre ako takej, všetkým jej aspektom a princípom fungovania. Prvá sekcia si kladie za cieľ popísať žánrové a príbehové zasadenie hry. V ďalších sekciách je potom podrobne prebratá architektúra a fungovanie jednotlivých herných mechaník, s dôrazom na zmyslové vnímanie jednotlivých NPC agentov.
+Táto kapitola je venovaná vytvorenej hre ako takej, všetkým jej aspektom a princípom fungovania. Prvá sekcia si kladie za cieľ popísať žánrové a príbehové zasadenie hry. V ďalších sekciách je potom podrobne prebratá architektúra a fungovanie jednotlivých herných mechaník.
 
 \section{Žáner a príbehové zasadenie}
 \label{sec:GenreAndSetting}
@@ -380,13 +393,14 @@ Jednotlivé ponuky sú v triede referencované pomocou atribútu \textit{Seriali
 	\label{pic:MainMenuScheme}
 \end{figure}
 
-\section{Štruktúra hráčskej postavy}
+% Chapter 5
+\chapter{Architektúra hráčskej postavy}
 \label{sec:Player}
 Jednou z najdôležitejších súčasti hier ovládaných z pohľadu tretej osoby je práve hráčska postava. Tá reaguje na hráčov vstup zmenou smeru alebo rýchlosti pohybu, akciami ako skok, útok, úhyb či kontextuálnou interakciou s nejakým objektom v hre a podobne. Na postavu hráča pôsobí určitá forma gravitácie a s tým súvisiaca kolízia s hernou plochou a ostatnými statickými či dynamickými objektami. Hráčska postava má spravidla nastavenú nejakú hodnotu zdravia či života, ktorá sa v čase mení napríklad po páde z veľkej výšky či po zásahu od nepriateľa. Hodnota ostávajúceho zdravia je často hráčovi prezentovaná vo forme GUI ukazovateľa. 
 
-Táto sekcia popisuje akým spôsobom bolo k jednotlivým problémom pristupované v tomto projekte. Niektoré princípy je možné s väčšími či menšími úpravami aplikovať obecne, iné sú poplatné editoru Unity. 
+Táto kapitola popisuje akým spôsobom bolo k jednotlivým problémom pristupované v tomto projekte. Niektoré princípy je možné s väčšími či menšími úpravami aplikovať obecne, iné sú poplatné editoru Unity. 
 
-\subsection{Prehľad komponentov hráčskej postavy}
+\section{Prehľad komponentov}
 \label{sec:PlayerComponentOverview} 
 Samotný objekt hráčskej postavy sa skladá z dvoch objektov, ktoré sa zvyknú nazývať kontroler a model. 
 
@@ -405,9 +419,9 @@ Na objekte kontroler sa ďalej nachádzajú komponenty PlayerBrain, PlayerBody, 
 
 Poslednou kompetenciou komponenty PlayerBrain je držať referencie na zvyšné komponenty a inicializovať ich. Počas inicializačnej fázy sú jednotlivým komponentám predané referencie na iné komponenty ktoré potrebujú pre svoje fungovanie. Tento prístup umožňuje centrálne riadiť prepojenia medzi komponentami bez nutnosti ich rôzne referencovať navzájom v editore.
 
-\subsection{Prijímanie poškodenia a smrť hráčskej postavy}
+\section{Prijímanie poškodenia}
 \label{sec:DealingDamage}
-Hráčska postava je zraniteľná voči útoku nepriateľského NPC agenta. Maximálna hodnota poškodenia, ktorú hráč môže inkasovať je nastavená v komponente PlayerBody. Táto komponenta teda obsahuje maximálnu hodnotu zdravia, ktorá sa hráčovi nastaví na začiatku hry a aktuálnu hodnotu zdravia, ktorá klesá s prijímaným poškodením. Všetká potrebná funkcionalita súvisiaca s prijímaním poškodenia vrátane propagovania informácie o zmene hodnoty zdravia či smrti danej postavy bola zjednotená pod rozhranie IDamageable. Toto rozhranie okrem komponenty PlayerBody implementuje aj abstraktná komponenta NPCBody, ktorá bude bližšie popísaná v sekcií \ref{sec:Agents}. Spomínané rozhranie je možné vidieť vo výpise \ref{src:IDamageable}. 
+Hráčska postava je zraniteľná voči útoku nepriateľského NPC agenta. Maximálna hodnota poškodenia, ktorú hráčska postava môže inkasovať kým zomrie je nastavená v komponente PlayerBody. Táto komponenta teda obsahuje maximálnu hodnotu zdravia, ktorá sa hráčovi nastaví na začiatku hry a aktuálnu hodnotu zdravia, ktorá klesá s prijímaným poškodením. Všetká potrebná funkcionalita súvisiaca s prijímaním poškodenia vrátane propagovania informácie o zmene hodnoty zdravia či smrti danej postavy bola zjednotená pod rozhranie IDamageable. Toto rozhranie okrem komponenty PlayerBody implementuje aj abstraktná komponenta NPCBody, ktorá bude bližšie popísaná v sekcií \ref{sec:Agents}. Spomínané rozhranie je možné vidieť vo výpise \ref{src:IDamageable}. 
 
 \vspace{8pt}
 \begin{lstlisting}[label=src:IDamageable,caption={Rohranie IDamageable}]
@@ -438,7 +452,7 @@ Informáciu o konci hry spolu s prázdnym GUI elementom Health bar je možné vi
 
 GUI element Health bar sa skladá z troch častí: výplň, obrys a ikona srdca. Na aktualizáciu hodnoty v tomto GUI elemente je využívaná Unity komponenta Slider. Táto komponenta má množstvo nastavení a parametrov vrátane objektu, ktorého rozmery bude Slider ovplyvňovať (v tomto prípade výplň elementu) a maximálnej hodnoty. Tá sa pri spustení hry nastaví na hodnotu maximálneho zdravia hráčskej postavy a je teda možné priamo bez prepočtu nastavovať hodnotu Slideru v reakcii na zmenu zdravia hráča.
 
-\subsection{Pohyb hráčskej postavy}
+\section{Pohyb}
 \label{sec:PlayerMovement} 
 Jednou z najdôležitejších súčastí hráčskej postavy je práve možnosť jej ovládania pomocou periférií. Pre tento účel bola vytvorená komponenta PlayerMovement. Táto komponenta teda periodicky obstaráva komunikáciu s objektom InputManager a komponentou Character Controller a získané vstupy transformuje na pohyb postavy v trojrozmernom hernom priestore.
 
@@ -447,24 +461,13 @@ Existuje množstvo prístupov k tejto problematike a v závislosti od typu hry �
 V tomto projekte bol využitý základný systém využívajúci možností vstavanej Unity komponenty Character Controller a to ako na pohyb tak aj na zisťovanie, či sa hráč nachádza na pevnej zemi. Hráčovi je okrem základného pohybu do rôznych smerov umožnené skákať, či spomaliť svoj pohyb, čím sa zníži rozsah šírenia zvuku jeho krokov. Pohyb hráča taktiež podlieha základnej simulácií gravitácie. Metódu Update() komponenty PlayerMovement, ktorá obstaráva vyššie popísanú funkcionalitu je možné vidieť vo výpise \ref{src:PlayerMovement}.
 
 \vspace{8pt}
-\begin{lstlisting}[label=src:PlayerMovement,caption={Metóda Update() komponenty PlayerMovement obstarávajúca pohyb hráčskej postavy}]
+\begin{lstlisting}[label=src:PlayerMovement,caption={Metódy komponenty PlayerMovement obstarávajúce pohyb hráčskej postavy}]
 void Update()
 {
     var currentSpeed = speed;
 
     if (controller.isGrounded)
-    {
-        ySpeed = defaultYSpeed;
-
-        horizontal = inputManager.Horizontal;
-        vertical = inputManager.Vertical;
-
-        if (inputManager.WasJumpingThisFrame)
-            ySpeed = jumpHeight;
-
-        if (inputManager.IsCrounching)
-            currentSpeed /= 2;
-    }
+        UpdateGrounded(ref currentSpeed);
 
     Vector3 direction = new Vector3(horizontal, 0, vertical);
     float magnitude = Mathf.Clamp01(direction.magnitude) * currentSpeed;
@@ -483,6 +486,19 @@ void Update()
     controller.Move(velocity * Time.deltaTime);
     MakeNoise(velocity);
 }
+private void UpdateGrounded(ref float currentSpeed)
+{
+    ySpeed = defaultYSpeed;
+
+    horizontal = inputManager.Horizontal;
+    vertical = inputManager.Vertical;
+
+    if (inputManager.WasJumpingThisFrame)
+        ySpeed = jumpSpeed;
+
+    if (inputManager.IsCrounching)
+        currentSpeed /= 2;
+}
 \end{lstlisting}
 
 Vo výpise \ref{src:PlayerMovement} je možné si povšimnúť, že pokiaľ sa hráčska postava nachádza na zemi, je možné zmeniť jej smer na osách X a Z, vyskočiť, či znížiť rýchlosť pohybu na polovicu, čo sa prejaví pri šírení zvuku krokov. V tomto prípade je aj vyresetovaná rýchlosť postavy na ose Y a to na 0, prípadné na malé záporné desatinné číslo. V momente kedy hráč stlačí tlačidlo skoku, je táto rýchlosť nastavená na hodnotu výšky skoku a počas nasledujúcich snímkov bude klesať rýchlosťou danou hodnotou gravitačnej konštanty vynásobenej časom medzi jednotlivými snímkami. Keď postava dopadne na zem je táto rýchlosť opäť vyresetovaná a medzi jednotlivými snímkami sa mení len minimálne v závislosti na hodnote FPS a teda mierne tlačí postavu k zemi, čím sa eliminujú problémy s prípadnou zlou detekciu zeme pri nerovnom teréne.
@@ -490,10 +506,6 @@ Vo výpise \ref{src:PlayerMovement} je možné si povšimnúť, že pokiaľ sa h
 Následne sa na základe hráčskeho vstupu vypočíta smer a rýchlosť pohybu, ktorým sa má postava vydať a výsledná hodnota, opäť vynásobená časom medzi jednotlivými snímkami, je odoslaná do metódy Move() komponenty Character Controller. Táto metóda vykoná pohyb postavy, pokiaľ to kolízna kapsula či výška nerovného terénu dovolí. Násobenie hodnotou Time.deltaTime, teda časom medzi jednotlivými snímkami spôsobí, že rýchlosť pohybu bude nezávislá od snímkovej frekvencie hry.
 
 Taktiež je vhodné neaplikovať smer na rotáciu postavy priamo, ale vziať do úvahy aktuálnu rotáciu kamery, teda smer, do ktorého sa hráč pozerá. Z dôvodu eliminácie instantnej zmeny rotácie, čo spôsobí nepríjemný efekt teleportácie modelu do daného smeru je tiež vhodné robiť veľké zmeny postupne. Tento prístup je znázornený vo výpise \ref{src:SmoothAngleFromDirection}.
-
-Poslednou kompetenciou komponenty PlayerMovement je vydávanie zvuku pri pohybe. To je realizované pomocou metódy MakeNoise() vo výpise \ref{src:PlayerMovement}. Táto metóda na základe vstupného parametru, ktorý reprezentuje rýchlosť pohybu vypočíta druhú mocninu dĺžky X a Z zložky vstupného vektoru. Tú spolu s aktuálnou pozíciou vloží ako parametre koštruktora readOnly štruktúry Noise a následne zavolá na objekte SoundManager metódu MakeNoise, ktorej danú inštanciu štruktúry odošle ako parameter. Tento postup sa vykonáva v pravidelných intervaloch, ktorých dĺžka je daná konštantou stepDelay a za splnenia podmienky, že hráč nie je statický. 
-
-SoundManager následne vytvorí tzv. SphereCast a teda získa všetky kolidery v rádiuse daného bodu v priestore. Všetky nájdené objekty sú skontrolované na prítomnosť komponenty Hearing. Ak objekt obsahuje túto komponentu je na nej zavolaná metóda RespondToNoise(), ktorej je predaná pozícia danej inštancie zvuku. Reakcia na tento podnet je bližšie popísaná v sekcií \ref{sec:Perception}. Pomocou Unity metódy OnDrawGizmosSelected() bola taktiež v editore vytvorená jednoduchá vizualizácia zvuku za účelom ladenia
 
 \vspace{8pt}
 \begin{lstlisting}[label=src:SmoothAngleFromDirection,caption={Postupná zmena rotácie postavy v súlade s rotáciu kamery}]
@@ -507,7 +519,11 @@ private float SmoothAngleFromDirection(Vector3 direction)
 }
 \end{lstlisting}
 
-\subsection{Kamera}
+Poslednou kompetenciou komponenty PlayerMovement je vydávanie zvuku pri pohybe. To je realizované pomocou metódy MakeNoise() vo výpise \ref{src:PlayerMovement}. Táto metóda na základe vstupného parametru, ktorý reprezentuje rýchlosť pohybu vypočíta druhú mocninu dĺžky X a Z zložky vstupného vektoru. Tú spolu s aktuálnou pozíciou vloží ako parametre koštruktora readOnly štruktúry Noise a následne zavolá na objekte SoundManager metódu MakeNoise, ktorej danú inštanciu štruktúry odošle ako parameter. Tento postup sa vykonáva v pravidelných intervaloch, ktorých dĺžka je daná konštantou stepDelay a za splnenia podmienky, že hráč nie je statický. 
+
+SoundManager následne vytvorí tzv. SphereCast a teda získa všetky kolidery v rádiuse daného bodu v priestore. Všetky nájdené objekty sú skontrolované na prítomnosť komponenty Hearing. Ak objekt obsahuje túto komponentu je na nej zavolaná metóda RespondToNoise(), ktorej je predaná pozícia danej inštancie zvuku. Reakcia na tento podnet je bližšie popísaná v sekcií \ref{sec:Perception}. Pomocou Unity metódy OnDrawGizmosSelected() bola taktiež v editore vytvorená jednoduchá vizualizácia zvuku za účelom ladenia
+
+\section{Kamera}
 \label{sec:Camera}
 
 Kamera je veľmi dôležitým prvkom každej hry. Nielenže hráč pomocou nej môže sledovať dianie v hernom svete ale už samotným pohybom tejto kamery môže ovplyvňovať napríklad smer pohybu hráčskej postavy, čo bolo demonštrované v predchádzajúcej sekcií. 
@@ -516,22 +532,23 @@ V editore Unity je možné využiť na snímanie diania v hre predpripravenú ko
 
 Ovládanie kamery bolo realizované pomocou modulu Cinemachine od spločonosťou Unity, ktorá vytvára samotný editor. Tento modul je zdarma dostupný z oficiálneho repozitára a obsahuje niekoľko typov kamier, ktoré je možné použiť. V tomto projekte je využitá tzv. Free Look Camera. Po výbere kamery je na objekt obsahujúci Unity komponentu Camera pridaná komponenta z tohto modulu s názvom CinemachineBrain a následne je vytvorený nový herný objekt, ktorý obsahuje komponentu s názvom odpovedajúcim vybranému typu kamery. Komponenta CinemachineBrain sa prepojí s komponentou tohto nového objektu, a ten prevezme kontrolu nad pozíciou a rotáciou pôvodnej kamery bez nutnosti ručného nastavovania týchto parametrov zo skriptu.
 
-Komponenta ovládajúca kameru má veľké množstvo nastavení, ktorých popis by presahoval rámec tejto práce. Dôležitým parametrami sú hlavne referencie na objekt, ktorý má kamera prenasledovať a na ktorý sa má zamerať. V tomto prípade bola na oba prípady použitá referencia hráčskej postavy. Ďalej boli na tomto mieste nastavené rýchlosti či rozsah pohybu kamery na jednotlivých osách, ktoré boli zároveň namapované na príslušné osy vstupných periférií. Kvôli kolízií kamery s hernými objektami bola ešte pridaná a nastavená komponenta Cinemachine Collider.
-
-Samotná kamera sa potom pohybuje po troch obručiach - spodnej, strednej a hornej. Výšku a priemer týchto obručí je taktiež možné upraviť a každá z nich má separátne nastavenia, ktoré určujú stred pohľadu kamery, mŕtvu zónu, rýchlosť s akou sa kamera snaží dohnať svoj cieľ apod. Tieto obruče sú pre lepšiu predstavu znázornené na obrázku \ref{pic:Cinemachine}.
-
 \begin{figure}[!htbp]
 	\centering
-	\includegraphics[width=.8\textwidth]{Figures/obruce.png}
+	\includegraphics[width=.7\textwidth]{Figures/obruce.png}
 	\caption{Vizualizácia obručí, po ktorých sa pohybuje herná kamera}
 	\label{pic:Cinemachine}
 \end{figure}
 
-\section{Štruktúra NPC agentov}
-\label{sec:Agents}
-Ako už bolo spomenuté v predchádzajúcich sekciách, projekt obsahuje dva typy NPC agentov. Prvý typ sa rozhoduje na základe rozhodovacieho stromu zostrojeného zo vstupných dát a druhý typ agentov využíva na rozhodovanie model natrénovaný pomocou spätnoväzobného učenia. Jednotlivé typy NPC sa líšia aj v prístupe k navigácií priestorom či kolízií a ďalšími detailami v skladbe či funkcionalite jednotlivých komponentov. 
+Komponenta ovládajúca kameru má veľké množstvo nastavení, ktorých popis by presahoval rámec tejto práce. Dôležitým parametrami sú hlavne referencie na objekt, ktorý má kamera prenasledovať a na ktorý sa má zamerať. V tomto prípade bola na oba prípady použitá referencia hráčskej postavy. Ďalej boli na tomto mieste nastavené rýchlosti či rozsah pohybu kamery na jednotlivých osách, ktoré boli zároveň namapované na príslušné osy vstupných periférií. Kvôli kolízií kamery s hernými objektami bola ešte pridaná a nastavená komponenta Cinemachine Collider.
 
-\subsection{Spoločné prvky oboch typov agentov}
+Samotná kamera sa potom pohybuje po troch obručiach - spodnej, strednej a hornej. Výšku a priemer týchto obručí je taktiež možné upraviť a každá z nich má separátne nastavenia, ktoré určujú stred pohľadu kamery, mŕtvu zónu, rýchlosť s akou sa kamera snaží dohnať svoj cieľ apod. Tieto obruče sú pre lepšiu predstavu znázornené na obrázku \ref{pic:Cinemachine}.
+
+%Chapter 6
+\chapter{Architektúra NPC agentov}
+\label{sec:Agents}
+Ako už bolo spomenuté v predchádzajúcich kapitolách, projekt obsahuje dva typy NPC agentov. Prvý typ sa rozhoduje na základe rozhodovacieho stromu zostrojeného zo vstupných dát a druhý typ agentov využíva na rozhodovanie model natrénovaný pomocou spätnoväzobného učenia. Jednotlivé typy NPC sa líšia aj v prístupe k navigácií priestorom či kolízií a ďalšími detailami v skladbe či funkcionalite jednotlivých komponentov. Táto kapitola si kladie za cieľ popísať štruktúru jednotlivých typov NPC, ich spoločné vlastnosti a odlišnosti s dôrazom na percepciu, teda zmyslové vnímanie jednotlivých NPC agentov.
+
+\section{Spoločné prvky oboch typov agentov}
 \label{sec:AgentsBoth}
 
 Prvým spoločným prvkom NPC agentov je okrem iného aj ich inštancovanie. Túto funkcionalitu obstaráva objekt EnemySpawner nachádzajúci sa v scéne. Potomkami tohto objektu v hierarchií sú prázdne objekty, tzv. spawn pointy, ktoré sú ručne rozmiestnené po hernej ploche. V momente spustenia scény sú získané Transform komponenty týchto objektov, ktoré združujú pozíciu, rotáciu a mierku objektu. Tie potom pri procese inštancovania zabezpečujú, že objekt bude inštancovaný na určenú pozíciu v hernom svete a s určenou rotáciou. Pri tomto procese je ešte nutná referencia na tzv. prefab herného objektu a voliteľným prvkom je objekt, ktorý sa stane rodičom novo inštancovaných objektov. 
@@ -560,35 +577,28 @@ public void OnStart()
 
 Vo výpise \ref{src:GameManOnStart} je možné si povšimnúť, že pre využitie možností životného cyklu objektu nie je využitá metóda Start() ale vlastná metóda OnStart(), ktorá je volaná z metódy Start() objektu MainManager. Tento prístup má dve hlavné výhody. Prvou je dosiahnutie lepšieho výkonu, nakoľko stačí z natívneho C++ kódu volať určitú metódu životného cyklu iba na jednom hlavnom objekte a ten sa postará o volanie vo zvyšných objektoch, ktoré spravuje. Ďalšou výhodou, ktorá bola v tomto prípade dôležitejšou je možnosť riadiť poradie, v akom budú metódy zavolané na konkrétnych objektoch a nenechávať to na rozhodnutí herného enginu. Ak by sa v tomto prípade objekt GameManager inicializoval skôr ako ConfigManager boli by použité prednastavené hodnoty a nie dáta deserializované z perzistentného úložiska nastavení. 
 
-Ďalším spoločným prvkom oboch typov NPC
+Ďalším spoločným prvkom oboch typov NPC je komponenta Capsule Collider. Ide o podobnú kapsulu akú obsahuje Character Controller ale jej jedinou úlohou je riešiť kolíziu s prostredím narozdiel od Character Controlleru, ktorý obstaráva aj ďalšiu funkcionalitu. Je možné nastaviť jej stred, výšku, čí polomer. Podobne ako Box Collider na objekte Finish je možné ju nastaviť ako trigger kedy vyvoláva príslušný event pri strete s iným objektom ale je ignorovaná fyzikálnym enginom a teda negeneruje kolíziu v pravom slova zmysle.
 
-\subsection{Štruktúra NPC ovládaných rozhodovacím stromom}
+Oba typy NPC zdieľajú komponentu SkeletonBody, ktorá je konkretizáciou triedy NPCBody. Tá určuje konkrétne hodnoty parametrov ako rýchlosť, dosah či maximálnu hodnotu zdravia, ktoré môžu byť prispôsobené na mieru konkrétnemu NPC či archetypu. Podobne ako komponenta PlayerBody spomínaná v sekcií \ref{sec:DealingDamage} implementuje rozhranie IDamageable vo výpise \ref{src:IDamageable} so všetkým, čo to obnáša. Okrem toho však poskytuje informácie o stave NPC samotného ako aj jeho zmyslov, čo je následne použité pri rozhodovacom procese.
+
+Posledným spoločným prvkom je komponenta Hearing, ktorá obstaráva počutie NPC agentov. 
+%TODO - popis tejto komponenty
+
+\section{NPC agenti ovládaní rozhodovacím stromom}
 \label{sec:AgentsWithTrees}
 
-\subsection{Štruktúra NPC netrénovaných spätnoväzobným učením}
-\label{sec:AgentsWithBrain}
+%navmesh + brain + eyesight
 
-%NAVMESH
-\subsection{Percepcia NPC agentov}
-\label{sec:Perception}
-%TODO + soundManager + noise
-% ze to je zmyslove vnimanie
-
-% Chapter 5
-\chapter{Rozhodovanie agentov s využitím rozhodovacích stromov}
+\subsection{Rozhodovanie}
 \label{sec:ImplDecisionTrees}
 %TODO
-\section{Algoritmus ID3}
-\label{sec:ID3}
-%TODO
-\section{Algoritmus D4.5}
-\label{sec:D45}
-%TODO
-\section{Algoritmus CART}
-\label{sec:CART}
-%TODO
 
-% Chapter 6
+\section{NPC agenti ovládaní spätnoväzobným učením}
+\label{sec:AgentsWithBrain}
+%TODO
+% ray perceptron sensor + rigidbody + mlskeleton + behaviour params + decision requester
+
+% Chapter 7
 \chapter{Rozhodovanie agentov s využitím spätnoväzobného učenia}
 \label{sec:ImplReinforcementLearningMLAgent}
 %TODO
@@ -606,7 +616,7 @@ Vo výpise \ref{src:GameManOnStart} je možné si povšimnúť, že pre využiti
 \label{sec:LastScenario}
 %TODO
 
-% Chapter 7
+% Chapter 8
 \chapter{Porovnanie prístupov}
 \label{sec:ImplReinforcement learning}
 %TODO
@@ -617,7 +627,7 @@ Vo výpise \ref{src:GameManOnStart} je možné si povšimnúť, že pre využiti
 \label{sec:Gameplay}
 %TODO
 
-% Chapter 8
+% Chapter 9
 \chapter{Záver}
 \label{sec:Conclusion}
 

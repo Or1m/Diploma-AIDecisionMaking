@@ -7,6 +7,7 @@
 \usepackage{subfig} % makrá pre "podobrázky" a "podtabuľky"
 \usepackage[csharp]{diplomalst} % sádzanie
 \usepackage{svg}
+\usepackage{amsmath}
 %\usepackage[python]{diplomalst}
 %\usepackage{tcolorbox} % oramovanie
 
@@ -51,9 +52,9 @@
 
 % Abstrakty
 \CzechAbstract{TODO}
-%TODO - pis po cesky
+%TODO - pis po cesky asi
 
-\CzechKeywords{spätnoväzobné učenie, rozhodovacie stromy, ID3, D4.5, CART, Unity engine, C\#, Python}
+\CzechKeywords{reinforcement learning, rozhodovací stromy, ID3, D4.5, CART, Unity engine, C\#, Python}
 
 \EnglishAbstract{TODO}
 
@@ -69,10 +70,12 @@
 % Skratky
 \AddAcronym{AI}{Artificial intelligence}
 \AddAcronym{CART}{Classification and Regression Tree}
-\AddAcronym{GUI}{Graphic User Interface}
-\AddAcronym{FPS}{Frames Per Second}
-\AddAcronym{NPC}{Non-Playable Character}
 \AddAcronym{FOV}{Field of view}
+\AddAcronym{FPS}{Frames Per Second}
+\AddAcronym{GUI}{Graphic User Interface}
+\AddAcronym{ID3}{Iterative Dichotomiser 3}
+\AddAcronym{IG}{Information Gain}
+\AddAcronym{NPC}{Non-Playable Character}
 
 % ------------------------------------------------------
 
@@ -101,6 +104,8 @@
 \chapter{Úvod}
 \label{sec:Introduction}
 %TODO
+% bla bla uvod
+% kladie si za ciel porovnať dva ML pristupy v hre 
 
 % ------------------------------------------------------
 
@@ -108,17 +113,64 @@
 % Chapter 1
 \chapter{Umelá inteligencia v hrách}
 \label{sec:AI in games}
-
+%TODO
 \chapter{Strojové učenie}
 \label{sec:MachineLearningOverview}
-%TODO
+Strojové učenie (Machine learning) je vedný obor spadajúci do oblasti umelej inteligencie zaoberajúci sa štúdiom algoritmov a štatistických modelov, na základe ktorých dokáže počítačový systém vykonať určitú úlohu bez nutnosti byť na ňu explicitne naprogramovaný \cite{mahesh2020machine}. Algoritmus strojového učenia na základe vstupných (trénovacích) dát vytvorí model, ktorý môže byť následne využitý na detekciu anomálií v dátach, predikciu či automatizované rozhodovanie. Trénovanie modelu sa nazýva aj proces učenia, od čoho je odvodený aj názov oboru. Strojové učenie je dnes často využívané v rôznych oblastiach ako data mining, image processing, počítačové videnie, spracovanie prirodzeného jazyka, prediktívnu analýzu apod.\cite{zhou2021machine}.
+Strojové učenie je možné rozdeliť podľa do troch základných kategórií: %TODO - idealne daj zdroj
+\begin{itemize}
+  \item \textbf{Supervised learning} -- trieda algoritmov strojového učenia, ktoré sa zaoberajú vytváraním funkcie, ktorá mapuje vstup na výstup na základe príkladu vstupno-výstupných dvojíc. Funkcia je odvodzovaná na základe trénovacích dát, ktoré obsahujú aj premennú, ktorú je chceme klasifikovať či predikovať. Algoritmy sa teda učia vzorce na základe trénovacích dát a tie sa snažia aplikovať na testovacie dáta, ktoré túto premennú neobsahujú, alebo je algoritmu zatajená a je využitá ta určovanie výkonnosti modelu \cite{mahesh2020machine}. Do tejto skupiny spadajú aj rozhodovacie stromy popísané v nasledujúcej sekcií.
+  \item \textbf{Unsupervised learning} -- trieda algoritmov strojového učenia, ktoré majú za úlohu analyzovať vstupné dáta a hľadať v nich skryté vzorce bez ľudského pričinenia. Algoritmy hľadajú podobnosti a odlišnosti podskupín dát na základe ktorých je potom možné dáta zhlukovať do rôznych tried, či redukovať počet vlastností odstránením redundantných. Narozdiel od supervised learningu je ma overenie výkonnosti modelu často nutná externá evaluácia doménovým expertom, keďže nie sú prítomné žiadne premenné, s ktorými by sa dali predikované výsledky porovnať. Táto trieda algoritmov je využívaná v prípadoch, kedy nie je možné alebo by bolo veľmi drahé anotovať veľkú dátovú sadu, keď nevieme, koľko skupín sa v dátach nachádza, prípadne, keď potrebujeme získať základnú predstavu o dátach \cite{Unsupervised}. Táto trieda algoritmov nie je vhodná na aplikáciu v umelej inteligencií v hrách a teda v tomto projekte nie je využívaná.
+  \item \textbf{Reinforcement learning} -- trieda algoritmov strojového učenia v ktorých sa agent učí vykonávať správne rozhodnutia alebo akcie v prostredí v ktorom operuje. Agent nemá explicitne určené, čo je jeho úlohou a učenie teda prebieha pomocou postupného skúšania rôznych akcií za účelom maximalizácie kumulatívnej odmeny \cite{reinforcementLearning}. Agent sa teda vykonaním určitej akcie \textit{A} v danom prostredí dostane do stavu \textit{S}, za čo získa spätnú väzbu vo forme odmeny či trestu \textit{R}, pričom trest je možné chápať ako zápornú odmenu. Na základe opakovania daného postupu potom upravuje svoj rozhodovací proces. Tento postup je znázornený na obrázku \ref{pic:reinfoPic}.
+  
+  \begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=.9\textwidth]{Figures/reinfoGraph.png}
+    \caption{Princíp reinforcement learningu \cite{reinfoGraph}}
+    \label{pic:reinfoPic}
+  \end{figure}
+
+  Algoritmy reinforcement learningu sú vhodné na aplikáciu v robotike, pri spracovaní prirodzeného jazyka, v samo-riadiacich autách apod. Reinforcement learning by mohol do budúcna priniesť zaujímavé výsledky aj na poli AI v počítačových hrách. V minulosti vznikli projekty v rámci ktorých dokázali agenti s využitím algoritmov reinforcement learningu hrať hry ako Go, StartCraft II či Dota 2 \cite{app13042443}. Na ich využitie vo väčšom komerčnom projekte sa však stále ešte čaká. Časť tejto práce sa venuje práve problematike ich nasadenia v 3D hernom prostredí.
+\end{itemize}
 
 \section{Rozhodovacie stromy}
 \label{sec:DecisionTreesOverview}
-%TODO, popisy algoritmov, vzorce a asi aj kod rovno
+V teórií grafov označuje názov strom súvislý acyklický graf, teda graf, ktorý neobsahuje žiadnu kružnicu. Strom ktorý má jeden vrchol označený ako koreň sa nazýva koreňovým stromom. Zavedením koreňa vzniká orientácia hrán od koreňa cez jeho potomkov až po tzv. listy, čo sú vrcholy, ktoré nemajú žiadnych potomkov \cite{kovavr2012teorie}. 
+
+Rozhodovací strom je teda možné formálne definovať ako koreňový strom, ktorého vnútorné vrcholy reprezentujú test hodnoty určitého príznaku a každý list predstavuje finálne rozhodnutie vykonané po otestovaní všetkých príznakov. Cesty od koreňa k listu predstavujú klasifikačné pravidla \cite{DecTreeTowards}. Príklad rozhodovacieho stromu je možné vidieť na obrázku \ref{pic:decTreeExample}.
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=.8\textwidth]{Figures/strom.png}
+    \caption{Príklad rozhodovacieho stromu \cite{DecTreeTowards}}
+    \label{pic:decTreeExample}
+\end{figure}
+
+Rozhodovacie stromy patria do triedy neparametrických supervised learning algoritmov, teda nie sú založené na matematickom modeli definujúcom vzťah medzi vstupom a výstupom. Učia sa teda z dát samotných. Vyznačujú sa vyššou flexibilitou ako parametrické algoritmy ale aj vyššou výpočtovou náročnosťou \cite{paramVSnonparam}. 
+
+Existuje množstvo algoritmov pomocou ktorých je možné zostaviť rozhodovací strom zo vstupných dát. V tomto projekte sú využité algoritmy ID3, D4.5 a CART, ktorých popisu sú venované nasledujúce sekcie. 
+
 \subsection{Algoritmus ID3}
 \label{sec:ID3}
-%TODO
+ID3, celým názvom Iterative Dichotomiser 3, je klasifikačný algoritmus publikovaný Rossom Quinlanom v roku 1975. ID3 pri vytváraní rozhodovacieho stromu využíva miery Information Gain (IG) a entropiu. V každej iterácií algoritmus vyberie príznak s najvyššou hodnotou IG \cite{hssina2014comparative}. Pseudokód algoritmu je možné vidieť na obrázku \ref{pic:id3Pseudo}.
+
+Entropia je miera v teórií informácií, ktorá vyjadruje neusporiadanosť (neurčitosť) v skupine pozorovaní \cite{EntropyAndGain}. Uvažujme dátovú sadu D s N rôznymi triedami, kde \textit{$p_i$} je pravdepodobnosť výberu triedy \textit{i}. Entropia E tejto dátovej sady je potom daná vzorcom: 
+
+\[E(D) = -\displaystyle\sum\limits_{i=1}^n \rho_i \times \log_2(\rho_i)\]
+
+Information gain je možné charakterizovať ako mieru toho, koľko informácií o triede \textit{i} poskytuje príznak P, pomocou čoho je neho možné určiť poradie príznakov v rozhodovacom strome \cite{EntropyAndGain}. Gain G príznaku P je teda možné určiť ako:
+
+\[G(P) = E(D) - \displaystyle\sum\limits_{j=1}^n \rho_j \times E(j)\]
+
+kde \textit{j} značí triedu príznaku P.
+\\
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=.55\textwidth]{Figures/id3Pseudo.png}
+    \caption{Pseudokód algoritmu ID3 \cite{hssina2014comparative}}
+    \label{pic:id3Pseudo}
+\end{figure}
+
 \subsection{Algoritmus D4.5}
 \label{sec:D45}
 %TODO
@@ -128,7 +180,10 @@
 
 \section{Reinforcement learning}
 \label{sec:ReinforcemenLearningOverview}
-%TODO
+%TODO + markovove cosi?
+
+\subsection{Proximal Policy Optimization}
+\label{sec:PPO}
 
 % ------------------------------------------------------
 
@@ -661,7 +716,16 @@ private void CheckEyeSight()
 
 Korutina teda periodicky spúšťa v definovanom intervale metódu CheckEyeSight(). Tento prístup je výhodný z hľadiska výkonu, nakoľko pri testovaní sa ukázalo, že nie je nutné aktualizovať videnie agenta pri každom vykonaní hernej slučky. 
 
-Metóda CheckEyeSight teda získa všetky kolidery v definovanom rádiuse. Nakoľko jediný objekt obsahujúci definovanú masku vrstvy je hráčska postava, je možné priamo vziať prvý prvok v poli koliderov, ak toto pole nie je prázdne a považovať ho za hráčsku postavu. Ak by agenti boli naprogramovaní na reakcie medzi sebou, prípadne na špecifické objekty v scéne, stačilo by pridať masky týchto objektov do členskej premennej targetMask v editore, či pomocou binárnych operátorov v kóde a poľom preiterovať. Nakoľko sú ale kolidery získané v celom rozsahu kružnice, je následne získaný normalizovaný smer k hráčskej postave a overené, čí vyhovuje nastavenému kruhovému výseku. Ak je táto podmienka splnená, vykoná sa RayCast, ktorý overí, či je medzi agentom a hráčom priama viditeľnosť. Ak je splnená aj táto podmienka, je možné do rozhodovacieho procesu zaviesť informáciu, o tom, že bol spozorovaný hráč. 
+Metóda CheckEyeSight teda získa všetky kolidery v definovanom rádiuse. Nakoľko jediný objekt obsahujúci definovanú masku vrstvy je hráčska postava, je možné priamo vziať prvý prvok v poli koliderov, ak toto pole nie je prázdne a považovať ho za hráčsku postavu. Ak by agenti boli naprogramovaní na reakcie medzi sebou, prípadne na špecifické objekty v scéne, stačilo by pridať masky týchto objektov do členskej premennej targetMask v editore, či pomocou binárnych operátorov v kóde a poľom preiterovať. Nakoľko sú ale kolidery získané v celom rozsahu kružnice, je následne získaný normalizovaný smer k hráčskej postave a overené, čí vyhovuje nastavenému kruhovému výseku. Ak je táto podmienka splnená, vykoná sa RayCast, ktorý overí, či je medzi agentom a hráčom priama viditeľnosť. Ak je splnená aj táto podmienka, je možné do rozhodovacieho procesu zaviesť informáciu, o tom, že bol spozorovaný hráč.  
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=.65\textwidth]{Figures/fov.png}
+    \caption{Zorné pole NPC agenta ovládaného rozhodovacím stromom}
+    \label{pic:FovDecision}
+\end{figure}
+
+Vizualizáciu zorného poľa NPC agenta využitú na ladenie je možné vidieť na obrázku \ref{pic:FovDecision}. Tá je realizovaná pomocou tzv. Custom Editoru pre triedu EyeSight, ktorý je vytvorený v Assembly-CSharp-Editor, teda osobitne od zvyšku tried, ktoré sú využívané v rámci buildu hry. V tomto editore je využitá metóda OnSceneGUI(), v ktorej je implementovaná logika vykreslovania kružnice a kruhového výseku v náhľade scény otvorenej v editore. Vizualizácia sa v reálnom čase aktualizuje v závislosti od nastavených parametrov v triede EyeSight.
 
 \subsection{Rozhodovanie}
 \label{sec:ImplDecisionTrees}
@@ -679,7 +743,7 @@ Metóda CheckEyeSight teda získa všetky kolidery v definovanom rádiuse. Nako�
 %TODO
 
 % Chapter 7
-\chapter{Trénovanie agentov s využitím spätnoväzobného učenia}
+\chapter{Trénovanie agentov s využitím reinforcement learningu}
 \label{sec:Training}
 %TODO + PlayerAutomatic movement, scriptedPath, waypointy, navmesh - len ze uz bol vysvetleny
 \section{Prvý trénovací scenár}

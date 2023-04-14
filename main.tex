@@ -54,11 +54,11 @@
 \CzechAbstract{TODO}
 %TODO - pis po cesky asi
 
-\CzechKeywords{reinforcement learning, rozhodovací stromy, ID3, D4.5, CART, Unity engine, C\#, Python}
+\CzechKeywords{strojové učení, posílené učení, umělá inteligence, rozhodovací stromy, ID3, D4.5, CART, PPO, počítačová hra, Unity engine, C\#, Python}
 
 \EnglishAbstract{TODO}
 
-\EnglishKeywords{reinforcement learning, decision trees, ID3, D4.5, CART, Unity engine, C\#, Python}
+\EnglishKeywords{machine learning, reinforcement learning, artificial intelligence, decision trees, ID3, D4.5, CART, PPO, computer game, Unity engine, C\#, Python}
 
 % ------------------------------------------------------
 
@@ -76,6 +76,7 @@
 \AddAcronym{ID3}{Iterative Dichotomiser 3}
 \AddAcronym{IG}{Information Gain}
 \AddAcronym{NPC}{Non-Playable Character}
+\AddAcronym{PPO}{Proximal Policy Optimization}
 
 % ------------------------------------------------------
 
@@ -121,27 +122,18 @@ Strojové učenie je možné rozdeliť podľa do troch základných kategórií:
 \begin{itemize}
   \item \textbf{Supervised learning} -- trieda algoritmov strojového učenia, ktoré sa zaoberajú vytváraním funkcie, ktorá mapuje vstup na výstup na základe príkladu vstupno-výstupných dvojíc. Funkcia je odvodzovaná na základe trénovacích dát, ktoré obsahujú aj premennú, ktorú je chceme klasifikovať či predikovať. Algoritmy sa teda učia vzorce na základe trénovacích dát a tie sa snažia aplikovať na testovacie dáta, ktoré túto premennú neobsahujú, alebo je algoritmu zatajená a je využitá ta určovanie výkonnosti modelu \cite{mahesh2020machine}. Do tejto skupiny spadajú aj rozhodovacie stromy popísané v nasledujúcej sekcií.
   \item \textbf{Unsupervised learning} -- trieda algoritmov strojového učenia, ktoré majú za úlohu analyzovať vstupné dáta a hľadať v nich skryté vzorce bez ľudského pričinenia. Algoritmy hľadajú podobnosti a odlišnosti podskupín dát na základe ktorých je potom možné dáta zhlukovať do rôznych tried, či redukovať počet vlastností odstránením redundantných. Narozdiel od supervised learningu je ma overenie výkonnosti modelu často nutná externá evaluácia doménovým expertom, keďže nie sú prítomné žiadne premenné, s ktorými by sa dali predikované výsledky porovnať. Táto trieda algoritmov je využívaná v prípadoch, kedy nie je možné alebo by bolo veľmi drahé anotovať veľkú dátovú sadu, keď nevieme, koľko skupín sa v dátach nachádza, prípadne, keď potrebujeme získať základnú predstavu o dátach \cite{Unsupervised}. Táto trieda algoritmov nie je vhodná na aplikáciu v umelej inteligencií v hrách a teda v tomto projekte nie je využívaná.
-  \item \textbf{Reinforcement learning} -- trieda algoritmov strojového učenia v ktorých sa agent učí vykonávať správne rozhodnutia alebo akcie v prostredí v ktorom operuje. Agent nemá explicitne určené, čo je jeho úlohou a učenie teda prebieha pomocou postupného skúšania rôznych akcií za účelom maximalizácie kumulatívnej odmeny \cite{reinforcementLearning}. Agent sa teda vykonaním určitej akcie \textit{A} v danom prostredí dostane do stavu \textit{S}, za čo získa spätnú väzbu vo forme odmeny či trestu \textit{R}, pričom trest je možné chápať ako zápornú odmenu. Na základe opakovania daného postupu potom upravuje svoj rozhodovací proces. Tento postup je znázornený na obrázku \ref{pic:reinfoPic}.
-  
-  \begin{figure}[!htbp]
-    \centering
-    \includegraphics[width=.9\textwidth]{Figures/reinfoGraph.png}
-    \caption{Princíp reinforcement learningu \cite{reinfoGraph}}
-    \label{pic:reinfoPic}
-  \end{figure}
-
-  Algoritmy reinforcement learningu sú vhodné na aplikáciu v robotike, pri spracovaní prirodzeného jazyka, v samo-riadiacich autách apod. Reinforcement learning by mohol do budúcna priniesť zaujímavé výsledky aj na poli AI v počítačových hrách. V minulosti vznikli projekty v rámci ktorých dokázali agenti s využitím algoritmov reinforcement learningu hrať hry ako Go, StartCraft II či Dota 2 \cite{app13042443}. Na ich využitie vo väčšom komerčnom projekte sa však stále ešte čaká. Časť tejto práce sa venuje práve problematike ich nasadenia v 3D hernom prostredí.
+  \item \textbf{Reinforcement learning} -- trieda algoritmov strojového učenia v ktorých sa agent učí vykonávať správne rozhodnutia alebo akcie v prostredí v ktorom operuje. Agent nemá explicitne určené, čo je jeho úlohou a učenie teda prebieha pomocou postupného skúšania rôznych akcií za účelom maximalizácie kumulatívnej odmeny \cite{reinforcementLearning}.
 \end{itemize}
 
 \section{Rozhodovacie stromy}
 \label{sec:DecisionTreesOverview}
 V teórií grafov označuje názov strom súvislý acyklický graf, teda graf, ktorý neobsahuje žiadnu kružnicu. Strom ktorý má jeden vrchol označený ako koreň sa nazýva koreňovým stromom. Zavedením koreňa vzniká orientácia hrán od koreňa cez jeho potomkov až po tzv. listy, čo sú vrcholy, ktoré nemajú žiadnych potomkov \cite{kovavr2012teorie}. 
 
-Rozhodovací strom je teda možné formálne definovať ako koreňový strom, ktorého vnútorné vrcholy reprezentujú test hodnoty určitého príznaku a každý list predstavuje finálne rozhodnutie vykonané po otestovaní všetkých príznakov. Cesty od koreňa k listu predstavujú klasifikačné pravidla \cite{DecTreeTowards}. Príklad rozhodovacieho stromu je možné vidieť na obrázku \ref{pic:decTreeExample}.
+Rozhodovací strom je teda možné formálne definovať ako koreňový strom, ktorého vnútorné vrcholy reprezentujú test hodnoty určitého atribútu a každý list predstavuje finálne rozhodnutie vykonané po otestovaní všetkých atribútov. Cesty od koreňa k listu predstavujú klasifikačné pravidla \cite{DecTreeTowards}. Príklad rozhodovacieho stromu je možné vidieť na obrázku \ref{pic:decTreeExample}.
 
 \begin{figure}[!htbp]
     \centering
-    \includegraphics[width=.8\textwidth]{Figures/strom.png}
+    \includegraphics[width=.7\textwidth]{Figures/strom.png}
     \caption{Príklad rozhodovacieho stromu \cite{DecTreeTowards}}
     \label{pic:decTreeExample}
 \end{figure}
@@ -152,18 +144,10 @@ Existuje množstvo algoritmov pomocou ktorých je možné zostaviť rozhodovací
 
 \subsection{Algoritmus ID3}
 \label{sec:ID3}
-ID3, celým názvom Iterative Dichotomiser 3, je klasifikačný algoritmus publikovaný Rossom Quinlanom v roku 1975. ID3 pri vytváraní rozhodovacieho stromu využíva miery Information Gain (IG) a entropiu. V každej iterácií algoritmus vyberie príznak s najvyššou hodnotou IG \cite{hssina2014comparative}. Pseudokód algoritmu je možné vidieť na obrázku \ref{pic:id3Pseudo}.
+ID3, celým názvom Iterative Dichotomiser 3, je klasifikačný algoritmus publikovaný Rossom Quinlanom v roku 1975. ID3 vytvára rozhodovací strom zo vstupnej dátovej sady na základe miery Information Gain (IG). Nakoľko sa výpočet IG do veľkej miery opiera o pojem Entropia, sú obe tieto miery definované v sekcií \ref{sec:ID3miery}. 
 
-Entropia je miera v teórií informácií, ktorá vyjadruje neusporiadanosť (neurčitosť) v skupine pozorovaní \cite{EntropyAndGain}. Uvažujme dátovú sadu D s N rôznymi triedami, kde \textit{$p_i$} je pravdepodobnosť výberu triedy \textit{i}. Entropia E tejto dátovej sady je potom daná vzorcom: 
+Algoritmus na vstupe dostane dátovú sadu vo forme tabuľky, kde jednotlivé riadky je možné predstaviť si ako objekty a stĺpce reprezentujú atribúty týchto objektov. Jeden z týchto atribútov je označený ako cieľový a zostrojený rozhodovací strom bude na základe hodnôt zvyšných atribútov určovať jeho hodnotu. Algoritmus postupuje po iteráciách a v každej iterácií vyberie ne-cieľový atribút s najvyššou hodnotou IG, z ktorého sa stane koreň aktuálneho pod-stromu. Spojením všetkých takto vzniknutých pod-stromov vzniká celý rozhodovací strom \cite{hssina2014comparative}. Pseudokód algoritmu je možné vidieť na obrázku \ref{pic:id3Pseudo}.
 
-\[E(D) = -\displaystyle\sum\limits_{i=1}^n \rho_i \times \log_2(\rho_i)\]
-
-Information gain je možné charakterizovať ako mieru toho, koľko informácií o triede \textit{i} poskytuje príznak P, pomocou čoho je neho možné určiť poradie príznakov v rozhodovacom strome \cite{EntropyAndGain}. Gain G príznaku P je teda možné určiť ako:
-
-\[G(P) = E(D) - \displaystyle\sum\limits_{j=1}^n \rho_j \times E(j)\]
-
-kde \textit{j} značí triedu príznaku P.
-\\
 \begin{figure}[!htb]
     \centering
     \includegraphics[width=.55\textwidth]{Figures/id3Pseudo.png}
@@ -171,19 +155,61 @@ kde \textit{j} značí triedu príznaku P.
     \label{pic:id3Pseudo}
 \end{figure}
 
+\subsubsection{Miery využívané algoritmom ID3}
+\label{sec:ID3miery}
+Entropia je miera v teórií informácií, ktorá vyjadruje neusporiadanosť (neurčitosť) v skupine pozorovaní \cite{EntropyAndGain}. Uvažujme dátovú sadu D s N rôznymi triedami objektov, kde P(\textit{i}) je pravdepodobnosť výberu triedy \textit{i}. Entropia tejto dátovej sady je potom daná vzorcom: 
+
+\[Entropy(D) = -\displaystyle\sum\limits_{i=1}^n P(i) \times \log_2(P(i))\]
+
+Information gain je možné charakterizovať ako mieru toho, koľko informácií o triede \textit{i} poskytuje atribút A, pomocou čoho je neho možné určiť poradie atribútov v rozhodovacom strome \cite{EntropyAndGain}. Gain atribútu A s N rôznymi triedami objektov je teda možné určiť ako:
+
+\[Gain(A) = Entropy(D) - \displaystyle\sum\limits_{j=1}^n P(j) \times E(D_j)\]
+
+kde \textit{j} reprezentuje triedu atribútu A a $D_j$ značí podmnožinu dátovej sady v ktorej všetky objekty spadajú do triedy \textit{j} podľa atribútu A.
+
 \subsection{Algoritmus D4.5}
 \label{sec:D45}
-%TODO
+Algoritmus D4.5 bol publikovaný v roku 1993 Rossom Quinlanom ako rozšírenie algoritmu ID3 od rovnakého autora. Oba algoritmy sú si koncepčne veľmi podobné. Hlavnou výhodou algoritmu D4.5 oproti algoritmu ID3 je menšia citlivosť na atribúty s veľkým počtom hodnôt a je teda vhodnejší na tento typ vstupnej dátovej sady. Algoritmus D4.5 uprednostňuje pri vytváraní rozhodovacieho stromu atribúty s vyššou hodnotou miery Gain ratio, ktorej výpočet využíva miery Information Gain a Split Info \cite{hssina2014comparative}. Miera IG bola popísaná v predchádzajúcej sekcií v rámci popisu algoritmu ID3, zvyšné miery sú popísané v sekcií \ref{sec:D45miery}.
+
+\subsubsection{Miery využívané algoritmom D4.5}
+\label{sec:D45miery}
+Mieru Gain Ratio je možné chápať ako normalizovanú hodnotu miery Information Gain \cite{hssina2014comparative}. Jej výpočet je daný vzorcom:
+
+\[GainRatio(A) = \frac{Gain(A)}{SplitInfo(A)}\]
+
+Miera Split Info určuje počet vetiev rozhodovacieho stromu, ktoré by vznikli pri rozdelení podľa daného atribútu. Je daná vzorcom:
+
+\[SplitInfo(A) = - \displaystyle\sum\limits_{j=1}^n P(j) \times \log_2(P(j))\]
+
 \subsection{Algoritmus CART}
 \label{sec:CART}
-%TODO
+Algoritmus CART, celým názvom Classification and Regression Tree podobne ako algoritmy ID3 a D4.5 vytvára rozhodovací strom zo vstupnej dátovej sady. Ako napovedá jeho názov je možné ho použiť na úlohy vyžadujúce klasifikáciu aj regresiu. Výstupom tohto algoritmu je vždy binárny rozhodovací strom, teda každý vrchol, ktorý nie je listom má práve dvoch potomkov \cite{CART}. Princíp fungovania algoritmu je opäť veľmi podobný algoritmom ID3 a D4.5. Metrikou použitou pre posúdenie kvality rozdelenia je Gini Index.
+
+Gini index vyjadruje pravdepodobnosť nesprávnej klasifikácie náhodnej inštancie premennej pokiaľ bola táto inštancia náhodne klasifikovaná podľa distribúcie tried v dátovej sade \cite{Gini}. Výpočet je daný vzorcom:
+
+\[Gini(A) = 1 - \displaystyle\sum\limits_{i=1}^n P(i)^2\]
 
 \section{Reinforcement learning}
-\label{sec:ReinforcemenLearningOverview}
-%TODO + markovove cosi?
+\label{sec:ReinfoOverview}
+Ako už bolo spomenuté na začiatku tejto kapitoly, algoritmy strojového učenia spadajúce do triedy reinforcement learningu sa vyznačujú tým, že pracujú s Agentom, ktorý je vložený do určitého prostredia a učenie prebieha na základe spätnej väzby. Agent nemá explicitne určené, čo je jeho cieľom. Po vykonaní určitej akcie \textit{A} v danom prostredí sa Agent dostane do stavu \textit{S}, spolu s čím získa spätnú väzbu vo forme odmeny či trestu \textit{R}, pričom trest je možné chápať ako zápornú odmenu. Na základe opakovania daného postupu potom upravuje svoj rozhodovací proces. Tento postup je znázornený na obrázku \ref{pic:reinfoPic}.
+  
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=.9\textwidth]{Figures/reinfoGraph.png}
+    \caption{Princíp reinforcement learningu \cite{reinfoGraph}}
+    \label{pic:reinfoPic}
+\end{figure}
+
+Algoritmy reinforcement learningu sú vhodné na aplikáciu v robotike, pri spracovaní prirodzeného jazyka, v samo-riadiacich autách apod. Reinforcement learning by mohol do budúcna priniesť zaujímavé výsledky aj na poli AI v počítačových hrách. V minulosti vznikli projekty v rámci ktorých dokázali agenti s využitím algoritmov reinforcement learningu hrať hry ako Go, StartCraft II či Dota 2 \cite{app13042443}. Na ich využitie vo väčšom komerčnom projekte sa však stále ešte čaká. Časť tejto práce sa venuje práve problematike ich nasadenia v 3D hernom prostredí.
+
+V tomto projekte bol ako zástupca triedy algoritmov reinforcement learningu zvolený algoritmus PPO, teda Proximal Policy Optimization, ktorý je bližšie popísaný v nasledujúcej sekcií.
+
+%TODO - Pridaj nad aj pod zmienky o pripadnom dalsom algoritme ak sa podari
 
 \subsection{Proximal Policy Optimization}
 \label{sec:PPO}
+
+Bla bla \cite{PPOPaper}.
 
 % ------------------------------------------------------
 
@@ -198,6 +224,7 @@ kde \textit{j} značí triedu príznaku P.
 \section{Programovacie jazyky}
 \label{sec:langs}
 %TODO + c# + python?
+% to ze v pythone urobene algoritmy aby sa to nemuselo precompilovat apdo
 \section{Nástroj ML-Agents}
 \label{sec:ML-Agents}
 %TODO

@@ -68,15 +68,17 @@
 % ------------------------------------------------------
 
 % Skratky
-\AddAcronym{AI}{Artificial intelligence}
+\AddAcronym{AI}{Artificial Intelligence}
 \AddAcronym{CART}{Classification and Regression Tree}
-\AddAcronym{FOV}{Field of view}
+\AddAcronym{FOV}{Field Of View}
 \AddAcronym{FPS}{Frames Per Second}
 \AddAcronym{GUI}{Graphic User Interface}
 \AddAcronym{ID3}{Iterative Dichotomiser 3}
 \AddAcronym{IG}{Information Gain}
+\AddAcronym{MDP}{Markov Decision Process}
 \AddAcronym{NPC}{Non-Playable Character}
 \AddAcronym{PPO}{Proximal Policy Optimization}
+\AddAcronym{TRPO}{Trust Region Policy Optimization}
 
 % ------------------------------------------------------
 
@@ -185,17 +187,19 @@ Miera Split Info určuje počet vetiev rozhodovacieho stromu, ktoré by vznikli 
 \label{sec:CART}
 Algoritmus CART, celým názvom Classification and Regression Tree podobne ako algoritmy ID3 a D4.5 vytvára rozhodovací strom zo vstupnej dátovej sady. Ako napovedá jeho názov je možné ho použiť na úlohy vyžadujúce klasifikáciu aj regresiu. Výstupom tohto algoritmu je vždy binárny rozhodovací strom, teda každý vrchol, ktorý nie je listom má práve dvoch potomkov \cite{CART}. Princíp fungovania algoritmu je opäť veľmi podobný algoritmom ID3 a D4.5. Metrikou použitou pre posúdenie kvality rozdelenia je Gini Index.
 
-Gini index vyjadruje pravdepodobnosť nesprávnej klasifikácie náhodnej inštancie premennej pokiaľ bola táto inštancia náhodne klasifikovaná podľa distribúcie tried v dátovej sade \cite{Gini}. Výpočet je daný vzorcom:
+Gini index vyjadruje pravdepodobnosť, že náhodne vybraný objekt bude nesprávne klasifikovaný podľa distribúcie tried v dátovej sade. Hodnota Gini indexu sa pohybuje na škále 0--1, kde 0 značí, že všetky objekty patria do jednej triedy alebo v dátovej sade existuje iba jedna trieda, 1 značí, že objekty sú náhodne rozložené medzi triedami a hodnota 0,5 značí rovnomerné rozloženie objektov medzi triedami \cite{Gini}. Výpočet je daný vzorcom:
 
 \[Gini(A) = 1 - \displaystyle\sum\limits_{i=1}^n P(i)^2\]
 
 \section{Reinforcement learning}
 \label{sec:ReinfoOverview}
-Ako už bolo spomenuté na začiatku tejto kapitoly, algoritmy strojového učenia spadajúce do triedy reinforcement learningu sa vyznačujú tým, že pracujú s Agentom, ktorý je vložený do určitého prostredia a učenie prebieha na základe spätnej väzby. Agent nemá explicitne určené, čo je jeho cieľom. Po vykonaní určitej akcie \textit{A} v danom prostredí sa Agent dostane do stavu \textit{S}, spolu s čím získa spätnú väzbu vo forme odmeny či trestu \textit{R}, pričom trest je možné chápať ako zápornú odmenu. Na základe opakovania daného postupu potom upravuje svoj rozhodovací proces. Tento postup je znázornený na obrázku \ref{pic:reinfoPic}.
+Ako už bolo spomenuté na začiatku tejto kapitoly, algoritmy strojového učenia spadajúce do triedy reinforcement learningu sa vyznačujú tým, že pracujú s Agentom, ktorý je vložený do určitého prostredia a učenie prebieha na základe spätnej väzby. Agent nemá explicitne určené, čo je jeho cieľom. 
+
+Formálne je možné proces popísať na základe MDP, ktorý umožňuje matematicky modelovať rozhodovací proces agenta v dynamickom prostredí. Tento model pracuje s pojmami agent, stav, akcia, odmena a policy. Po vykonaní určitej akcie \textit{A} v danom prostredí sa Agent dostane do stavu \textit{S}. Agent dostáva spätnú väzbu vo forme odmeny \textit{R} na základe akcií, ktoré vykoná a stavu, do ktorého sa dostane. Policy určuje optimálnu akciu agenta na základe aktuálneho stavu s cieľom maximalizovať odmenu \cite{Markov}. Zápornú hodnotu odmeny je možné chápať ako trest. Opakovaním daného postupu potom agent upravuje svoj rozhodovací proces. Tento postup je znázornený na obrázku \ref{pic:reinfoPic}.
   
 \begin{figure}[!htbp]
     \centering
-    \includegraphics[width=.9\textwidth]{Figures/reinfoGraph.png}
+    \includegraphics[width=.8\textwidth]{Figures/reinfoGraph.png}
     \caption{Princíp reinforcement learningu \cite{reinfoGraph}}
     \label{pic:reinfoPic}
 \end{figure}
@@ -208,8 +212,33 @@ V tomto projekte bol ako zástupca triedy algoritmov reinforcement learningu zvo
 
 \subsection{Proximal Policy Optimization}
 \label{sec:PPO}
+Proximal Policy Optimization (PPO) je algoritmus reinforcement learningu, ktorý bol publikovaný v roku 2017 vedcami zo spoločnosti OpenAI. Hlavnými výhodami oproti jeho predchodcovi TRPO (Trust Region Policy Optimization) publikovanom v roku 2015 sú jednoduchšia implementácia, vyššia obecnosť a nižší nutný počet trénovacích vzoriek na naučenie cieľovej funkcie podľa empirického pozorovania \cite{PPOPaper}.
 
-Bla bla \cite{PPOPaper}.
+Pri supervised learningu je možné relatívne jednoducho implementovať cost funkciu a pomocou metódy gradient descent dosiahnuť dobrých výsledkov bez nutnosti náročného ladenia hyper-parametrov. Výsledky dosiahnuté pomocou algoritmov reinforcement learningu sú však veľmi citlivé na zmeny týchto parametrov. Algoritmus PPO sa snaží hľadať rovnováhu medzi zložitosťou implementácie, nutným počtom trénovacích vzoriek a práve ladením hyper-parametrov \cite{PPOPaper}.
+
+Algoritmus PPO využíva tzv. policy gradient method \cite{PPOPaper}, čo znamená, že narozdiel napríklad od algoritmov Q-learningu sa agent neučí z uložených predchádzajúcich pokusov ale priamo aktuálne vykonaných akciách v prostredí. Nevýhodou tohto typu algoritmov býva menšia efektivita využitia trénovacích vzoriek, nakoľko vzorky nie sú využité pri učení opakovane, a teda vyššie nároky na ich počet. Ako už však bolo spomenuté. túto nevýhodu sa PPO snaží minimalizovať.  
+
+Algoritmus sa v každom kroku snaží minimalizovať cost funkciu pomocou malých odchýlok od predchádzajúcej policy. Maximálna veľkosť odchýlky je zabezpečená pomocou funkcie clip() v objective funkcií a dá sa ladiť pomocou hyper-parametru \(\varepsilon\) \cite{PPOPaper}. Objective funkcia, ktorá sa typicky nevyskytuje v iných algoritmoch, je nasledovná:
+
+\[L^{CLIP}(\theta) = \hat{E}_t [min(r_t(\theta))\hat{A}_t, clip(r_t(\theta), 1 - \varepsilon, 1 + \varepsilon)\hat{A}_t]\]
+
+kde:
+\begin{itemize}
+  \item \(\theta\) je parameter policy
+  \item \(\hat{E}_t\) označuje empirické očakávanie v priebehu časového kroku
+  \item \(r_t\) je pomer pravdepodobnosti podľa novej a starej policy
+  \item \(\hat{A}_t\) je odhad výhody v čase \textit{t}
+  \item \(\varepsilon\) je hyper-parameter, obecne nadobúda hodnotu v rozsahu 0,1--0,2
+\end{itemize}
+
+Objective funkcia sa teda snaží optimalizovať očakávanie v priebehu časového kroku \(\hat{E}_t\). Hodnota \(\hat{E}_t\) je daná menšou z hodnôt \(r_t(\theta))\hat{A}_t\), čo je normálna policy, a jej variantou obmedzenou hyper-parametrom \(\varepsilon\). Toto obmedzenie zabraňuje veľkým zmenám od predchádzajúcej policy. Priebeh funkcie v závislosti toho, či je odhad výhody kladný alebo záporný je možné vidieť na obrázku \ref{pic:clipping}.
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=.7\textwidth]{Figures/clip.png}
+    \caption{Priebeh objective funkcie pre kladný a záporný odhad výhody \cite{PPOPaper}}
+    \label{pic:clipping}
+\end{figure}
 
 % ------------------------------------------------------
 

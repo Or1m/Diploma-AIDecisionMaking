@@ -76,9 +76,11 @@
 \AddAcronym{ID3}{Iterative Dichotomiser 3}
 \AddAcronym{IG}{Information Gain}
 \AddAcronym{MDP}{Markov Decision Process}
+\AddAcronym{MS}{Microsoft}
 \AddAcronym{NPC}{Non-Playable Character}
 \AddAcronym{PPO}{Proximal Policy Optimization}
 \AddAcronym{TRPO}{Trust Region Policy Optimization}
+\AddAcronym{VR}{Virtual Reality}
 
 % ------------------------------------------------------
 
@@ -246,14 +248,24 @@ Objective funkcia sa teda snaží optimalizovať očakávanie v priebehu časov�
 % Chapter 3
 \chapter{Použité technológie}
 \label{sec:Tech}
-%TODO
+V tejto kapitole sú v stručnosti popísané najdôležitejšie technológie využívané pri tvorbe tohto projektu a motivácia k využitiu daných technológií.
+
 \section{Unity Engine}
 \label{sec:Unity}
-%TODO
+Unity je herný engine určený k tvorbe 2D a 3D interaktívneho obsahu renderovaného v reálnom čase vyvíjaný spoločnosťou Unity Technologies od roku 2005 \cite{Unity}. Engine je vytvorený v programovacom jazyku C++ ale vývoj obsahu prebieha v jazyku C\# či pomocou vizuálneho skriptovacieho nástroja Bolt vo forme rozšírenia od spoločnosti Unity Technologies. V posledných rokoch sa vývoj enginu Unity sústredí primárne na menšie hry a mobilný trh s dôrazom na monetizáciu mobilných hier pomocou mikro-transakcií a analytické nástroje pre vývojárov. Engine samotný však umožňuje tvorbu rôzneho druhu obsahu pre širokú škálu platforiem od herných konzolí cez desktopové operačné systémy až po VR, MS HoloLens, AndroidTV či web vo forme WebGL. Engine Unity je možné využívať zdarma v rámci štúdia či pri malých projektoch, ktorých predaje nepresahujú čiastku \$100K za posledných 12 mesiacov \cite{Unity}.
+
+Engine Unity bol pri tvorbe tohto projektu zvolený z dôvodu predchádzajúcich skúseností, možnosti tvorby v programovacom jazyku C\#, množstvu dostupných materiálov a kvalite dokumentácie, ktorému sa konkurencia hlavne v podobe enginu Unreal nemôže rovnať. Taktiež umožňuje rýchlejšiu tvorbu a prototypovanie ako väčšina konkurenčných nástrojov a rozsah projektu si nevyžadoval špeciálne nástroje a technológie obsiahnuté napríklad v už spomínanom konkurenčnom engine Unreal.
 \section{Programovacie jazyky}
 \label{sec:langs}
-%TODO + c# + python?
-% to ze v pythone urobene algoritmy aby sa to nemuselo precompilovat apdo
+V tomto projekte sú využité dva programovacie jazyky. Hlavným jazykom je jazyk C\#, ktorý je využitý pri tvorbe herného prostredia, ovládaní hráčskej postavy, kamery, agentov, na detekciu interakcie s objektami atď. Druhým využitým jazykom je Python. V tomto jazyku sú naprogramované algoritmy ID4, C4.5 a CART popísané v sekcií \ref{sec:DecisionTreesOverview}. Toto rozdelenie je využité z dvoch dôvodov. Prvým je lepšia podpora knižníc v jazyku Python na spracovanie dátových rámcov. Druhým dôvodom bola snaha oddeliť spracovanie vstupných dát pre algoritmy od hlavnej aplikácie, aby nemusela opakovane prejsť buildom pri úprave či pridaní nového algoritmu. Človek, ktorý dizajnuje/upravuje chovanie NPC teda nemusí mať prístup k projektu ale iba nahradí príslušné textové dokumenty v zložke s buildom hry. Nasledujúce sekcie sú venované krátkemu popisu týchto programovacích jazykov.
+
+\subsection{Programovací jazyk C\#}
+\label{sec:langsCShartp}
+Bla bla \cite{CSharpUnity}. Blah \cite{DotNetBook}.
+
+\subsection{Programovací jazyk Python}
+\label{sec:langsPython}
+
 \section{Nástroj ML-Agents}
 \label{sec:ML-Agents}
 %TODO

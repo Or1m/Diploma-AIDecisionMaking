@@ -69,16 +69,26 @@
 
 % Skratky
 \AddAcronym{AI}{Artificial Intelligence}
+\AddAcronym{API}{Application Programming Interface}
+\AddAcronym{AR}{Augmented Reality}
+\AddAcronym{BC}{Behavioral Cloning}
 \AddAcronym{CART}{Classification and Regression Tree}
+\AddAcronym{CLR}{Common Language Runtime}
 \AddAcronym{FOV}{Field Of View}
 \AddAcronym{FPS}{Frames Per Second}
+\AddAcronym{GAIL}{Generative Adversarial Imitation Learning}
 \AddAcronym{GUI}{Graphic User Interface}
+\AddAcronym{HW}{Hardvér}
 \AddAcronym{ID3}{Iterative Dichotomiser 3}
 \AddAcronym{IG}{Information Gain}
+\AddAcronym{LINQ}{Language Integrated Query}
+\AddAcronym{MA-POCA}{Multi-Agent Posthumous Credit Assignment}
 \AddAcronym{MDP}{Markov Decision Process}
 \AddAcronym{MS}{Microsoft}
 \AddAcronym{NPC}{Non-Playable Character}
 \AddAcronym{PPO}{Proximal Policy Optimization}
+\AddAcronym{SAC}{Soft Actor-Critic}
+\AddAcronym{SQL}{Structured Query Language}
 \AddAcronym{TRPO}{Trust Region Policy Optimization}
 \AddAcronym{VR}{Virtual Reality}
 
@@ -248,31 +258,73 @@ Objective funkcia sa teda snaží optimalizovať očakávanie v priebehu časov�
 % Chapter 3
 \chapter{Použité technológie}
 \label{sec:Tech}
-V tejto kapitole sú v stručnosti popísané najdôležitejšie technológie využívané pri tvorbe tohto projektu a motivácia k využitiu daných technológií.
+V tejto kapitole sú v stručnosti popísané najdôležitejšie technológie využívané pri tvorbe tohto projektu. Čast textu je zameraná aj na popis motivácie, ktorá viedla k využitiu daných technológií, ich výhody, nevýhody, prípadne zvažované alternatívy z hľadiska vhodnosti pre projekt celkovo, či jeho dielčie časti.
 
 \section{Unity Engine}
 \label{sec:Unity}
-Unity je herný engine určený k tvorbe 2D a 3D interaktívneho obsahu renderovaného v reálnom čase vyvíjaný spoločnosťou Unity Technologies od roku 2005 \cite{Unity}. Engine je vytvorený v programovacom jazyku C++ ale vývoj obsahu prebieha v jazyku C\# či pomocou vizuálneho skriptovacieho nástroja Bolt vo forme rozšírenia od spoločnosti Unity Technologies. V posledných rokoch sa vývoj enginu Unity sústredí primárne na menšie hry a mobilný trh s dôrazom na monetizáciu mobilných hier pomocou mikro-transakcií a analytické nástroje pre vývojárov. Engine samotný však umožňuje tvorbu rôzneho druhu obsahu pre širokú škálu platforiem od herných konzolí cez desktopové operačné systémy až po VR, MS HoloLens, AndroidTV či web vo forme WebGL. Engine Unity je možné využívať zdarma v rámci štúdia či pri malých projektoch, ktorých predaje nepresahujú čiastku \$100K za posledných 12 mesiacov \cite{Unity}.
+Unity je herný engine určený k tvorbe 2D a 3D interaktívneho obsahu renderovaného v reálnom čase vyvíjaný spoločnosťou Unity Technologies od roku 2005 \cite{Unity}. Engine je vytvorený v programovacom jazyku C++ ale vývoj obsahu prebieha v jazyku C\# či pomocou vizuálneho skriptovacieho nástroja Bolt vo forme rozšírenia od spoločnosti Unity Technologies. V posledných rokoch sa vývoj enginu Unity sústredí primárne na menšie hry a mobilný trh s dôrazom na monetizáciu mobilných hier pomocou mikro-transakcií a analytické nástroje pre vývojárov. Engine samotný však umožňuje tvorbu rôzneho druhu obsahu pre širokú škálu platforiem od herných konzolí cez desktopové operačné systémy až po VR, MS HoloLens, AndroidTV či web vo forme WebGL \cite{UnityMultiplatform}. Engine Unity je možné využívať zdarma v rámci štúdia či pri malých projektoch, ktorých predaje nepresahujú čiastku \$100K za posledných 12 mesiacov \cite{UnityPersonal}.
 
-Engine Unity bol pri tvorbe tohto projektu zvolený z dôvodu predchádzajúcich skúseností, možnosti tvorby v programovacom jazyku C\#, množstvu dostupných materiálov a kvalite dokumentácie, ktorému sa konkurencia hlavne v podobe enginu Unreal nemôže rovnať. Taktiež umožňuje rýchlejšiu tvorbu a prototypovanie ako väčšina konkurenčných nástrojov a rozsah projektu si nevyžadoval špeciálne nástroje a technológie obsiahnuté napríklad v už spomínanom konkurenčnom engine Unreal.
+Engine Unity bol pri tvorbe tohto projektu zvolený z dôvodu predchádzajúcich skúseností, možnosti tvorby v programovacom jazyku C\#, množstvu dostupných materiálov a kvalite dokumentácie, ktorému sa konkurencia hlavne v podobe enginu Unreal nemôže rovnať. Taktiež umožňuje rýchlejšiu tvorbu a prototypovanie ako väčšina konkurenčných nástrojov a rozsah projektu si nevyžadoval špeciálne nástroje a technológie obsiahnuté napríklad v už spomínanom konkurenčnom engine Unreal. Zároveň sa pomocou projektov ako ML-Agents či Perception čoraz viac stáva vyhľadávanou platformou na poli výskumu a tvorby v oblasti strojového učenia.
+
 \section{Programovacie jazyky}
 \label{sec:langs}
-V tomto projekte sú využité dva programovacie jazyky. Hlavným jazykom je jazyk C\#, ktorý je využitý pri tvorbe herného prostredia, ovládaní hráčskej postavy, kamery, agentov, na detekciu interakcie s objektami atď. Druhým využitým jazykom je Python. V tomto jazyku sú naprogramované algoritmy ID4, C4.5 a CART popísané v sekcií \ref{sec:DecisionTreesOverview}. Toto rozdelenie je využité z dvoch dôvodov. Prvým je lepšia podpora knižníc v jazyku Python na spracovanie dátových rámcov. Druhým dôvodom bola snaha oddeliť spracovanie vstupných dát pre algoritmy od hlavnej aplikácie, aby nemusela opakovane prejsť buildom pri úprave či pridaní nového algoritmu. Človek, ktorý dizajnuje/upravuje chovanie NPC teda nemusí mať prístup k projektu ale iba nahradí príslušné textové dokumenty v zložke s buildom hry. Nasledujúce sekcie sú venované krátkemu popisu týchto programovacích jazykov.
+V tomto projekte sú využité dva programovacie jazyky. Hlavným jazykom je jazyk C\#, ktorý je využitý pri ovládaní hráčskej postavy, kamery, agentov, na detekciu interakcie s objektami atď. Druhým využitým jazykom je Python. V tomto jazyku sú naprogramované algoritmy ID4, C4.5 a CART popísané v sekcií \ref{sec:DecisionTreesOverview}. Toto rozdelenie je využité z dvoch dôvodov. Prvým je lepšia podpora knižníc v jazyku Python na spracovanie dátových rámcov. Druhým dôvodom bola snaha oddeliť spracovanie vstupných dát pre algoritmy od hlavnej aplikácie, aby nemusela opakovane prejsť buildom pri úprave či pridaní nového algoritmu. Človek, ktorý dizajnuje/upravuje chovanie NPC teda nemusí mať prístup k projektu ale iba nahradí príslušné textové dokumenty v zložke s buildom hry. Nasledujúce sekcie sú venované krátkemu popisu týchto programovacích jazykov.
 
 \subsection{Programovací jazyk C\#}
 \label{sec:langsCShartp}
-Bla bla \cite{CSharpUnity}. Blah \cite{DotNetBook}.
+C\# je univerzálny vysoko-úrovňový multi-paradigmatický staticky typovaný programovací jazyk predstavený v roku 2000 spoločnosťou Microsoft. Od svojho predstavenia je jazyk C\# neustále vyvíjaný a obohacovaný o nové vlastnosti. Primárnou paradigmou C\# je objektovo orientované programovanie, poskytuje však množstvo vlastností funkcionálnych jazykov ako LISP či Haskell. Základná syntax C\# je podobná jazykom C, C++ a Java, tá je však obohatená o unikátne prvky ako LINQ, ktoré by sa dali pripodobniť skôr jazyku SQL. C\# má integrovanú automatickú správu pamäte vykonávanú tzv. Garbage Collectorom \cite{DotNetBook}. Výhodou tejto správy je, že nekladie nároky na vývojára, aby pamäť ručne uvoľňoval, robí to však z jazyka C\# nie úplne najvhodnejšiu voľbu na určité výkonovo-orientované aplikácie, ktorými sú aj moderné vysoko-rozpočtové herné tituly. Toto je však možné sčasti obísť metódami ako object pooling apod.
+
+Spolu s jazykom C\# je nutné spomenúť aj .NET ekosystém, vyvíjaný priamo firmou MS, ktorý poskytuje runtime prostredie CLR a širokú škálu knižníc a možností umožňujúcich pohodlné nasadenie C\# v rôznych webových, desktopových či cloudových aplikáciách \cite{DotNetBook}.
+
+Engine Unity využíva jazyk C\# vo verzií 9.0 a kompilátor Roslyn. Nie všetky vlastnosti jazyka C\# 9.0, ako napríklad kovariantné návratové typy sú však v Unity dostupné \cite{compiler}. To isté platí aj o knižniciach .NET ekosystému. Spoločnosť Unity odporúča využívať špecifikáciu .NET Standard, kde je zaručená najväčšia kompatibilita s rôznymi platformami. Podporovaná verzia .NET Standard potom závisí od verzie samotného enginu \cite{netUnity}. 
+
+Jedným z posledných aspektov jazyka C\#, ktorý sa silne neodporúča využívať sú operátory ?? a ? u potomkov triedy UnityEngine.Object, nakoľko tieto operátory nie je možné overridnuť narozdieľ od operátorov == a !=. Dôvodom je, že po pokuse odstrániť tieto objekty z pamäte, sa síce odstránia v natívnom C++ kóde ale v jazyku C\# sa o to musí postarať Garbage Collector. V čase medzi odstránením objektu z natívneho C++ kódu a manažovaného C\# kódu teda operátory ??, ? a ==, != vracajú nekonzistentné výsledky \cite{netUnity}.
 
 \subsection{Programovací jazyk Python}
 \label{sec:langsPython}
+Python je podobne ako jazyk C\# vysoko-úrovňový multi-paradigmatický jazyk, ktorý je však dynamicky typovaný a čisto interpretovaný. Predstavený bol už v roku 1991, dodnes sa však teší veľkej popularite a podlieha kontinuálnemu vývoju. V dobe písania tejto práce má najaktuálnejšia verzia označenie 3.11. 
+
+Vďaka strmej učebnej krivke a úspornej syntaxi je často využívaný vo výučbe programovania či prototypovaní. Okrem toho je ale veľmi využívaný na poli strojového učenia a dátovej analýzy, vo webovom vývoji či automatizácií rôznych úkonov. Obsahuje širokú škálu knižníc ako pandas, numpy, matplotlib či frameworkov ako Django, Flask apod., ktoré sú vytvárané komunitou či rôznymi spoločnosťami a robia z jazyka python tak obľúbený nástroj. Nevýhodou jazyka je jeho výkon. Nakoľko interpretácia python kódu je relatívne pomalá operácia, nemôže z tohto hľadiska dobre konkurovať iným kompilovaným jazykom. Túto nevýhodu dokáže sčasti prekonať jeho dobrá integrácia s jazykmi C a C++, čo umožňuje vytvárať knižnice priamo v týchto jazykoch a tým optimalizovať kritické časti kódu či náročné matematické operácie \cite{pajton}.
 
 \section{Nástroj ML-Agents}
 \label{sec:ML-Agents}
-%TODO
+ML-Agents \cite{mlagents} je open-source projekt, ktorý umožňuje využiť prostredie vytvorené v engine Unity na tréning agentov pomocou algoritmov reinforcement learningu ako napríklad už spomínaný algoritmus PPO ale aj SAC, MA-POCA a ďalších. Okrem reinforcement learningu obsahuje ML-Agents aj podporu pre algoritmy imitation learningu ako BC a GAIL, neuro-evolúciu apod. ML-Agents poskytuje implementáciu týchto algoritmov založenú na python frameworku PyTorch spolu s klient-server komunikáciou medzi enginom Unity a týmito algoritmami v pythone. Taktiež ponúka možnosť importu vytrénovaných modelov naspäť do enginu, kde je možné na základe nich nechať agentov vykonávať rozhodnutia, či dotrénovať určitý model na základe nových situácií. Týchto agentov je možné trénovať či testovať v kontexte 2D, 3D či VR/AR hier a vedeckých simulácií. Okrem ovládania NPC je nástroj ML-Agents možné využiť aj v oblastiach ako automatizované testovanie apod.
+
+Nástroj ML-Agents poskytuje množstvo komponentov na strane Unity napísaných v jazyku C\#, ktoré je možné využiť či ďalej rozšíriť, aby vyhovovali potrebám takmer všetkých scenárov. Okrem toho však ML-Agents poskytuje Python API na tvorbu či úpravu trénovacích algoritmov, u ktorých je samozrejme možné rôzne ladiť hyper-parametre pomocou štruktúrovaných textových súborov. Vizualizácia učebnej krivky agentov realizovaná pomocou nástroja TensorBoard.
+
+ML-Agents je neustále vyvíjaný a jeho posledná stabilná verzia 20 vyšla v novembri 2022. Medzi najväčšie limitácie patrí podpora buildu iba pre platformy Windows, Mac a Linux. Tá je však obmedzená iba na scripting backend Mono a teda nie je teda možné využiť IL2CPP \cite{mlagentsGit}. Oba tieto problémy sa však týkajú primárne väčších komerčných projektov a v tomto prípade neboli prekážkou. 
+
+Hlavným dôvodom pre výber tohto nástroja bola jeho otvorenosť a priama podpora enginu Unity z hľadiska poskytovaných komponentov, medziprocesovej komunikácie a následného nasadenia modelu. V prípade zvolenia iného riešenia či vlastnej implementácie by všetky tieto aspekty museli byť vytvorené na mieru a bez kontinuálnej podpory, ktorú nástroju ML-Agents poskytuje komunity, by takéto riešenie rýchlo prestalo byť funkčné v novších verziách enginu Unity.
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=1\textwidth]{Figures/mlagents.png}
+    \caption{Titulný obrázok ML-Agents \cite{mlagentsWeb}}
+    \label{pic:mlagetnsLogo}
+\end{figure}
+
 \subsection{Inštalácia prvotné nastavenie}
 \label{sec:MLAgentsInstall}
-%TODO
-%...?
+Pre využitie nástroja ML-Agents je nutné mať nainštalovaný program Python. Podporovaná verzia jazyka sa líši v závislosti od konkrétneho releasu ML-Agents. V tomto projekte bol využitý ML-Agents v release 19 a Python vo verzií 3.9.13. Nakoľko je nástroj ML-Agents citlivý na verzie rôznych knižníc bolo pre účel tohto projektu vytvorené uzavreté prostredie pomocou open-source distribúcie Anaconda. Tento krok však nie je povinný. Následne je nutné stiahnuť konkrétny release korešpondujúci s verziou enginu Unity z platformy GitHub, rozbaliť archív a v príkazovom riadku sa navigovať do rozbalenej zložky.
+
+Následne je nutné pomocou manažéra python balíkov pip spustiť nasledujúce príkazy:
+\begin{itemize}
+  \item pip3 install torch -f https://download.pytorch.org/whl/torch\_stable.html
+  \item pip3 install -e ./ml-agents-envs
+  \item pip3 install -e ./ml-agents
+\end{itemize}
+
+Prvý spomenutý príkaz sa pokúsi stiahnuť poslednú stabilnú distribúciu knižnice PyTorch. Tento krok však môže zlyhať z rôznych problémov s kompatibilitou HW a v takomto prípade je nutné knižnicu stiahnuť ručne pomocou konfigurátoru na stránke PyTorch alebo v archíve distribúcií. Nakoľko sa verzie knižnice líšia aj v závislosti od modelovej rady procesoru nie je možné jednoducho vytvorený Anaconda environment jednoducho distribuovať medzi zariadeniami. Zvyšné dva príkazy nainštalujú knižnice ml-agents-envs a ml-agents z lokálneho úložiska. Pri inštalácií záleží na poradí.
+
+Následne je nutné vytvoriť projekt v engine Unity alebo použiť už existujúci. Podporované verzie pre konkrétny release ML-Agents je opäť možné nájsť v dokumentácií. Tento projekt je postavený na verzií 2022.2.0b12. Do vytvoreného projektu je nutné pridať C\# rozšírenie ML-Agents. 
+
+Postup je nasledovný: 
+\begin{itemize}
+  \item V ponuke \textit{Window > Package Manager} kliknúť na ikonu + a z drop-down menu vybrať vybrať voľbu \textit{Add Package from disk}
+  \item V následnom dialógu vybrať súbor \textit{package.json} v zložke \textit{com.unity.ml-agents}, ktorá sa nachádza medzi súbormi stiahnutými z GitHubu
+\end{itemize}
+
+Rozšírenie ML-Agents je možné stiahnuť aj z online repozitára ale v tomto prípade nie je zaručená úplná kompatibilita, takže tento spôsob nie je odporúčaný. Po úspešnom nainštalovaní je možné začať používať komponenty v engine Unity a vytvoriť herné prostredie na trénovanie agentov či agentov samotných. Tento proces je bližšie popísaný v nasledujúcich kapitolách. Pre otestovanie funkčnosti či kvôli lepšiemu pochopeniu fungovania jednotlivých aspektov je ešte možné zo stiahnutých súborov importovať do projektu vzorové testovacie scenáre. V projektoch, ktoré využívajú inú ako tzv. build-in render pipeline je však k dosiahnutiu plnej funkčnosti týchto príkladov skonvertovať shadery. Tento postup závisí od využívanej pipeliny a niektoré shadery vytvorené na mieru musia byť upravené či nahradené úplne. Popis tohto postupu je však nad rámec tohto projektu.
 
 % Chapter 4
 \chapter{Hra a herné prostredie}

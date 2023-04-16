@@ -960,7 +960,7 @@ private Vector3 GetRandomDestinationNearby(NPCBody body)
     randomDirection += body.InitialPosition;
     
     Vector3 finalPosition = Vector3.zero;
-    if (NavMesh.SamplePosition(randomDirection, out NavMeshHit hit, walkRadius, 1))
+    if (NavMesh.SamplePosition(randomDirection, out var hit, walkRadius, 1))
         finalPosition = hit.position;
 
     return finalPosition;
@@ -969,9 +969,10 @@ private Vector3 GetRandomDestinationNearby(NPCBody body)
 
 \section{NPC agenti ovládaní reinforcement learningom}
 \label{sec:AgentsWithBrain}
-%TODO
-\subsection{Prehľad špecifických komponentov}
-\label{secAgentsWithBrainComponentOverview} 
+Tento typ agenta sa štruktúrou komponentov značne líši od predchádzajúceho. Nad rámec spoločných komponent spomínaných v sekcií \ref{sec:AgentsBoth}, komponenty Rigidbody a komponenty obstarávajúcej trénovanie (či jej varianty určenej na vykonávanie rozhodovania a akcií mimo tréningového scenáru) tento typ agenta obsahuje tri komponenty poskytované nástrojom ML-Agents. Konkrétne ide o Decision Requester, Behavior Parameters a Ray Perception Sensor 3D.
+
+Decision Requester slúži na %TODO
+
 % ray perceptron sensor + rigidbody + mlskeleton + behaviour params + decision requester
 
 \subsection{Rozhodovanie}

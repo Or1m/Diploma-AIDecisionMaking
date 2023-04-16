@@ -74,6 +74,7 @@
 \AddAcronym{BC}{Behavioral Cloning}
 \AddAcronym{CART}{Classification and Regression Tree}
 \AddAcronym{CLR}{Common Language Runtime}
+\AddAcronym{CSV}{Comma-Separated Values}
 \AddAcronym{FOV}{Field Of View}
 \AddAcronym{FPS}{Frames Per Second}
 \AddAcronym{GAIL}{Generative Adversarial Imitation Learning}
@@ -303,7 +304,7 @@ Hlavným dôvodom pre výber tohto nástroja bola jeho otvorenosť a priama podp
     \label{pic:mlagetnsLogo}
 \end{figure}
 
-\subsection{Inštalácia prvotné nastavenie}
+\subsection{Inštalácia a prvotné nastavenie}
 \label{sec:MLAgentsInstall}
 Pre využitie nástroja ML-Agents je nutné mať nainštalovaný program Python. Podporovaná verzia jazyka sa líši v závislosti od konkrétneho releasu ML-Agents. V tomto projekte bol využitý ML-Agents v release 19 a Python vo verzií 3.9.13. Nakoľko je nástroj ML-Agents citlivý na verzie rôznych knižníc bolo pre účel tohto projektu vytvorené uzavreté prostredie pomocou open-source distribúcie Anaconda. Tento krok však nie je povinný. Následne je nutné stiahnuť konkrétny release korešpondujúci s verziou enginu Unity z platformy GitHub, rozbaliť archív a v príkazovom riadku sa navigovať do rozbalenej zložky.
 
@@ -581,7 +582,7 @@ Táto kapitola popisuje akým spôsobom bolo k jednotlivým problémom pristupov
 \label{sec:PlayerComponentOverview} 
 Samotný objekt hráčskej postavy sa skladá z dvoch objektov, ktoré sa zvyknú nazývať kontroler a model. 
 
-Model reprezentuje vizuálnu stránku objektu, teda postavu samotnú a ďalšie menšie objekty, ktoré má táto postava na sebe. Pri zložitejších modeloch ide o hierarchiu čítajúcu stovky objektov reprezentujúce jednotlivé časti tela. V tomto prípade je využitý tzv. low poly model, ktorý je vcelku a pod sebou má iba zopár vizuálnych doplnkov, ktoré postava nosí okolo pása. Low poly modely hráčskej postavy, nepriateľov a prostredia pochádzajú z balíka POLYGON Pirates od spoločnosti Synty Studios zakúpeného v oficiálnom online obchode enginu Unity \cite{Synty}.
+Model reprezentuje vizuálnu stránku objektu, teda postavu samotnú a ďalšie menšie objekty, ktoré má táto postava na sebe. Pri zložitejších modeloch ide o hierarchiu čítajúcu stovky objektov reprezentujúce jednotlivé časti tela. V tomto prípade je využitý tzv. low poly model, ktorý je vcelku a pod sebou má iba zopár vizuálnych doplnkov, ktoré postava nosí okolo pása. Low poly modely hráčskej postavy, nepriateľov a prostredia pochádzajú z balíka POLYGON Pirates \cite{Synty} od spoločnosti Synty Studios zakúpeného v oficiálnom online obchode enginu Unity.
 
 Kontroler, na druhú stranu obsahuje sadu komponentov, ktoré obstarávajú pohyb, gravitáciu, kolíziu a ľubovoľnú ďalšiu funkcionalitu. Dôležitou súčasťou kontrolera je práve Unity komponenta Character Controller. Na nej je možné nastaviť rôzne parametre definujúce tvar kolíznej kapsule, maximálnu výšku kroku, ktorý môže postava vykonať bez nutnosti vyskočiť apod. Túto kapsulu s kompletnou vizuálnou stránkou hráča je možné vidieť na obrázku \ref{pic:PlayerController}.
 
@@ -851,7 +852,120 @@ Vizualizáciu zorného poľa NPC agenta využitú na ladenie je možné vidieť 
 
 \subsection{Rozhodovanie}
 \label{sec:ImplDecisionTrees}
-%TODO brain, state machina a vsetko okolo
+Rozhodovanie NPC ovládaných rozhodovacím stromom má na starosti abstraktná komponenta NPCBrain. Tá na začiatku svojho životného cyklu zavolá statickú metódu DecisionTree.FromFile(), ktorej parameter je cesta k súboru, z ktorého sa má zostrojiť výsledný strom. Táto cesta je v tvare \textit{<Application.dataPath>/Data/<typ NPC>\_<algoritmus>.txt}. Typ NPC je určený overridnutím príslušnej premennej v potomkovi, algoritmus je potom daný nastavením v objekte ConfigManager. Metóda DecisionTree.FromFile() rekurzívne spracuje obsah súboru a vytvorí z neho inštanciu triedy DecisionTree, ktorá sa dá prechádzať jednotlivými NPC agentmi za behu aplikácie.
+
+Dáta, z ktorých je vytváraný rozhodovací strom sú priamym výstupom algoritmov popísaných v sekcií \ref{sec:DecisionTreesOverview}. Pôvodný tvar dát využitých pri rozhodovaní NPC Skeleton je možné vidieť v tabuľke \ref{tab:skeletonActionRaw}.
+
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|}
+    \hline
+        \textbf{SeesEnemy} & \textbf{HearEnemy} & \textbf{EnemyInRange} & \textbf{HP} & \textbf{Action} \\ \hline
+        FALSE & FALSE & FALSE & 100 & Idle \\ 
+        FALSE & FALSE & TRUE & 50 & Idle \\ 
+        FALSE & FALSE & FALSE & 25 & Idle \\ 
+        FALSE & FALSE & TRUE & 65 & Idle \\ 
+        TRUE & FALSE & TRUE & 40 & Attacking \\ 
+        TRUE & TRUE & TRUE & 80 & Attacking \\ 
+        TRUE & FALSE & TRUE & 10 & Attacking \\ 
+        TRUE & TRUE & TRUE & 85 & Attacking \\ 
+        FALSE & TRUE & TRUE & 60 & Seeking \\ 
+        FALSE & TRUE & FALSE & 90 & Seeking \\ 
+        FALSE & TRUE & TRUE & 15 & Seeking \\ 
+        FALSE & TRUE & FALSE & 70 & Seeking \\ 
+        TRUE & TRUE & FALSE & 20 & Chasing \\ 
+        TRUE & FALSE & FALSE & 30 & Chasing \\ 
+        TRUE & TRUE & FALSE & 35 & Chasing \\ 
+        TRUE & FALSE & FALSE & 55 & Chasing \\ 
+        TRUE & TRUE & TRUE & 0 & Dead \\ 
+        FALSE & FALSE & FALSE & 0 & Dead \\ 
+        TRUE & TRUE & FALSE & 0 & Dead \\ 
+        FALSE & FALSE & TRUE & 0 & Dead \\ \hline
+    \end{tabular}
+    \caption{Vstupné dáta využité na zostavenie rozhodovacieho stromu pre NPC Skeleton}
+    \label{tab:skeletonActionRaw}
+\end{table}
+
+Vstupné dáta zobrazené v tabuľke \ref{tab:skeletonActionRaw} boli ručne vytvorené a vyexportované do súboru vo formáte CSV. Tento súbor je potom načítaný python skriptom pomocou knižnice Pandas a pomocou jedného z implementovaných algoritmov ID3, D4.5 a CART tento vstup vyhodnotí a výsledok uloží do súboru v štruktúrovanom formáte, ktorý následne načíta a spracuje komponenta NPCBrain v engine Unity. Úpravou týchto dát a opätovným spustením algoritmu je teda možné priamo upraviť chovanie NPC v hre bez nutnosti zásahu do projektu, jeho buildenie apod. Jednotlivé akcie, ktoré NPC môže vykonávať samozrejme však stále musia byť zadefinované na úrovni C\# kódu a musí pre ne byť naprogramovaná príslušná logika. Keď sú však tieto podmienky splnené je možné dynamicky pridávať a odoberať určitému archetypu NPC akcie, ktoré môže vykonávať a upravovať podmienky za ktorých daná akcia bude vykonaná. 
+
+Po spracovaní dát v engine Unity pomocou spomínanej metódy DecisionTree.FromFile() a vytvorení inštancie triedy DecisionTree je inicializovaná state machine, ktorej je aj nastavený východzí stav a následne je spustená korutina, ktorá v definovanom intervale periodicky prechádza rozhodovací strom a na základe hodnoty aktuálneho zdravia, vzdialenosti od hráča či zmyslov NPC agenta vyhodnotí rozhodnutie podľa listu v rozhodovacom strome na ktorom daný priechod skončí. Toto rozhodnutie je potom propagované do metódy ChangeState(), ktorá sa pokúsi zmeniť aktuálny vnútorný stav state machine. Na aktuálnom stave vždy periodicky prebieha volanie metódy OnUpdate(), ktoré umožňuje vykonávať logiku daného stavu ako naháňanie hráča, útočenie apod. Popisovanú logiku z pohľadu komponenty NPCBrain je možné vidieť vo výpise \ref{src:Brain}.
+
+\vspace{8pt}
+\begin{lstlisting}[label=src:Brain,caption={Aktualizácia stavu NPC agenta}]
+IEnumerator UpdateStateCoroutine()
+{
+    float delay = 0.2f;
+    var wait = new WaitForSeconds(delay);
+
+    while (isActive)
+    {
+        var currentAction = tree.Traverse(body);
+        StateMachine.ChangeState(currentAction, body);
+
+        yield return wait;
+    }
+}
+private void Update()
+{
+    StateMachine.OnUpdate(body);
+}
+\end{lstlisting}
+
+Samotné prechádzanie rozhodovacieho stromu realizované pomocou metódy Traverse() je realizované rekurzívne, čo demonštruje výpis \ref{src:Traverse}.
+
+\vspace{8pt}
+\begin{lstlisting}[label=src:Traverse,caption={Prechádzanie rozhodovacím stromom}]
+public ENPCAction Traverse(NPCBody body)
+{
+    var result = TraverseInternal(root, body);
+    
+    if (!Enum.TryParse(result, out ENPCAction action))
+        throw new ArgumentOutOfRangeException(nameof(action), "Failed to convert value to enum");
+
+    return action;
+}
+private string TraverseInternal(DecisionTreeNode node, NPCBody body)
+{
+    var next = node.Visit(body);
+    if (next == null)
+        return node.Value;
+
+    return TraverseInternal(next, body);
+}
+\end{lstlisting}
+
+Vo výpise je možné vidieť, že s jednotlivými stavmi je pracované ako s enumom. Toto riešenie bolo zvolené ako forma zapuzdrenia aby nemohlo omylom dôjsť k volaniu verejnej metódy na jednom zo stavov z iného miesta ako zo state machine samotnej, nakoľko nie je stav nikdy vystavený mimo nej. V metóde Visit() potom prebieha vyhodnotenie podmienok daného vrcholu, na základe ktorých sa vráti ľavý (negatívny) alebo pravý (pozitívny) potomok daného vrcholu. Ide teda o orientovaný binárny strom. V prípade, že metóda vráti null, znamená to, že vrchol ne tomto mieste neobsahuje žiadneho potomka a rekurzia sa ukončí. Grafickú reprezentáciu stromu prechádzaného NPC Skeleton je možné vidieť na obrázku \ref{pic:treeGraph}.
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=1\textwidth]{Figures/Trees.png}
+    \caption{Grafická reprezentácia rozhodovacieho stromu NPC Skeleton}
+    \label{pic:treeGraph}
+\end{figure}
+
+Abstraktná trieda StateMachine v sebe obsahuje slovník, ktorý mapuje enum danej akcie na konkrétnu inštanciu, ktorá implementuje rozhranie INPCAction. Toto rozhranie definuje metódy OnStart(), OnUpdate() a OnTransit(), ktoré musí každá akcia implementovať. Okrem týchto metód definuje aj verejnú vlastnosť EnumValue, ktorá uchováva reprezentáciu akcie vo forme enumu. Konkrétny potomok abstraktnej triedy StateMachine pri inicializácií naplní slovník novo-vytvorenými inštanciami konkrétnych akcií. Metódy ChangeState sa teda pokúsi získať túto inštanciu zo slovníka pomocou vstupného parametra vo forme enumu a pokiaľ je táto získaná inštancia odlišná od aktuálne aktívneho stavu zavolá na aktuálnom stave metódu OnTransit(), nastaví ako aktuálny stav ten získaný zo slovníku a na ňom zavolá metódu OnStart(). Následne prebieha periodické volanie metódy OnUpdate() na tomto stave a teda sa aktívne vykonáva logika tohto stavu. Logika jednotlivých stavov je nasledovná:
+\begin{itemize}
+  \item \textbf{IdleAction} -- v metóde OnStart() nastaví destináciu NPC na náhodne vygenerovaný bod v okolí. V metóde OnUpdate() zisťuje, či agent destináciu navštívil, ak áno, nechá agenta čakať na tomto mieste po náhodne vygenerovanú dobu a po uplynutí tejto doby vygeneruje novú destináciu ku ktorej sa začne agent s použitím NavMeshu pohybovať. Generovanie náhodnej destinácie v okolí pomocou NavMeshu je demonštrované vo výpise \ref{src:GenRandom}
+  \item \textbf{SeekAction} -- v metóde OnStart() získa zo zmyslu Hearing poslednú známu pozíciu cieľa a nastaví NPC agentovi destináciu tohto bodu. V metóde OnUpdate() periodicky kontroluje, či sa posledná známa pozícia nezmenila a ak áno aktualizuje agentovi destináciu
+  \item \textbf{ChaseAction} -- funguje podobne ako SeekAction lenže so zmyslom EyeSight
+  \item \textbf{AttackAction} -- v metóde Update(), po uplynutí tzv. cooldownu získa cieľ zo zmyslu EyeSight (predpokladá sa, že na útočenie je nutné cieľ vidieť), z tohto cieľa sa pokúsi získať komponentu IDamageable \ref{src:IDamageable} a pokiaľ cieľ túto komponentu obsahuje, zavolá sa metóda DealDamage() s hodnotou poškodenia, ktoré sa má cieľu udeliť
+  \item \textbf{DeadAction} -- v metóde OnStart() deaktivuje NPC
+\end{itemize}
+
+\vspace{8pt}
+\begin{lstlisting}[label=src:GenRandom,caption={Generovanie náhodného bodu v okolí NPC pomocou NavMeshu}]
+private Vector3 GetRandomDestinationNearby(NPCBody body)
+{
+    Vector3 randomDirection = Random.insideUnitSphere * walkRadius;
+    randomDirection += body.InitialPosition;
+    
+    Vector3 finalPosition = Vector3.zero;
+    if (NavMesh.SamplePosition(randomDirection, out NavMeshHit hit, walkRadius, 1))
+        finalPosition = hit.position;
+
+    return finalPosition;
+}
+\end{lstlisting}
 
 \section{NPC agenti ovládaní reinforcement learningom}
 \label{sec:AgentsWithBrain}
@@ -890,36 +1004,6 @@ Vizualizáciu zorného poľa NPC agenta využitú na ladenie je možné vidieť 
 % Chapter 9
 \chapter{Záver}
 \label{sec:Conclusion}
-
-%Template/Testing
-\begin{figure}[!htbp]
-	\centering
-	\includegraphics[width=.5\textwidth]{Figures/FEI_CZ.pdf}
-	\caption{Test}
-	\label{pic:Teeest}
-\end{figure}
-
-\begin{center}
-\begin{tabular}{ c c c }
- cell1 & cell2 & cell3 \\ 
- cell4 & cell5 & cell6 \\  
- cell7 & cell8 & cell9    
-\end{tabular}
-\end{center}
-
-\begin{lstlisting}[label=src:Test,caption={Test}]
-// Hello World! program
-namespace HelloWorld
-{
-    class Hello {         
-        static void Main(string[] args)
-        {
-            System.Console.WriteLine("Hello World!");
-        }
-    }
-}
-\end{lstlisting}
-%End of Template/Testing
 
 % Prílohy
 %\appendix

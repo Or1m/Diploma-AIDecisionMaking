@@ -8,6 +8,7 @@
 \usepackage[csharp]{diplomalst} % sádzanie
 \usepackage{svg}
 \usepackage{amsmath}
+\usepackage{pgfplots}
 %\usepackage[python]{diplomalst}
 %\usepackage{tcolorbox} % oramovanie
 
@@ -15,6 +16,18 @@
 
 % Definované vlastné metódy, triedy a príslušné farby
 % viz bakalarka
+
+\pgfplotsset{compat=1.18}
+
+\definecolor{tb_color_1}{RGB}{0,167,247}
+\definecolor{tb_color_2}{RGB}{245,124,0}
+
+\pgfplotscreateplotcyclelist{tb} {
+    semithick,tb_color_1\\%
+    semithick,tb_color_2\\%
+}
+
+\lstdefinelanguage{yml} { }
 
 % ------------------------------------------------------
 
@@ -92,6 +105,7 @@
 \AddAcronym{SQL}{Structured Query Language}
 \AddAcronym{TRPO}{Trust Region Policy Optimization}
 \AddAcronym{VR}{Virtual Reality}
+\AddAcronym{YAML}{YAML Ain't Markup Language}
 
 % ------------------------------------------------------
 
@@ -159,7 +173,7 @@ Existuje množstvo algoritmov pomocou ktorých je možné zostaviť rozhodovací
 
 \subsection{Algoritmus ID3}
 \label{sec:ID3}
-ID3, celým názvom Iterative Dichotomiser 3, je klasifikačný algoritmus publikovaný Rossom Quinlanom v roku 1975. ID3 vytvára rozhodovací strom zo vstupnej dátovej sady na základe miery Information Gain (IG). Nakoľko sa výpočet IG do veľkej miery opiera o pojem Entropia, sú obe tieto miery definované v sekcií \ref{sec:ID3miery}. 
+ID3, celým názvom Iterative Dichotomiser 3, je klasifikačný algoritmus publikovaný Rossom Quinlanom v roku 1975. ID3 vytvára rozhodovací strom zo vstupnej dátovej sady na základe miery Information Gain (IG). Nakoľko sa výpočet IG do veľkej miery opiera o pojem Entropia, sú obe tieto miery definované v nasledujúcom texte. 
 
 Algoritmus na vstupe dostane dátovú sadu vo forme tabuľky, kde jednotlivé riadky je možné predstaviť si ako objekty a stĺpce reprezentujú atribúty týchto objektov. Jeden z týchto atribútov je označený ako cieľový a zostrojený rozhodovací strom bude na základe hodnôt zvyšných atribútov určovať jeho hodnotu. Algoritmus postupuje po iteráciách a v každej iterácií vyberie ne-cieľový atribút s najvyššou hodnotou IG, z ktorého sa stane koreň aktuálneho pod-stromu. Spojením všetkých takto vzniknutých pod-stromov vzniká celý rozhodovací strom \cite{hssina2014comparative}. Pseudokód algoritmu je možné vidieť na obrázku \ref{pic:id3Pseudo}.
 
@@ -170,7 +184,7 @@ Algoritmus na vstupe dostane dátovú sadu vo forme tabuľky, kde jednotlivé ri
     \label{pic:id3Pseudo}
 \end{figure}
 
-\subsubsection{Miery využívané algoritmom ID3}
+\subsubsection*{Miery využívané algoritmom ID3}
 \label{sec:ID3miery}
 Entropia je miera v teórií informácií, ktorá vyjadruje neusporiadanosť (neurčitosť) v skupine pozorovaní \cite{EntropyAndGain}. Uvažujme dátovú sadu D s N rôznymi triedami objektov, kde P(\textit{i}) je pravdepodobnosť výberu triedy \textit{i}. Entropia tejto dátovej sady je potom daná vzorcom: 
 
@@ -184,9 +198,9 @@ kde \textit{j} reprezentuje triedu atribútu A a $D_j$ značí podmnožinu dáto
 
 \subsection{Algoritmus D4.5}
 \label{sec:D45}
-Algoritmus D4.5 bol publikovaný v roku 1993 Rossom Quinlanom ako rozšírenie algoritmu ID3 od rovnakého autora. Oba algoritmy sú si koncepčne veľmi podobné. Hlavnou výhodou algoritmu D4.5 oproti algoritmu ID3 je menšia citlivosť na atribúty s veľkým počtom hodnôt a je teda vhodnejší na tento typ vstupnej dátovej sady. Algoritmus D4.5 uprednostňuje pri vytváraní rozhodovacieho stromu atribúty s vyššou hodnotou miery Gain ratio, ktorej výpočet využíva miery Information Gain a Split Info \cite{hssina2014comparative}. Miera IG bola popísaná v predchádzajúcej sekcií v rámci popisu algoritmu ID3, zvyšné miery sú popísané v sekcií \ref{sec:D45miery}.
+Algoritmus D4.5 bol publikovaný v roku 1993 Rossom Quinlanom ako rozšírenie algoritmu ID3 od rovnakého autora. Oba algoritmy sú si koncepčne veľmi podobné. Hlavnou výhodou algoritmu D4.5 oproti algoritmu ID3 je menšia citlivosť na atribúty s veľkým počtom hodnôt a je teda vhodnejší na tento typ vstupnej dátovej sady. Algoritmus D4.5 uprednostňuje pri vytváraní rozhodovacieho stromu atribúty s vyššou hodnotou miery Gain ratio, ktorej výpočet využíva miery Information Gain a Split Info \cite{hssina2014comparative}. Miera IG bola popísaná v predchádzajúcej sekcií v rámci popisu algoritmu ID3, zvyšné miery sú popísané v nasledujúcich odstavcoch.
 
-\subsubsection{Miery využívané algoritmom D4.5}
+\subsubsection*{Miery využívané algoritmom D4.5}
 \label{sec:D45miery}
 Mieru Gain Ratio je možné chápať ako normalizovanú hodnotu miery Information Gain \cite{hssina2014comparative}. Jej výpočet je daný vzorcom:
 
@@ -979,7 +993,7 @@ Druhou využitou komponentou nástroja ML-Agents je komponenta Ray Perception Se
 \begin{figure}[!htbp]
     \centering
     \includegraphics[width=1\textwidth]{Figures/rayperceptron.png}
-    \caption{Vizualizáciu zraku NPC agenta Skeleton pomocou komponenty Ray Perception Sensor 3D}
+    \caption{Zorné pole NPC agenta ovládaného reinforcement learningom}
     \label{pic:rayPercept}
 \end{figure}
 
@@ -990,20 +1004,209 @@ NPC agentom Skeleton bola taktiež na mieru vytvorená komponenta MLSkeleton. T�
 % Chapter 7
 \chapter{Trénovanie agentov s využitím reinforcement learningu}
 \label{sec:Training}
-%TODO + PlayerAutomatic movement, scriptedPath, waypointy, navmesh - len ze uz bol vysvetleny
-% trenovacie scenare a grafy z treningu
-\section{Prvý trénovací scenár}
+Táto kapitola si kladie za cieľ popísať proces trénovania agentov využívajúcich reinforcement learning. Pre toto trénovanie bola vytvorená špeciálna scéna, ktorá obsahuje 9 trénovacích plôch, čo umožňuje paralelizovať trénovací proces. Zároveň museli byť vyvinuté mechanizmy, ktoré umožnili automatizované trénovanie bez nutnosti opakovaného priechodu scenárom riadeným ľudským hráčom, ktorý by ani nebol schopný prechádzať viaceré scenáre naraz. Jednotlivé tréningové scenáre postupne navyšovali nároky na trénovaného agenta, nie vždy však bolo kvôli vykonaným zmenám možné využiť model z predchádzajúceho scenáru, ktorý by sa iba dotrénoval. V nasledujúcich sekciách sú uvedené najvýznamnejšie tréningové scenáre, ich špecifiká, vzniknuté problémy a riešenia spolu s výsledkami daného scenáru v podobe kumulatívnej odmeny agenta.
+
+
+Trénovanie samotné prebieha pomocou príkazu \textit{mlagents-learn}, ktorý je nutné spustiť z príkazového riadku pred samotným spustením scény v engine Unity. Tento príkaz vytvorí python proces, ktorý dokáže komunikovať s vytvoreným prostredím, z ktorého získava trénovacie dáta pre trénovanie reinforcement learning modelu, teda optimalizuje policy za účelom maximalizácie odmeny. Príkazu \textit{mlagents-learn} je možné nastaviť rôzne parametre ako napríklad cestu k YAML súboru obsahujúcemu nastavené hodnoty hyper-parametrov, identifikátor tréningu (nemôžu sa opakovať bez použitia prepínaču \textit{--force}) či natrénovaný model z ktorého bude aktuálny model vychádzať. Voliteľne je možné nastaviť cestu k prostrediu, pokiaľ je na trénovanie využitý build a nie scéna spustená v rámci editoru \cite{mlagentLearn}.
+
+\section{Prvý tréningový scenár}
 \label{sec:FirstScenario}
-%TODO
-%... 
+Prvý tréningový scenár, ktorý je možné vidieť na obrázku \ref{pic:firstScenario} bol veľmi jednoduchý a spočíval v tom, že agent bol spolu so svojim cieľom uzavretý v malom prostredí. Narazenie agenta do okolitých stien vyústilo v nastaveniu odmeny na hodnotu -1 a ukončeniu trénovacej epizódy. Naopak, pokiaľ sa agent dostal na dosah svojho cieľa tréningová epizóda bola ukončená s odmenou 1. Agent aj cieľ (hráčska postava) boli na začiatku epizódy umiestnení na náhodne lokácie v rámci uzavretého priestoru a hráčska postava bola nehybná. 
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=.75\textwidth]{Figures/scenar1.png}
+    \caption{Náhľad prvého tréningového scenáru}
+    \label{pic:firstScenario}
+\end{figure}
+
+Agent v tomto tréningovom scenári nemal k dispozícií žiadnu percepciu. Vektor pozorovaní bol obsahoval 6 desatinných čísel, prvé 3 udávali lokálnu pozíciu agenta a druhé 3 lokálnu pozíciu hráčskej postavy. Tieto pozorovania boli agentovi predkladané v override metódy CollectObservations() pomocou dvoch volaní metódy AddObservation() preťaženej na Vector3, čo je známa štruktúra, ktorá v engine Unity reprezentuje 3 desatinné čísla teda pozíciu na osiach X, Y a Z. Vektor akcií agenta sa skladal z 2 kontinuálnych hodnôt, ktoré boli reprezentované ako pohyb na osiach X a Z v override metódy OnActionReceived(). Agent samozrejme nemal kontext vektoru akcií ani vektoru pozorovaní a musel sa ho naučiť metódou pokus-omyl.
+Tento trénovací scenár slúžil primárne na zoznámenie sa s nástrojom ML-Agents. Ukázalo sa však, že prednastavené hyper-parametre trénovacieho algoritmu PPO boli zvolené veľmi nevhodne a agent sa nebol schopný po určitej dobe zlepšovať ani keď mal k dispozícií všetky potrebné informácie. Postupným ladením týchto parametrov za pomoci rôznych dostupných informačných zdrojov sa podarilo učenie maximálne zefektívniť. Nastavené parametre, ktoré je možné vidieť vo výpise \ref{src:params} sa ukázali byť dostatočné aj v nasledujúcich tréningových scenároch a teda nebolo potrebné ich meniť.
+
+\vspace{8pt}
+\begin{lstlisting}[language=yml,label=src:params,caption={Hyper-parametre PPO modelu využité pri tréninug NPC agenta Skeleton}]
+behaviors:
+  Skeleton_Agent:
+    trainer_type: ppo
+    hyperparameters:
+      batch_size: 128
+      buffer_size: 2048
+      learning_rate: 0.0003
+      beta: 0.01
+      epsilon: 0.2
+      lambd: 0.95
+      num_epoch: 3
+      learning_rate_schedule: linear
+    network_settings:
+      normalize: false
+      hidden_units: 256
+      num_layers: 2
+      vis_encode_type: simple
+    reward_signals:
+      extrinsic:
+        gamma: 0.99
+        strength: 1.0
+    keep_checkpoints: 5
+    max_steps: 2000000
+    time_horizon: 64
+    summary_freq: 60000
+\end{lstlisting}
+
+Graf kumulatívnej odmeny agenta pri pri použití hyper-parametrov z výpisu \ref{src:params} je zobrazený na obrázku \ref{plt:firstScenario}. Na tomto grafe je možné vidieť, že zhruba po \(1,2 \times 10^5\) krokoch sa agent bezchybne naučil nájsť svoj cieľ a prakticky všetky ďalšie tréningové epizódy končili úspechom.
+
+%\vspace{8pt}
+\begin{figure}[!htbp]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[cycle list name=tb, 
+%                     grid=both,
+%                     grid style={solid,gray!30!white},
+                     ymajorgrids=true,
+                     grid style=dashed,
+                     ymax=1.0, %xmax=1.3*10^5,
+                     axis lines=middle,
+                     xlabel={Počet krokov},
+                     ylabel={Kumulatívna odmena},
+                     y tick label style={/pgf/number format/.cd, fixed, fixed zerofill, precision=2, /tikz/.cd},
+                     x label style={at={(axis description cs:0.5,-0.12)},anchor=north},
+                     y label style={at={(axis description cs:-0.16,.5)},rotate=90,anchor=south},]
+          \addplot table [x=Step, y=Value, col sep=comma] {Data/SkeletonAgentBrain1_Skeleton_Agent.csv};
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Graf kumulatívnej odmeny v závislosti na počte krokov v prvom tréningovom scenári}
+    \label{plt:firstScenario}
+\end{figure}
+
+\section{Druhý tréningový scenár}
+\label{sec:SecondScenario}
+V druhom scenári bola rozšírená po ktorej sa agent môže pohybovať. Ďalej bola odstránená stena a pohyb agenta bol obmedzený vzdialenosťou od počiatočného bodu, ktorý sa nachádzal v strede trénovacej plochy. Na začiatku epizódy majú agent aj hráčska postava vždy fixne danú pozíciu. Hráčska postava sa automaticky pohybovala z jednej strany tréningovej plochy na druhú po určených bodoch. Výber nasledujúceho bodu však prebiehal náhodne. Pre tento účel boli vytvorené dve komponenty: PlayerAutomaticMovement a ScriptedPath. Prvá spomenutá bola pridaná na hráčsku postavu spolu so spomínanou komponentou NavMeshAgent. Na tréningovej ploche bol teda vytvorený NavMesh, ktorý bol veľmi jednoduchý nakoľko tréningová plocha bola rovná a bez prekážok. Komponenta PlayerAutomaticMovement teda zabezpečovala, že keď sa hráčska postava po NavMeshi priblíži k cieľovému bodu je náhodne vybraný ďalší bod v ceste. Tento nasledujúci bod bol vždy braný z komponenty ScriptedPath, ktorá bola vytvorená na prázdnom objekte v scéne a jej podradenými objektami boli práve ručne umiestnené body na tréningovej ploche. Tieto body boli nazvané ako WayPointVariant a boli organizované do tzv. WayPointov z dôvodu, aby sa nasledujúci bod vždy vybral ako varianta najbližšieho WayPointu na ceste k cieľu, nie ľubovoľnom. Tento tréningový scenár je možné vidieť na obrázku \ref{pic:secondScenario}.
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=.8\textwidth]{Figures/scenar2.png}
+    \caption{Náhľad druhého tréningového scenáru}
+    \label{pic:secondScenario}
+\end{figure}
+
+Na obrázku \ref{pic:secondScenario} je možné si všimnúť jednotlivé body, z ktorých hráčska postava vyberá nasledujúci a objekt Finish v podobe zeleného Collideru, ktorý pri strete s hráčskou postavou ukončí epizódu neúspechom pre agenta. Zmena nastala aj v prípade odmeňovania agenta, kedy za úspešnú epizódu bol pridaný (nie nastavený) 1 bod odmeny a za neúspešnú epizódu bol 1 bod odmeny odobratý. Zvyšné parametre ako vektor akcií či pozorovaní agenta ostali nezmenené. Vývoj kumulatívnej odmeny pre tento scenár je možné vidieť v grafe \ref{plt:secondScenario}. Pri systéme odmeňovania -1, +1 však tento graf znázorňuje úspešnosť okolo 40\%. Navyšovanie počtu krokov viedlo iba k stagnácií modelu.
+
+%\vspace{8pt}
+\begin{figure}[!htbp]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[cycle list name=tb, 
+%                     grid=both,
+%                     grid style={solid,gray!30!white},
+                     ymajorgrids=true,
+                     grid style=dashed,
+                     ymax=40.0, xmax=3*10^5,
+                     axis lines=middle,
+                     xlabel={Počet krokov},
+                     ylabel={Kumulatívna odmena},
+                     y tick label style={/pgf/number format/.cd, fixed, fixed zerofill, precision=2, /tikz/.cd},
+                     x label style={at={(axis description cs:0.5,-0.12)},anchor=north},
+                     y label style={at={(axis description cs:-0.19,.5)},rotate=90,anchor=south},]
+          \addplot table [x=Step, y=Value, col sep=comma] {Data/SkeletonAgentBrain3_Skeleton_Agent.csv};
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Graf kumulatívnej odmeny v závislosti na počte krokov v druhom tréningovom scenári}
+    \label{plt:secondScenario}
+\end{figure}
+
+\section{Tretí tréningový scenár}
+\label{sec:ThirdScenario}
+Nakoľko výsledky predchádzajúceho scenáru boli slušné ale nie úplne dostačujúce, v treťom scenári bol upravený systém odmeňovania. Agent za úspešný stret so svojim cieľom dostal 100 bodov odmeny a za neúspešnú epizódu (keď sa hráčska postava dostala do cieľa alebo agent vyšiel mimo stanovenú trénovaciu plochu) dostal penalizáciu v podobe 10 bodov. Zároveň mu bola kontinuálne udeľovaná malá penalizácia, čo ho malo ešte viac podnietiť k riskantnému chovaniu v snahe dohnať svoj cieľ v čo najkratšom čase. 
+
+Agent s takto upraveným systémom odmien však stále nedosahoval kýžených výsledkov. Tie dosiahla až zmena vektoru pozorovaní z pôvodných 6 desatinných čísel (2x Vector3), reprezentujúcich pozíciu agenta a cieľa, na 3 desatinné čísla (1x Vector3), ktoré reprezentujú relatívnu pozíciu cieľa voči agentovi. Výpočet tejto relatívnej pozície je možné vidieť vo výpise \ref{src:GetRelativePosition}.
+
+\vspace{8pt}
+\begin{lstlisting}[label=src:GetRelativePosition,caption={Získavanie reltívnej pozície cieľa voči agentovi}]
+public static Vector3 GetRelativePosition(Transform origin, Vector3 position)
+{
+    Vector3 distance = position - origin.position;
+    Vector3 relativePosition = Vector3.zero;
+    relativePosition.x = Vector3.Dot(distance, origin.right.normalized);
+    relativePosition.y = Vector3.Dot(distance, origin.up.normalized);
+    relativePosition.z = Vector3.Dot(distance, origin.forward.normalized);
+    return relativePosition;
+}
+\end{lstlisting}
+
+Kumulatívnu odmenu po týchto zmenách je možné vidieť v grafe \ref{plt:thirdcenario}.
+
+%\vspace{8pt}
+\begin{figure}[!htbp]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[cycle list name=tb, 
+%                     grid=both,
+%                     grid style={solid,gray!30!white},
+                     ymajorgrids=true,
+                     grid style=dashed,
+                     ymax=90.0, %xmax=3*10^5,
+                     axis lines=middle,
+                     xlabel={Počet krokov},
+                     ylabel={Kumulatívna odmena},
+                     y tick label style={/pgf/number format/.cd, fixed, fixed zerofill, precision=2, /tikz/.cd},
+                     x label style={at={(axis description cs:0.5,-0.12)},anchor=north},
+                     y label style={at={(axis description cs:-0.19,.5)},rotate=90,anchor=south},]
+          \addplot table [x=Step, y=Value, col sep=comma] {Data/SkeletonAgentBrain3.5_Skeleton_Agent.csv};
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Graf kumulatívnej odmeny v závislosti na počte krokov v treťom tréningovom scenári}
+    \label{plt:thirdcenario}
+\end{figure}
+
+\section{Štvrtý trénovací scenár}
+\label{sec:FourthScenario}
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=1\textwidth]{Figures/scenar4.png}
+    \caption{Náhľad štvrtého tréningového scenáru}
+    \label{pic:fourthScenario}
+\end{figure}
+
+%\vspace{8pt}
+\begin{figure}[!htbp]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[cycle list name=tb, 
+%                     grid=both,
+%                     grid style={solid,gray!30!white},
+                     ymajorgrids=true,
+                     grid style=dashed,
+                     ymax=90.0, %xmax=3*10^5,
+                     axis lines=middle,
+                     xlabel={Počet krokov},
+                     ylabel={Kumulatívna odmena},
+                     y tick label style={/pgf/number format/.cd, fixed, fixed zerofill, precision=2, /tikz/.cd},
+                     x label style={at={(axis description cs:0.5,-0.12)},anchor=north},
+                     y label style={at={(axis description cs:-0.16,.5)},rotate=90,anchor=south},]
+          \addplot table [x=Step, y=Value, col sep=comma] {Data/SkeletonAgentBrain4.1_Skeleton_Agent.csv};
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Graf kumulatívnej odmeny v závislosti na počte krokov vo štvrtom tréningovom scenári}
+    \label{plt:fourthcenario}
+\end{figure}
+
 \section{N-tý trénovací scenár}
 \label{sec:LastScenario}
 %TODO
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+%TODO + PlayerAutomatic movement, scriptedPath, waypointy, navmesh - len ze uz bol vysvetleny
+% trenovacie scenare a grafy z treningu, parametre
 
 % Chapter 8
 \chapter{Porovnanie prístupov}
 \label{sec:ImplReinforcement learning}
-%TODO
+Táto kapitola je venovaná porovnaniu využitých algoritmov machine learningu.
 \section{Porovnanie z hľadiska výkonu}
 \label{sec:Performance}
 %TODO

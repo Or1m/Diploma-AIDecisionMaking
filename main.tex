@@ -146,7 +146,7 @@
 %TODO
 \chapter{Strojové učenie}
 \label{sec:MachineLearningOverview}
-Strojové učenie (Machine learning) je vedný obor spadajúci do oblasti umelej inteligencie zaoberajúci sa štúdiom algoritmov a štatistických modelov, na základe ktorých dokáže počítačový systém vykonať určitú úlohu bez nutnosti byť na ňu explicitne naprogramovaný \cite{mahesh2020machine}. Algoritmus strojového učenia na základe vstupných (trénovacích) dát vytvorí model, ktorý môže byť následne využitý na detekciu anomálií v dátach, predikciu či automatizované rozhodovanie. Trénovanie modelu sa nazýva aj proces učenia, od čoho je odvodený aj názov oboru. Strojové učenie je dnes často využívané v rôznych oblastiach ako data mining, image processing, počítačové videnie, spracovanie prirodzeného jazyka, prediktívnu analýzu apod.\cite{zhou2021machine}.
+Strojové učenie alebo Machine learning je vedný obor spadajúci do oblasti umelej inteligencie zaoberajúci sa štúdiom algoritmov a štatistických modelov, na základe ktorých dokáže počítačový systém vykonať určitú úlohu bez nutnosti byť na ňu explicitne naprogramovaný \cite{mahesh2020machine}. Algoritmus strojového učenia na základe vstupných (trénovacích) dát vytvorí model, ktorý môže byť následne využitý na detekciu anomálií v dátach, predikciu či automatizované rozhodovanie. Trénovanie modelu sa nazýva aj proces učenia, od čoho je odvodený aj názov oboru. Strojové učenie je dnes často využívané v rôznych oblastiach ako data mining, image processing, počítačové videnie, spracovanie prirodzeného jazyka, prediktívnu analýzu apod.\cite{zhou2021machine}.
 Strojové učenie je možné rozdeliť podľa do troch základných kategórií: %TODO - idealne daj zdroj
 \begin{itemize}
   \item \textbf{Supervised learning} -- trieda algoritmov strojového učenia, ktoré sa zaoberajú vytváraním funkcie, ktorá mapuje vstup na výstup na základe príkladu vstupno-výstupných dvojíc. Funkcia je odvodzovaná na základe trénovacích dát, ktoré obsahujú aj premennú, ktorú je chceme klasifikovať či predikovať. Algoritmy sa teda učia vzorce na základe trénovacích dát a tie sa snažia aplikovať na testovacie dáta, ktoré túto premennú neobsahujú, alebo je algoritmu zatajená a je využitá ta určovanie výkonnosti modelu \cite{mahesh2020machine}. Do tejto skupiny spadajú aj rozhodovacie stromy popísané v nasledujúcej sekcií.
@@ -1159,6 +1159,47 @@ Kumulatívnu odmenu po týchto zmenách je možné vidieť v grafe \ref{plt:thir
 
 \section{Štvrtý trénovací scenár}
 \label{sec:FourthScenario}
+Výsledky tretieho trénovacieho scenára boli uspokojivé a tak sa mohlo prejsť na ďalší krok. Informácia o relatívnej polohe cieľa bola nahradená využitím komponenty Ray Perception Sensor 3D, čím odpadla nutnosť ručne agentovi posielať nejaký druh informácie a vektor pozorovaní je v tomto scenári prázdny. Na základe testovania sa taktiež zistilo, že agent po nahradení kontinuálnych akcií za diskrétne dosahuje lepších výsledkov. Toto však platí len v prípade kedy vektor akcií ma veľkosť 1 a táto jedna akcia môže nadobúdať 7 stavov. V testovacích scenároch kedy boli využité 3 diskrétne akcie agent podával relatívne slabé výsledky pri trénovaní. Mapovanie diskrétnej akcie na pohyb a zmenu rotácie agenta je možné vidieť vo výpise \ref{src:MoveAgent}. V tomto výpise je možné si povšimnúť, že pohyb agenta bol realizovaný fyzikálne pomocou komponenty RigidBody. Tento prístup sa však v ďalších scenároch ukázal ako nevhodný a bol nahradený tradičným prístupom, mapovanie akcie však ostalo zachované.
+
+Po otestovaní funkčnosti tohto riešenia boli pridané do scenára aj prekážky, ktoré agentovi mali aktívne brániť vo výhľade. Tie je možné vidieť na obrázku \ref{pic:fourthScenario}. Jednotlivé prekážky sú na začiatku každej epizódy náhodne rozmiestnené po tréningovej ploche, tak aby nezasahovali do jednotlivých aktérov. Po každom takomto rozmiestnení musel byť aktualizovaný NavMesh, aby automaticky ovládaný hráč nemohol týmito prekážkami prejsť. Náraz agenta do prekážky potom spôsobil ukončenie epizódy s penalizáciou 10 bodov. Ak sa agent priblížil na dosah svojmu cieľu dostal odmenu vo forme 100 bodov a za každý krok dostal malú penalizáciu danú výpočtom \(-1 / MaxSteps\) rovnako ako v treťom tréningovom scenári.
+
+\vspace{8pt}
+\begin{lstlisting}[label=src:MoveAgent,caption={Mapovanie diskrétnej akcie na pohyb a rotáciu agenta}]
+public void MoveAgent(ActionSegment<int> act)
+{
+    var direction = Vector3.zero;
+    var rotation = Vector3.zero;
+
+    var action = act[0];
+
+    switch (action)
+    {
+        case 1:
+            direction = transform.forward * 1f;
+            break;
+        case 2:
+            direction = transform.forward * -1f;
+            break;
+        case 3:
+            rotation = transform.up * 1f;
+            break;
+        case 4:
+            rotation = transform.up * -1f;
+            break;
+        case 5:
+            direction = transform.right * -0.75f;
+            break;
+        case 6:
+            direction = transform.right * 0.75f;
+            break;
+    }
+
+    transform.Rotate(rotateDir, Time.fixedDeltaTime * rotationSpeed);
+    rigidbody.AddForce(dirToGo * body.Speed, ForceMode.VelocityChange);
+}
+\end{lstlisting}
+
+Kumulatívnu odmenu je opäť možné vidieť v grafe \ref{plt:fourthcenario}. Tréningové výsledky agenta síce nedosahujú výsledkov predchádzajúceho scenáru ale agent sa musí navigovať v náročnejšom prostredí, kde náraz znamená koniec epizódy a je odkázaný iba na svoj zrakový vnem. To agenta núti prehľadávať okolie, aby svoj cieľ dostal čo možno najrýchlejšie do svojho zorného poľa. 
 
 \begin{figure}[!htbp]
     \centering
@@ -1167,6 +1208,42 @@ Kumulatívnu odmenu po týchto zmenách je možné vidieť v grafe \ref{plt:thir
     \label{pic:fourthScenario}
 \end{figure}
 
+V tomto scenári mali agent aj hráčska postava veľmi podobnú rýchlosť pohybu. Keď sa však agent rozbehol po svojom cieli a ten náhle zmenil smer svojho pohybu, agent ho vo väčšine prípadov nedokázal dohnať skôr ako sa hráčska postava dostal do cieľa. Začína sa tu objavovať chovanie, ktoré bolo zachované aj vo finálnom modeli. Konkrétne ide o to, že agent sa snaží čo najskôr dostať svoj cieľ do zorného poľa a keď sa mu to podarí volí skôr taktiku vyčkávania ako náhly útok. A to aj za cenu malej penalizácie zvýšený počet vykonaných krokov. 
+
+%\vspace{8pt}
+\begin{figure}[!htbp]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[cycle list name=tb, 
+%                     grid=both,
+%                     grid style={solid,gray!30!white},
+                     ymajorgrids=true,
+                     grid style=dashed,
+                     ymax=90.0, xmax=5*10^5,
+                     axis lines=middle,
+                     xlabel={Počet krokov},
+                     ylabel={Kumulatívna odmena},
+                     y tick label style={/pgf/number format/.cd, fixed, fixed zerofill, precision=2, /tikz/.cd},
+                     x label style={at={(axis description cs:0.5,-0.12)},anchor=north},
+                     y label style={at={(axis description cs:-.19,.5)},rotate=90,anchor=south},]
+          \addplot table [x=Step, y=Value, col sep=comma] {Data/SkeletonAgentBrain4.2_Skeleton_Agent.csv};
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Graf kumulatívnej odmeny v závislosti na počte krokov vo štvrtom tréningovom scenári}
+    \label{plt:fourthcenario}
+\end{figure}
+
+\section{Finálny trénovací scenár}
+\label{sec:FinalScenario}
+Na výsledkoch predchádzajúceho scenáru bolo do veľkej miery možné stavať. Oproti nemu však agent aj prostredie prešlo niekoľkými iteratívnymi zmenami. Agentovi bol pridaný aj druhý zmysel, a síce počutie. Realizácia počutia musela byť mierne odlišná od tej využívanej pri druhom type agenta aj keď komponenta Hearing ostala nezmenená. Agentovi bol navrátený vektor pozorovaní o veľkosti 3 desatinných čísel a jedného príznaku. Prvé 3 čísla označujú relatívnu pozíciu posledného zdroja zvuku voči agentovi. Tá bola získaná štandardným spôsobom z komponenty Hearing. Nakoľko však nie je možné odoslať do rozhodovacieho procesu informáciu v rámci reakcie na event, ale iba v periodickom volaní metódy AddObservation() v rámci override metódy CollectObservations(), je spolu s relatívnou pozíciou k posledného zdroja zvuku odosielaný aj príznak. Ten pomáha agentovi určiť, či ide o reálny zdroj zvuku alebo iba inicializačnú hodnotu v prípade, že žiadny relevantný zvuk v okolí nenastal. 
+
+Vďaka pridaniu nového vnemu sa agent prestal toľko zameriavať na správnu rotáciu k svojmu cieľu a v niektorých trénovacích epizódach sa stávalo, že agent dohnal hráčsku postavu akoby pozadu. Toto by šlo kompenzovať viacerými spôsobmi ako napríklad obmedzením rýchlosti cúvania. Nakoľko však agent ovládaný rozhodovacím stromom môže na hráča útočiť iba keď ho vidí, bola táto podmienka zavedená aj pri tomto type agenta. 
+
+Systém odmeňovania ostal nezmenený nakoľko sa osvedčil. Malá zmena nastala v pohybe agenta, kedy bol fyzikálny systém využitý v predchádzajúcom scenári nahradený za štandardný spôsob pomocou metódy Translate() a to v globálnej súradnicovej sústave. Všetky predchádzajúce scenáre využívali na pohyb lokálnu súradnicovú sústavu, teda relatívnu voči svojmu predkovi v scéne. Tento systém fungoval v poriadku iba do momentu reálneho nasadenia agenta do hernej scény. V nej sa agent totiž stále snažil dostať na súradnice, ktoré sa nachádzali ďaleko od jeho zamýšľaného stanoviska, a síce uprostred oceánu.
+
+Posledný problém, ktorý sa vyskytol pri pokusoch o reálne nasadenie agenta v hernej scéne, spočíval v tom, že agent bol natrénovaný na to, že hráčska postava chodí iba z jedného smeru a tento smer mal dokonale pokrytý. Ak však hráč prichádzal z iného smeru, agent naňho len zriedka adekvátne zareagoval. Do tréningovej plochy, ktorá inak ostala nezmenená od posledného scenára, bola pridaná rotácia prekážok a hráčskej postavy spolu s jej cieľom. Na začiatku každej epizódy sa teda náhodne vygenerovala počiatočná pozícia hráčskej postavy na jednej hrane štvorcovej trénovacej plochy a na opačnú hranu bol umiestnený cieľ pre túto postavu. Agent teda v momente v ktorom zachytil hráčsku postavu jedným zo zmyslov nevedel, z ktorého smeru táto postava ide ani kde sa nachádza jej cieľ.
+
+Vďaka konzistentnosti vo vektore pozorovaní či ustálenému spôsobu pohybu už bolo možné pri jednotlivých iteratívnych zmenách model tzv. dotrénovať a nebolo nutné vždy začínať s úplne novým. Kumulatívna odmena pre tento scenár zobrazená na grafe \ref{plt:finalScenario} teda reprezentuje už len toto dotrénovanie a finálna úspešnosť modelu sa teda pohybuje niekde pri hranici 87 bodov, čo je považované za veľmi dobrú hodnotu vzhľadom na špecifiká trénovacieho scenára. Tieto hodnoty by bolo možné navyšovať napríklad zvyšovaním rýchlosti agenta či znižovaním rýchlosti hráča, prípadne úpravou trénovacej oblasti, aby mal agent viac času na analyzovanie situácie. V úzkych koridoroch by napríklad hráč bez možnosti brániť sa nemal proti takémuto agentovi šancu. Nejaké zmeny v rýchlostiach jednotlivých aktérov boli skutočne ešte dodatočne vykonané ale s dôrazom na vyváženie obtiažnosti hry, nie na zvyšovanie úspešností agenta. 
 %\vspace{8pt}
 \begin{figure}[!htbp]
     \centering
@@ -1182,23 +1259,13 @@ Kumulatívnu odmenu po týchto zmenách je možné vidieť v grafe \ref{plt:thir
                      ylabel={Kumulatívna odmena},
                      y tick label style={/pgf/number format/.cd, fixed, fixed zerofill, precision=2, /tikz/.cd},
                      x label style={at={(axis description cs:0.5,-0.12)},anchor=north},
-                     y label style={at={(axis description cs:-0.16,.5)},rotate=90,anchor=south},]
-          \addplot table [x=Step, y=Value, col sep=comma] {Data/SkeletonAgentBrain4.1_Skeleton_Agent.csv};
+                     y label style={at={(axis description cs:-.19,.5)},rotate=90,anchor=south},]
+          \addplot table [x=Step, y=Value, col sep=comma] {Data/SkeletonAgentBrain6.6_Skeleton_Agent.csv};
         \end{axis}
     \end{tikzpicture}
-    \caption{Graf kumulatívnej odmeny v závislosti na počte krokov vo štvrtom tréningovom scenári}
-    \label{plt:fourthcenario}
+    \caption{Graf kumulatívnej odmeny v závislosti na počte krokov vo finálnom tréningovom scenári}
+    \label{plt:finalScenario}
 \end{figure}
-
-\section{N-tý trénovací scenár}
-\label{sec:LastScenario}
-%TODO
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
 %TODO + PlayerAutomatic movement, scriptedPath, waypointy, navmesh - len ze uz bol vysvetleny
 % trenovacie scenare a grafy z treningu, parametre

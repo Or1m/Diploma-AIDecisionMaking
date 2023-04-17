@@ -971,18 +971,27 @@ private Vector3 GetRandomDestinationNearby(NPCBody body)
 \label{sec:AgentsWithBrain}
 Tento typ agenta sa štruktúrou komponentov značne líši od predchádzajúceho. Nad rámec spoločných komponent spomínaných v sekcií \ref{sec:AgentsBoth}, komponenty Rigidbody a komponenty obstarávajúcej trénovanie (či jej varianty určenej na vykonávanie rozhodovania a akcií mimo tréningového scenáru) tento typ agenta obsahuje tri komponenty poskytované nástrojom ML-Agents. Konkrétne ide o Decision Requester, Behavior Parameters a Ray Perception Sensor 3D.
 
-Decision Requester slúži na %TODO
+Decision Requester je jednoduchá komponenta, ktorá periodicky v definovanom intervale vyžiada rozhodnutie agenta. Túto komponentu je možné vynechať a rozhodnutie agenta vyžadovať ručne pomocou kódu v momente keď nastane nejaká situácia. Táto komponenta umožňuje nastaviť dva parametre. Prvým je už spomínaný interval v ktorom je vyžadované rozhodnutie. Ten sa nastavuje v krokoch zvaných Academy steps v rozsahu 1--20. Druhým parametrom je príznak určujúci, či agent môže vykonávať akciu v krokoch medzi rozhodnutiami. Toto platí v 
+prípade ak hodnota prvého parametru je väčšia ako 1. Okrem toho táto komponenta ponúka aj sadu metód vďaka ktorým je možné zistiť, či daný krok vyžaduje akciu alebo rozhodnutie \cite{decReq}. Táto komponenta bola využitá z dôvodu, že zložitejšia logika vyvolávania rozhodnutia na základe kontextových akcií by mohla zvýhodniť tento tento typ agenta oproti druhému typu, ktorý využíva periodický prechod rozhodovacím stromom taktiež v preddefinovanom intervale. 
 
-% ray perceptron sensor + rigidbody + mlskeleton + behaviour params + decision requester
+Druhou využitou komponentou nástroja ML-Agents je komponenta Ray Perception Sensor 3D. Ako už jej názov napovedá, stará sa o percepciu, teda zmyslové vnímanie okolia. V tomto prípade ide konkrétne o zrak, nakoľko sluch bol riešený spoločne pre oba typy agentov. Táto komponenta nevyužíva kruhový výsek a následný RayCast na overenie či sa cieľ nenachádza za prekážkou ale sériu RayCastov, ktoré svojím smerom a rozostupom kopírujú kruhový výsek využitý a druhého typu agentov. Táto komponenta umožňuje nastaviť dĺžku, rozostup či počet jednotlivých RayCastov ako aj presný bod z ktorého RayCasty začínajú, či uhol ich dopadu. Okrem toho je ešte možné nastaviť vrstvy na ktoré budú reagovať či farebnú indikáciu zásahu cieľa pre účely ladenia. Komponentu boli nastavené dve vrstvy, prvou je vrstva hráča teda cieľa a druhou vrstva prekážok, cez ktoré jednotlivé RayCasty neprejdú. Žiadne ďalšie údaje o týchto vrstvách však agentovi neboli poskytnuté. V niektorých trénovacích scenárov znamenal náraz do prekážky ukončenie tréningovej epizódy a agent sa musel sám naučiť, čo jednotlivé vrstvy predstavujú. V neposlednom rade je možné nastaviť stohovanie jednotlivých RayCastov, teda počet RayCastov, ktoré musia zaznamenať určenú vrstvu, kým je táto informácia propagovaná do rozhodovacieho algoritmu. Toto slúži ako akási forma pamäte, v tomto projekte to však nebolo využité. Komponenta taktiež obsahuje množstvo dostupných metód umožňujúcich rozšíriť jej funkcionalitu, či zareagovať na podnet aj iným spôsobom ako propagáciou tejto informácie do rozhodovacieho algoritmu. Táto komponenta bola zvolená z dôvodu práve spomínanej automatickej komunikácie s rozhodovacím algoritmom, nakoľko poskytuje algoritmu komplexnejší prehľad o situácií ako vlastná implementácia pomocou kruhového výseku, ktorá ale bola viac ako dostatočná pri druhom type NPC. Vizualizáciu zraku NPC agenta Skeleton pomocou tejto komponenty je možné vidieť na obrázku \ref{pic:rayPercept}. 
 
-\subsection{Rozhodovanie}
-\label{sec:ImplReinforcementLearningMLAgent}
-%TODO
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=1\textwidth]{Figures/rayperceptron.png}
+    \caption{Vizualizáciu zraku NPC agenta Skeleton pomocou komponenty Ray Perception Sensor 3D}
+    \label{pic:rayPercept}
+\end{figure}
+
+Poslednou komponentou nástroja ML-Agents je komponenta Behavior Parameters, ktorá je zároveň najdôležitejšia. Je tu možné nastaviť meno modelu, tzv. InferenceDevice apod. Opäť je možné využiť menšiu sadu metód, ktoré táto komponenta poskytuje. Najdôležitejšími nastavenia sú však parametre modelu ako veľkosť vektora pozorovaní ako aj vektora akcií. Zároveň je tu možné určiť, či majú byť akcie dané diskrétnymi alebo kontinuálnymi hodnotami a v prípade diskrétnych hodnôt nastaviť aj ich rozsah. Zároveň komponenta umožňuje vložiť natrénovaný model na základe ktorého sa budú vykonávať rozhodnutia, prípadne je možné na tejto komponente nastaviť prijímanie vstupu z klávesnice, čo je následne možné využiť pri imitation learningu. Tento spôsob učenia bol otestovaný a bola by to rozhodne zaujímavá oblasť ďalšieho skúmania, ktorá by umožnila modelu prekonať počiatočné problémy s prístupom pokus-omyl pri zložitejších úlohách vyžadujúcich zreťazenie určitých úkonov. Využitie imitation learningu bolo však nad rámce rozsahu tejto práce.
+
+NPC agentom Skeleton bola taktiež na mieru vytvorená komponenta MLSkeleton. Táto komponenta dedí z triedy Agent poskytovanej nástrojom ML-Agents a zároveň ide o zjednodušenú variantu komponenty Skeleton\_Agent, ktorá bola taktiež vytvorená na mieru, primárne však na účely trénovania. Komponenta MLSkeleton teda využíva rovnaké princípy, ale nakoľko je určená na vykonávanie akcií nad natrénovaným modelom neobsahuje niektoré vlastnosti využívané pri trénovaní. Nakoľko telo tejto komponenty vzniklo iteratívnymi úpravami založenými na nových poznatkoch získaných z jednotlivých tréningových scenárov bude popis tejto komponenty zlúčený s popisom komponenty Skeleton\_Agent spolu s jednotlivými tréningovými scenármi popísaný v nasledujúcej kapitole.
 
 % Chapter 7
 \chapter{Trénovanie agentov s využitím reinforcement learningu}
 \label{sec:Training}
 %TODO + PlayerAutomatic movement, scriptedPath, waypointy, navmesh - len ze uz bol vysvetleny
+% trenovacie scenare a grafy z treningu
 \section{Prvý trénovací scenár}
 \label{sec:FirstScenario}
 %TODO
@@ -1005,7 +1014,7 @@ Decision Requester slúži na %TODO
 % Chapter 9
 \chapter{Záver}
 \label{sec:Conclusion}
-
+%do buducna animacie, viacere algoritmy, boj, dalsie herne prvky ako reakciu npc na denny cyklus, interakcia s inymi npc apod
 % Prílohy
 %\appendix
 %\input{appendix_mono}

@@ -87,10 +87,13 @@
 \AddAcronym{BC}{Behavioral Cloning}
 \AddAcronym{CART}{Classification and Regression Tree}
 \AddAcronym{CLR}{Common Language Runtime}
+\AddAcronym{CPU}{Central Processing Unit}
 \AddAcronym{CSV}{Comma-Separated Values}
+\AddAcronym{DDR4}{Double Data Rate 4}
 \AddAcronym{FOV}{Field Of View}
 \AddAcronym{FPS}{Frames Per Second}
 \AddAcronym{GAIL}{Generative Adversarial Imitation Learning}
+\AddAcronym{GPU}{Graphics Processing Unit}
 \AddAcronym{GUI}{Graphic User Interface}
 \AddAcronym{HW}{Hardvér}
 \AddAcronym{ID3}{Iterative Dichotomiser 3}
@@ -100,9 +103,12 @@
 \AddAcronym{MDP}{Markov Decision Process}
 \AddAcronym{MS}{Microsoft}
 \AddAcronym{NPC}{Non-Playable Character}
+\AddAcronym{PC}{Personal Computer}
 \AddAcronym{PPO}{Proximal Policy Optimization}
-\AddAcronym{SAC}{Soft Actor-Critic}
+\AddAcronym{PPO}{Proximal Policy Optimization}
+\AddAcronym{RAM}{Random-Access Memory}
 \AddAcronym{SQL}{Structured Query Language}
+\AddAcronym{SSD}{Solid-State Drive}
 \AddAcronym{TRPO}{Trust Region Policy Optimization}
 \AddAcronym{VR}{Virtual Reality}
 \AddAcronym{YAML}{YAML Ain't Markup Language}
@@ -146,11 +152,11 @@
 %TODO
 \chapter{Strojové učenie}
 \label{sec:MachineLearningOverview}
-Strojové učenie alebo Machine learning je vedný obor spadajúci do oblasti umelej inteligencie zaoberajúci sa štúdiom algoritmov a štatistických modelov, na základe ktorých dokáže počítačový systém vykonať určitú úlohu bez nutnosti byť na ňu explicitne naprogramovaný \cite{mahesh2020machine}. Algoritmus strojového učenia na základe vstupných (trénovacích) dát vytvorí model, ktorý môže byť následne využitý na detekciu anomálií v dátach, predikciu či automatizované rozhodovanie. Trénovanie modelu sa nazýva aj proces učenia, od čoho je odvodený aj názov oboru. Strojové učenie je dnes často využívané v rôznych oblastiach ako data mining, image processing, počítačové videnie, spracovanie prirodzeného jazyka, prediktívnu analýzu apod.\cite{zhou2021machine}.
-Strojové učenie je možné rozdeliť podľa do troch základných kategórií: %TODO - idealne daj zdroj
+Strojové učenie alebo machine learning je vedný obor spadajúci do oblasti umelej inteligencie zaoberajúci sa štúdiom algoritmov a štatistických modelov, na základe ktorých dokáže počítačový systém vykonať určitú úlohu bez nutnosti byť na ňu explicitne naprogramovaný \cite{mahesh2020machine}. Algoritmus strojového učenia na základe vstupných trénovacích dát vytvorí model, ktorý môže byť následne využitý na detekciu anomálií v dátach, predikciu či automatizované rozhodovanie. Trénovanie modelu sa nazýva aj proces učenia, od čoho je odvodený aj názov oboru. Strojové učenie je dnes často využívané v rôznych oblastiach ako data mining, image processing, počítačové videnie, spracovanie prirodzeného jazyka, prediktívnu analýzu apod.\cite{zhou2021machine}.
+Strojové učenie je možné rozdeliť do troch základných kategórií: %TODO - idealne daj zdroj
 \begin{itemize}
   \item \textbf{Supervised learning} -- trieda algoritmov strojového učenia, ktoré sa zaoberajú vytváraním funkcie, ktorá mapuje vstup na výstup na základe príkladu vstupno-výstupných dvojíc. Funkcia je odvodzovaná na základe trénovacích dát, ktoré obsahujú aj premennú, ktorú je chceme klasifikovať či predikovať. Algoritmy sa teda učia vzorce na základe trénovacích dát a tie sa snažia aplikovať na testovacie dáta, ktoré túto premennú neobsahujú, alebo je algoritmu zatajená a je využitá ta určovanie výkonnosti modelu \cite{mahesh2020machine}. Do tejto skupiny spadajú aj rozhodovacie stromy popísané v nasledujúcej sekcií.
-  \item \textbf{Unsupervised learning} -- trieda algoritmov strojového učenia, ktoré majú za úlohu analyzovať vstupné dáta a hľadať v nich skryté vzorce bez ľudského pričinenia. Algoritmy hľadajú podobnosti a odlišnosti podskupín dát na základe ktorých je potom možné dáta zhlukovať do rôznych tried, či redukovať počet vlastností odstránením redundantných. Narozdiel od supervised learningu je ma overenie výkonnosti modelu často nutná externá evaluácia doménovým expertom, keďže nie sú prítomné žiadne premenné, s ktorými by sa dali predikované výsledky porovnať. Táto trieda algoritmov je využívaná v prípadoch, kedy nie je možné alebo by bolo veľmi drahé anotovať veľkú dátovú sadu, keď nevieme, koľko skupín sa v dátach nachádza, prípadne, keď potrebujeme získať základnú predstavu o dátach \cite{Unsupervised}. Táto trieda algoritmov nie je vhodná na aplikáciu v umelej inteligencií v hrách a teda v tomto projekte nie je využívaná.
+  \item \textbf{Unsupervised learning} -- trieda algoritmov strojového učenia, ktoré majú za úlohu analyzovať vstupné dáta a hľadať v nich skryté vzorce bez ľudského pričinenia. Algoritmy hľadajú podobnosti a odlišnosti podskupín dát na základe ktorých je potom možné dáta zhlukovať do rôznych tried, či redukovať počet vlastností odstránením redundantných. Narozdiel od supervised learningu je na overenie výkonnosti modelu často nutná externá evaluácia doménovým expertom, keďže nie sú prítomné žiadne premenné s ktorými by sa dali predikované výsledky porovnať. Táto trieda algoritmov je využívaná v prípadoch, kedy nie je možné alebo by bolo veľmi drahé anotovať veľkú dátovú sadu, keď nevieme, koľko skupín sa v dátach nachádza, prípadne, keď potrebujeme získať základnú predstavu o dátach \cite{Unsupervised}. Táto trieda algoritmov nie je vhodná na aplikáciu v umelej inteligencií v hrách a teda v tomto projekte nie je využívaná.
   \item \textbf{Reinforcement learning} -- trieda algoritmov strojového učenia v ktorých sa agent učí vykonávať správne rozhodnutia alebo akcie v prostredí v ktorom operuje. Agent nemá explicitne určené, čo je jeho úlohou a učenie teda prebieha pomocou postupného skúšania rôznych akcií za účelom maximalizácie kumulatívnej odmeny \cite{reinforcementLearning}.
 \end{itemize}
 
@@ -190,7 +196,7 @@ Entropia je miera v teórií informácií, ktorá vyjadruje neusporiadanosť (ne
 
 \[Entropy(D) = -\displaystyle\sum\limits_{i=1}^n P(i) \times \log_2(P(i))\]
 
-Information gain je možné charakterizovať ako mieru toho, koľko informácií o triede \textit{i} poskytuje atribút A, pomocou čoho je neho možné určiť poradie atribútov v rozhodovacom strome \cite{EntropyAndGain}. Gain atribútu A s N rôznymi triedami objektov je teda možné určiť ako:
+Information gain je možné charakterizovať ako mieru toho, koľko informácií o triede \textit{i} poskytuje atribút A, pomocou čoho je možné určiť poradie atribútov v rozhodovacom strome \cite{EntropyAndGain}. Gain atribútu A s N rôznymi triedami objektov je teda možné určiť ako:
 
 \[Gain(A) = Entropy(D) - \displaystyle\sum\limits_{j=1}^n P(j) \times E(D_j)\]
 
@@ -948,14 +954,7 @@ private string TraverseInternal(DecisionTreeNode node, NPCBody body)
 }
 \end{lstlisting}
 
-Vo výpise je možné vidieť, že s jednotlivými stavmi je pracované ako s enumom. Toto riešenie bolo zvolené ako forma zapuzdrenia aby nemohlo omylom dôjsť k volaniu verejnej metódy na jednom zo stavov z iného miesta ako zo state machine samotnej, nakoľko nie je stav nikdy vystavený mimo nej. V metóde Visit() potom prebieha vyhodnotenie podmienok daného vrcholu, na základe ktorých sa vráti ľavý (negatívny) alebo pravý (pozitívny) potomok daného vrcholu. Ide teda o orientovaný binárny strom. V prípade, že metóda vráti null, znamená to, že vrchol ne tomto mieste neobsahuje žiadneho potomka a rekurzia sa ukončí. Grafickú reprezentáciu stromu prechádzaného NPC Skeleton je možné vidieť na obrázku \ref{pic:treeGraph}.
-
-\begin{figure}[!htbp]
-    \centering
-    \includegraphics[width=1\textwidth]{Figures/Trees.png}
-    \caption{Grafická reprezentácia rozhodovacieho stromu NPC Skeleton}
-    \label{pic:treeGraph}
-\end{figure}
+Vo výpise je možné vidieť, že s jednotlivými stavmi je pracované ako s enumom. Toto riešenie bolo zvolené ako forma zapuzdrenia aby nemohlo omylom dôjsť k volaniu verejnej metódy na jednom zo stavov z iného miesta ako zo state machine samotnej, nakoľko nie je stav nikdy vystavený mimo nej. V metóde Visit() potom prebieha vyhodnotenie podmienok daného vrcholu, na základe ktorých sa vráti ľavý (negatívny) alebo pravý (pozitívny) potomok daného vrcholu. Ide teda o orientovaný binárny strom. V prípade, že metóda vráti null, znamená to, že vrchol na tomto mieste neobsahuje žiadneho potomka a rekurzia sa ukončí.
 
 Abstraktná trieda StateMachine v sebe obsahuje slovník, ktorý mapuje enum danej akcie na konkrétnu inštanciu, ktorá implementuje rozhranie INPCAction. Toto rozhranie definuje metódy OnStart(), OnUpdate() a OnTransit(), ktoré musí každá akcia implementovať. Okrem týchto metód definuje aj verejnú vlastnosť EnumValue, ktorá uchováva reprezentáciu akcie vo forme enumu. Konkrétny potomok abstraktnej triedy StateMachine pri inicializácií naplní slovník novo-vytvorenými inštanciami konkrétnych akcií. Metódy ChangeState sa teda pokúsi získať túto inštanciu zo slovníka pomocou vstupného parametra vo forme enumu a pokiaľ je táto získaná inštancia odlišná od aktuálne aktívneho stavu zavolá na aktuálnom stave metódu OnTransit(), nastaví ako aktuálny stav ten získaný zo slovníku a na ňom zavolá metódu OnStart(). Následne prebieha periodické volanie metódy OnUpdate() na tomto stave a teda sa aktívne vykonáva logika tohto stavu. Logika jednotlivých stavov je nasledovná:
 \begin{itemize}
@@ -1273,10 +1272,70 @@ Vďaka konzistentnosti vo vektore pozorovaní či ustálenému spôsobu pohybu u
 % Chapter 8
 \chapter{Porovnanie prístupov}
 \label{sec:ImplReinforcement learning}
-Táto kapitola je venovaná porovnaniu využitých algoritmov machine learningu.
-\section{Porovnanie z hľadiska výkonu}
-\label{sec:Performance}
-%TODO
+Táto kapitola je venovaná porovnaniu využitých algoritmov machine learningu. Jednotlivé algoritmy určené na vytváranie rozhodovacieho stromu boli porovnané z hľadiska času tejto konštrukcie a z hľadiska ich výstupov. U algoritmu PPO ako zástupcu triedy reinforcement learningu boli zaznamenané údaje o dĺžke trénovacej epizódy. Porovnaniu z hľadiska počtu FPS v builde hry bolo podrobené vykonávanie rozhodnutí, či už na základe rozhodovacieho stromu alebo naučeného modelu. V závere kapitoly sú potom uvedené poznatky založené na empirickom pozorovaní rozdielov v chovaní jednotlivých typov NPC a diskusia týchto výsledkov.
+
+Všetky výkonnostné testy boli vykonané na PC zostave, s nasledujúcimi parametrami:
+\begin{itemize}
+    \item \textbf{CPU} -- AMD Ryzen 9 5900X
+    \begin{itemize}
+        \item \textbf{Počet jadier} -- 12
+        \item \textbf{Počet vláken} -- 24
+        \item \textbf{Frekvencia} -- 3,7GHz (4,8GHz)
+    \end{itemize}
+    \item \textbf{GPU} -- GAINWARD GeForce RTX 3070 Ti Phoenix
+    \begin{itemize}
+        \item \textbf{Veľkosť grafickej pamäte} -- 8GB
+        \item \textbf{Frekvencia grafického procesoru} -- 1575MHz (1785MHz)
+    \end{itemize}
+    \item \textbf{RAM} -- Crucial Ballistix Red 32GB (4x8GB)
+    \begin{itemize}
+        \item \textbf{Typ pamäte} -- DDR4
+        \item \textbf{Frekvencia} -- 3600MHz
+        \item \textbf{Časovanie} -- CL16 (16-18-18-38)
+    \end{itemize}
+    \item \textbf{SSD} -- Samsung 980 1TB
+    \begin{itemize}
+        \item \textbf{Rozhranie} -- M.2 (PCIe 3.0 4x NVMe)
+    \end{itemize}
+\end{itemize}
+
+\section{Porovnanie algoritmov ID3, D4.5 a CART}
+\label{sec:id3d45cart}
+Výkon jednotlivých algoritmov pri konštrukcií rozhodovacieho stromu bol porovnaný na dátovej, ktorú je možné vidieť v tabuľke \ref{tab:skeletonActionRaw}. Každý algoritmus bol spustený 1000x aby sa zamedzilo náhodným odchýlkam v testovaní. Výsledky v podobe najkratšieho, priemerného a najdlhšieho času nutného na spracovanie vstupných dát do rozhodovacieho stromu sú uvedené v tabuľke \ref{tab:benchmarks}.
+
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}{|c|ccc|}
+    \hline
+        \textbf{Algoritmus} & \textbf{Minimálny čas [ms]} & \textbf{Priemerný čas [ms]} & \textbf{Maximálny čas [ms]} \\ \hline
+        \textbf{ID3} & 106.989 & 109.559 & 120.763 \\ 
+        \textbf{D4.5} & 39.976 & 41.415 & 75.001 \\ 
+        \textbf{CART} & 21.787 & 23.673 & 37.998 \\ \hline
+    \end{tabular}
+    \caption{Porovnanie času spracovania vstupných dát medzi algoritmami ID3, D4.5 a CART}
+    \label{tab:benchmarks}
+\end{table}
+
+Z tabuľky je možné jasné vidieť, že najlepšie dopadol algoritmus CART, druhý bol algoritmus D4.5 a najhoršie výsledky z hľadiska výkonu dosahoval algoritmus ID3. Na tieto výsledky je však nutné pozerať sa v kontexte výstupov jednotlivých algoritmov. Výstup oboch algoritmov D4.5 a CART bol totožný a naozaj odpovedal najoptimálnejšiemu rozhodovaciemu stromu, aký je možné z danej dátovej sady vytvoriť. Grafickú reprezentáciu tohto výstupu je možné vidieť na obrázku \ref{pic:treeGraph}.
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=1\textwidth]{Figures/Trees.png}
+    \caption{Rozhodovací strom vytvorený algoritmami D4.5 a CART}
+    \label{pic:treeGraph}
+\end{figure}
+
+Rozdiel v čase trvania algoritmu CART v porovnaní s D4.5 je potom daný jedinou využívanou metrikou algoritmu CART pri konštrukcií rozhodovacieho stromu, a síce Gini indexom. V prípade, že by výstup algoritmov ID3 a D4.5 bol totožný, je predpoklad, že časy trvania by boli veľmi podobné a dokonca v prospech algoritmu ID3. Ten však v danej dátovej sade nedokázal nájsť najoptimálnejšie rozdelenie a teda musel vykonať viac krokov. Výsledkom je rozhodovací strom, ktorý má viac vrcholov ako by bolo nutné a zároveň umožňuje vstup do listu Seeking aj v prípade, že zdravie agenta tomu neodpovedá. Aby však vôbec algoritmus ID3 mohol byť na daných dátach porovnaný s ostatnými, musela byť jeho implementácia obohatená o možnosť spracovať kontinuálne hodnoty pomocou operátorov <= a >. Túto schopnosť štandardne algoritmus ID3 nemá a s tým súvisia aj dané problémy. Grafickú reprezentáciu rozhodovacieho stromu vytvorenú týmto algoritmom je možné vidieť na obrázku .
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=1\textwidth]{Figures/idTree.png}
+    \caption{Rozhodovacieho strom vytvorený algoritmom ID3}
+    \label{pic:treeGraphID3}
+\end{figure}
+
+%U algoritmu PPO ako zástupcu triedy reinforcement learningu boli zaznamenané údaje o dĺžke trénovacej epizódy. Porovnaniu z hľadiska počtu FPS v builde hry bolo podrobené vykonávanie rozhodnutí, či už na základe rozhodovacieho stromu alebo naučeného modelu.
+
 \section{Empirické porovnanie}
 \label{sec:Gameplay}
 %TODO

@@ -65,13 +65,13 @@
 
 % Abstrakty
 \CzechAbstract{%SK
-Táto diplomová si kladie za cieľ vytvoriť 3D herné prostredie, v ktorom sa môže voľne pohybovať hráčska postava a NPC agenti, ktorých rozhodovanie je riadené rôznymi algoritmami strojového učenia. Prvá čast tejto práce je venovaná oboznámeniu sa s problematikou strojového učenia, vymedzeniu pojmov a popisu využitých algoritmov. Tieto algoritmy sú rozdelené do dvoch skupín. Prvá spadá do oblasti konštrukcie rozhodovacieho stromu na základe vstupnej dátovej sady a konkrétne ide o algoritmy ID3, D4.5 a CART. Druhá skupina patrí do oblasti reinforcement learningu. Ako zástupca tejto skupiny bol zvolený algoritmus PPO. Druhá časť práce v stručnosti popisuje využité technológie, ich výhody, nevýhody, motiváciu za ich využitím, či zvažované alternatívy. Prostredná časť je zameraná na celkovú tvorbu herného prostredia, hernej slučky, hráčskej postavy a jednotlivých NPC agentov. U NPC agentov bol kladený dôraz na percepciu a rozdiely v skladbe komponentov či implementácie ich chovania v závislosti od typu algoritmu využitého na rozhodovanie. Následne sa práca venuje problematike spojenej s učením reinforcement learning modelu, ktorý bol iteratívne trénovaný na scenároch so zvyšujúcou sa obtiažnosťou. V závere sú potom porovnané jednotlivé algoritmy z hľadiska výkonu pri učení či rozhodovaní ako aj iných aspektov a tieto výsledky sú následne diskutované v kontexte prípadného reálneho nasadenia a problémov s tým spojených.}
+Táto diplomová práca si kladie za cieľ vytvoriť 3D herné prostredie, v ktorom sa môže hráčska postava voľne pohybovať a interagovať NPC agentmi, ktorých rozhodovanie je riadené rôznymi algoritmami strojového učenia. Prvá čast tejto práce je venovaná oboznámeniu sa s problematikou strojového učenia, vymedzeniu pojmov a popisu využitých algoritmov. Tieto algoritmy sú rozdelené do dvoch skupín. Prvá spadá do oblasti konštrukcie rozhodovacieho stromu na základe vstupnej dátovej sady a konkrétne ide o algoritmy ID3, D4.5 a CART. Druhá skupina patrí do oblasti reinforcement learningu. Ako zástupca tejto skupiny bol zvolený algoritmus PPO. Druhá časť práce v stručnosti popisuje využité technológie, ich výhody, nevýhody, motiváciu za ich využitím, či zvažované alternatívy. Prostredná časť je zameraná na celkovú tvorbu herného prostredia, hernej slučky, hráčskej postavy a jednotlivých NPC agentov. U NPC agentov bol kladený dôraz na percepciu a rozdiely v skladbe komponentov či implementácie ich chovania v závislosti od typu algoritmu využitého na rozhodovanie. Následne sa práca venuje problematike spojenej s učením reinforcement learning modelu, ktorý bol iteratívne trénovaný na scenároch so zvyšujúcou sa obtiažnosťou. V závere sú potom porovnané jednotlivé algoritmy z hľadiska výkonu pri učení či rozhodovaní ako aj iných aspektov a tieto výsledky sú následne diskutované v kontexte prípadného reálneho nasadenia a problémov s tým spojených.}
 
 %TODO - pis po cesky asi
 
 \CzechKeywords{strojové učení, posílené učení, umělá inteligence, rozhodovací stromy, ID3, D4.5, CART, PPO, počítačová hra, Unity engine, C\#, Python}
 
-\EnglishAbstract{TODO}
+\EnglishAbstract{This thesis aims to create a 3D game environment in which the player character can move freely and interact with NPC agents whose decision making is controlled by various machine learning algorithms. The first part of this thesis is devoted to the introduction of machine learning, the definition of terms and the description of the algorithms used. These algorithms are divided into two groups. The first one falls into the area of decision tree construction based on the input dataset and specifically these algorithms are ID3, D4.5 and CART. The second group belongs to the area of reinforcement learning. The PPO algorithm has been chosen as a representative of this group. The second part of the thesis briefly describes the technologies used, their advantages, disadvantages, the motivation behind their use, or the alternatives considered. The middle part focuses on the overall creation of the game environment, the core game loop, the player character and the individual NPC agents. For the NPC agents, the focus was on perception and differences in component composition or implementation of their behaviour depending on the type of algorithm used for their decision making. Subsequently, the thesis addresses issues related to the learning of a reinforcement learning model that was iteratively trained on scenarios with increasing difficulty. Finally, the different algorithms are then compared in terms of performance in learning or decision making as well as other aspects, and these results are then discussed in the context of possible real deployment and the problems associated with it.}
 
 \EnglishKeywords{machine learning, reinforcement learning, artificial intelligence, decision trees, ID3, D4.5, CART, PPO, computer game, Unity engine, C\#, Python}
 
@@ -140,20 +140,14 @@ Táto diplomová si kladie za cieľ vytvoriť 3D herné prostredie, v ktorom sa 
 \lstlistoflistings
 \clearpage
 
-% Chapter 0
+% Chapter 1
 \chapter{Úvod}
 \label{sec:Introduction}
 %TODO
 % bla bla uvod
 % kladie si za ciel porovnať dva ML pristupy v hre 
+% spj to s povodne zamyslanou kapitolou Umelá inteligencia v hrách
 
-% ------------------------------------------------------
-
-% Teória
-% Chapter 1
-\chapter{Umelá inteligencia v hrách}
-\label{sec:AI in games}
-%TODO
 \chapter{Strojové učenie}
 \label{sec:MachineLearningOverview}
 Strojové učenie alebo machine learning je vedný obor spadajúci do oblasti umelej inteligencie zaoberajúci sa štúdiom algoritmov a štatistických modelov, na základe ktorých dokáže počítačový systém vykonať určitú úlohu bez nutnosti byť na ňu explicitne naprogramovaný \cite{mahesh2020machine}. Algoritmus strojového učenia na základe vstupných trénovacích dát vytvorí model, ktorý môže byť následne využitý na detekciu anomálií v dátach, predikciu či automatizované rozhodovanie. Trénovanie modelu sa nazýva aj proces učenia, od čoho je odvodený aj názov oboru. Strojové učenie je dnes často využívané v rôznych oblastiach ako data mining, image processing, počítačové videnie, spracovanie prirodzeného jazyka, prediktívnu analýzu apod.\cite{zhou2021machine}.

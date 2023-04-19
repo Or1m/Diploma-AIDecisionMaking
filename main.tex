@@ -64,7 +64,9 @@
 % ------------------------------------------------------
 
 % Abstrakty
-\CzechAbstract{TODO}
+\CzechAbstract{%SK
+Táto diplomová si kladie za cieľ vytvoriť 3D herné prostredie, v ktorom sa môže voľne pohybovať hráčska postava a NPC agenti, ktorých rozhodovanie je riadené rôznymi algoritmami strojového učenia. Prvá čast tejto práce je venovaná oboznámeniu sa s problematikou strojového učenia, vymedzeniu pojmov a popisu využitých algoritmov. Tieto algoritmy sú rozdelené do dvoch skupín. Prvá spadá do oblasti konštrukcie rozhodovacieho stromu na základe vstupnej dátovej sady a konkrétne ide o algoritmy ID3, D4.5 a CART. Druhá skupina patrí do oblasti reinforcement learningu. Ako zástupca tejto skupiny bol zvolený algoritmus PPO. Druhá časť práce v stručnosti popisuje využité technológie, ich výhody, nevýhody, motiváciu za ich využitím, či zvažované alternatívy. Prostredná časť je zameraná na celkovú tvorbu herného prostredia, hernej slučky, hráčskej postavy a jednotlivých NPC agentov. U NPC agentov bol kladený dôraz na percepciu a rozdiely v skladbe komponentov či implementácie ich chovania v závislosti od typu algoritmu využitého na rozhodovanie. Následne sa práca venuje problematike spojenej s učením reinforcement learning modelu, ktorý bol iteratívne trénovaný na scenároch so zvyšujúcou sa obtiažnosťou. V závere sú potom porovnané jednotlivé algoritmy z hľadiska výkonu pri učení či rozhodovaní ako aj iných aspektov a tieto výsledky sú následne diskutované v kontexte prípadného reálneho nasadenia a problémov s tým spojených.}
+
 %TODO - pis po cesky asi
 
 \CzechKeywords{strojové učení, posílené učení, umělá inteligence, rozhodovací stromy, ID3, D4.5, CART, PPO, počítačová hra, Unity engine, C\#, Python}
@@ -90,6 +92,7 @@
 \AddAcronym{CPU}{Central Processing Unit}
 \AddAcronym{CSV}{Comma-Separated Values}
 \AddAcronym{DDR4}{Double Data Rate 4}
+\AddAcronym{DOTS}{Unity's Data-Oriented Technology Stack}
 \AddAcronym{FOV}{Field Of View}
 \AddAcronym{FPS}{Frames Per Second}
 \AddAcronym{GAIL}{Generative Adversarial Imitation Learning}
@@ -1359,19 +1362,31 @@ Testovanie prebiehalo vo viacerých scenároch. Prvým bola prázdna scéna. Ten
 
 Z nameraných hodnôt je možné si všimnúť, že rozdiel medzi priemernou hodnotou FPS v prázdnej scéne a s aktívnymi agentmi sa pohybuje medzi 19-30 FPS, čo za daných okolností nie je prekvapujúce. Rozdiely medzi algoritmami D4.5, CART a ID3 sú malé, dokonca mierne v prospech stromu vytvoreného algoritmom ID3, takže. Rozdiel medzi priemernou hodnotu FPS reinforcement learning algoritmu PPO a zvyšných algoritmov taktiež neukázal žiadne výrazné výkyvy. Úzkym hrdlom vo všetkých prípadoch bolo CPU, nakoľko vykresľovanie 3D modelov jednotlivých agentov bolo vypnuté. 
 
-Všetky otestované metódy je teda možné z hľadiska výkonu využiť aj v reálnom nasadení. Pri praktickom nasadení by aj vykresľovanie modelov agentov aj ich rozhodovanie podliehalo určitej implementácií LOD systému, ktorý by úplne zakázal či aspoň výrazne obmedzil vykresľovanie modelov, ktoré sú vzdialené, či za prekážkou. Podobný systém sa dá aplikovať aj na samotné rozhodovanie, kedy nie je nutné, aby NPC, ktoré je vzdialené od hráča vykonávalo rozhodovací proces periodicky v rámci desatín sekúnd alebo dokonca menej. V závislosti od úrovne simulácie je možné na takýchto NPC rozhodovanie aj úplne zamedziť.
+\section{Empirické porovnanie a diskusia výsledkov}
+\label{sec:Discussion}
+Všetky otestované metódy je teda možné z hľadiska výkonu využiť aj v reálnom nasadení. Pri praktickom nasadení by vykresľovanie 3D modelov jednotlivých agentov aj ich rozhodovanie podliehalo určitej implementácií LOD systému, ktorý by úplne zakázal či aspoň výrazne obmedzil vykresľovanie modelov, ktoré sú vzdialené, či za prekážkou. Pokiaľ by bolo nutné v hre vykresľovať desiatky NPC naraz a tento spôsob by nedostačoval, je možné použiť aj sofistikovanejšie metódy ako napríklad systém DOTS v engine Unity. Obdobu LOD systému je možné aplikovať aj na samotné rozhodovanie, kedy nie je nutné, aby NPC, ktoré je vzdialené od hráča vykonávalo rozhodovací proces periodicky v rámci desatín sekúnd alebo dokonca menej. V závislosti od úrovne simulácie je možné na takýchto NPC rozhodovanie aj úplne zamedziť. Ak by opäť nedostačoval ani tento systém, je možné siahnuť napríklad po implementácií rozhodovania zdieľaného medzi rôznymi inštanciami akú využívajú napríklad behaviorálne stromy v engine Unreal. Možností optimalizácie je samozrejme veľké množstvo.
 
-\section{Empirické porovnanie}
-\label{sec:Gameplay}
-%TODO
+Po stránke výkonu sú si síce jednotlivé prístupy veľmi podobné no existujú značné rozdiely v chovaní jednotlivých NPC a celkovo aj v náročnosti tvorby určitého chovania či jeho neskoršieho adaptovania. Výhodou využitia rozhodovacích stromov je nižšia náročnosť a viac priamočiara metodika ich tvorby. Zároveň nevyžadujú dynamicky meniť či upravovať chovanie jednotlivých NPC bez nutnosti kompilácie kódu či buildu celého projektu. Vytvorenie dátovej sady pre daný typ úlohy nie až tak náročné ale veľmi samozrejme záleží na komplexnosti celého chovania. Spracovanie dát algoritmom je veľmi rýchla operácie, ktorej výsledok je možné okamžite pozorovať na výstupe ešte pred nasadením do hry. Rozhodovací strom sa však, ako jeho názov napovedá, zaoberá iba rozhodovacím procesom, nie chovaním agenta, ktoré nasleduje po vykonaní rozhodnutí. Naproti tomu, algoritmy reinforcement learningu sa zaoberajú chovaním agenta obecne. Natrénovaný model sa dokáže sám navigovať prostredím pomocou percepcie a jeho chovanie môže byť veľmi komplexné. Príkladom môže byť napríklad to, akým spôsobom agent reaguje na hráča. Nerozbehne sa hneď po ňom, ale vyčkáva, čo hráč urobí a ktorým smerom pôjde. Toto chovanie je pochopiteľné a približuje sa tomu, ako by sa v danej situácií choval ľudský hráč. Naprogramovať však takéto chovanie nie je triviálnym úkonom. To však nie je ani natrénovanie agenta pomocou reinforcement learningu. Táto obtiažnosť navyše prudko narastá s komplexnosťou danej úlohy. Chovanie umelej inteligencie v dnešných hrách sa často skladá z viacerých vrstiev a natrénovať takého agenta by bolo veľmi zložité. Riešením by mohlo byť natrénovanie viacerých modelov určených na konkrétne úkony a ich prepínanie podľa potreby alebo rôzne hybridné prístupy. Herní vývojári taktiež chcú mať nad chovaním NPC čo najväčšiu kontrolu aby hráčovi zabezpečili optimálny zážitok. Napriek tomu, že agentove správanie v niektorých situáciach pripomína správanie hráča, v iných by sa len ťažko zlučovalo s dnešnou snahou o imerziu a realistickosť, akú sa dnešné hry snažia docieliť. Problémom by mohla byť aj obtiažnosť takýchto hier a jej regulácia.
 
 % Chapter 9
 \chapter{Záver}
 \label{sec:Conclusion}
-%do buducna animacie, viacere algoritmy, boj, dalsie herne prvky ako reakciu npc na denny cyklus, interakcia s inymi npc apod
-% Prílohy
-%\appendix
-%\input{appendix_mono}
+V rámci tejto diplomovej práce sa podarilo vytvoriť herné 3D prostredie v engine Unity s využitím programovacieho jazyka C\#, v ktorom sú na rozhodovanie NPC využité rôzne algoritmy z oblasti strojového učenia. Toto prostredie je zasadené do pirátskej tematiky a obsahuje hernú slučku v ktorej sa hráč môže voľne pohybovať po ostrove s plne funkčnou kamerou z pohľadu tretej osoby. Hráč môže pri preskúmavaní prostredia spomaliť svoj pohyb, aby na seba neupútal pozornosť či vykonať skok v súlade so simuláciou gravitácie. V hernom prostredí sa nachádzajú rôzne predmety, ktoré hráč môže zbierať a ich určitý počet je vyžadovaný na úspešne dokončenie hry. Hra samotná potom obsahuje aj ďalšie prvky ako napríklad hlavnú ponuku či grafické užívateľské rozhranie. V hlavnej ponuke si hráč môže vybrať algoritmus, ktorý bude využitý pri ďalšom priechode hrou. Grafické užívateľské rozhranie potom hráčovi ukazuje aktuálny stav zdravia či predmetov v inventári.
+
+V hernom prostredí sa spolu s hráčovou postavou nachádzajú nepriateľské NPC v podobe agresívnych kostlivcov, ktorí sa snažia hráčovi znemožniť ďalší priebeh hrou. Útoky od týchto nepriateľov udeľujú hráčovi veľké poškodenie, čo môže vyústiť až k úplnej strate zdravia a nutnosti opakovať hru. Na rozhodovanie NPC agentov sú využité algoritmy na tvorbu rozhodovacieho stromu ID3, D4.5, CART a reinforcement learning algoritmus PPO. Tvorba rozhodovacieho stromu zo vstupnej dátovej sady je implementovaná v jazyku python mimo hlavného projektu, takže je možné dynamicky meniť chovanie NPC úpravou týchto dát bez nutnosti kompilácie či buildu projektu. Výstupný rozhodovací strom je potom v engine Unity spracovaný a prevedený do objektovej štruktúry, ktorú je možné v reálnom čase prechádzať a prehodnocovať aktuálne chovanie NPC na základe percepcie agenta či iných kritérií. 
+
+Protikladom k tomuto prístupu bolo využitie reinforcement learningu, pomocou ktorého sa podarilo v rámci niekoľkých iterácií a trénovacích scenárov natrénovať funkčný model agenta. Ten sa dokáže pohybovať 3D prostredím, reaguje na hráčovu postavu a svoje okolie pomocou simulácie zraku a sluchu a snaží sa zvoliť optimálnu stratégiu aby hráča odhalil, priblížil sa k nemu postupnými útokmi ho vyradil z hry.
+
+Využité prístupy aj jednotlivé algoritmy boli porovnané medzi sebou na základe rôznych kritérií. Z algoritmov na tvorbu rozhodovacieho stromu sa ukázal byť algoritmus CART ako najlepšia voľba z hľadiska výkonu aj výstupu. Jeho výstupom bol najoptimálnejší rozhodovací strom, aký bolo možné z daných dát vytvoriť. Algoritmus D4.5 mal totožný výstup ale vzhľadom na využité metriky tohto algoritmu trvalo spracovanie dát dlhšie. Najhoršie dopadol algoritmus ID3, ktorý nedokázal vytvoriť najoptimálnejší rozhodovací strom na poskytnutých dátach, čo sa prejavilo na vykonanom počte krokov, čím utrpel jeho výkon. Vo výkone počas rozhodovania medzi algoritmami ID3, D4.5, CART a reinforcement learning algoritmom PPO nebol pozorovaný štatisticky významný rozdiel. 
+
+Trénovanie modelu pomocou algoritmu PPO prebiehalo vo viacerých scenároch, ktoré postupne navyšovali svoju obtiažnosť. Každý scenár si vyžadoval vykonanie stoviek tisíc až milióna krokov. Trénovanie bolo vykonávané 9 agentmi simultánne a časové nároky boli asi 15 sekúnd na 1000 krokov, čo na danom HW umožňuje relatívne pohodlný iteratívny vývoj. Natrénovaný model vykazoval niektoré prvky chovania, ktoré sa pomerne dosť približujú chovaniu reálneho hráča, a ich naprogramovanie by nebolo triviálne. Iné však veľmi neprispievajú hráčovej imerzií a muselo by sa pristúpiť k určitým hybridným metódam, či aspoň úprave niektorých aspektov rozhodovacieho, prípadne trénovacieho procesu. 
+
+Oba prístupy k rozhodovaniu NPC majú svoje výhody a nevýhody. Rozhodovacie stromy boli využívané skôr v minulosti, čo ale neznamená, že dnes už nemajú čo ponúknuť a naopak reinforcement learning zažíva vzostup v rôznych aplikáciách a obzvlášť jeho využitie v hrách, ktoré stále len čaká na svoje širšie komerčné využitie, by mohla byť zaujímavá oblasť ďalšieho skúmania.
 
 \printbibliography[title={Literatúra}, heading=bibintoc]
+
+% Prílohy
+\appendix
+\input{appendix.tex}
+
 \end{document}

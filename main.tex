@@ -99,6 +99,7 @@
 \AddAcronym{ID3}{Iterative Dichotomiser 3}
 \AddAcronym{IG}{Information Gain}
 \AddAcronym{LINQ}{Language Integrated Query}
+\AddAcronym{LOD}{Level Of Detail}
 \AddAcronym{MA-POCA}{Multi-Agent Posthumous Credit Assignment}
 \AddAcronym{MDP}{Markov Decision Process}
 \AddAcronym{MS}{Microsoft}
@@ -1270,9 +1271,9 @@ Vďaka konzistentnosti vo vektore pozorovaní či ustálenému spôsobu pohybu u
 % trenovacie scenare a grafy z treningu, parametre
 
 % Chapter 8
-\chapter{Porovnanie prístupov}
-\label{sec:ImplReinforcement learning}
-Táto kapitola je venovaná porovnaniu využitých algoritmov machine learningu. Jednotlivé algoritmy určené na vytváranie rozhodovacieho stromu boli porovnané z hľadiska času tejto konštrukcie a z hľadiska ich výstupov. U algoritmu PPO ako zástupcu triedy reinforcement learningu boli zaznamenané údaje o dĺžke trénovacej epizódy. Porovnaniu z hľadiska počtu FPS v builde hry bolo podrobené vykonávanie rozhodnutí, či už na základe rozhodovacieho stromu alebo naučeného modelu. V závere kapitoly sú potom uvedené poznatky založené na empirickom pozorovaní rozdielov v chovaní jednotlivých typov NPC a diskusia týchto výsledkov.
+\chapter{Porovnanie implementovaných prístupov}
+\label{sec:Compare}
+Táto kapitola je venovaná porovnaniu využitých algoritmov machine learningu. Jednotlivé algoritmy určené na vytváranie rozhodovacieho stromu boli porovnané z hľadiska času tejto konštrukcie a z hľadiska ich výstupov. U algoritmu PPO ako zástupcu triedy reinforcement learningu boli zaznamenané údaje o dĺžke trénovacej epizódy. Porovnaniu z hľadiska výkonu bolo podrobené aj vykonávanie rozhodnutí, či už na základe rozhodovacieho stromu alebo naučeného modelu. V závere kapitoly sú potom uvedené poznatky založené na empirickom pozorovaní rozdielov v chovaní jednotlivých typov NPC a diskusia týchto výsledkov.
 
 Všetky výkonnostné testy boli vykonané na PC zostave, s nasledujúcimi parametrami:
 \begin{itemize}
@@ -1299,9 +1300,9 @@ Všetky výkonnostné testy boli vykonané na PC zostave, s nasledujúcimi param
     \end{itemize}
 \end{itemize}
 
-\section{Porovnanie algoritmov ID3, D4.5 a CART}
+\section{Porovnanie výkonu jednotlivých algoritmov pri učení}
 \label{sec:id3d45cart}
-Výkon jednotlivých algoritmov pri konštrukcií rozhodovacieho stromu bol porovnaný na dátovej, ktorú je možné vidieť v tabuľke \ref{tab:skeletonActionRaw}. Každý algoritmus bol spustený 1000x aby sa zamedzilo náhodným odchýlkam v testovaní. Výsledky v podobe najkratšieho, priemerného a najdlhšieho času nutného na spracovanie vstupných dát do rozhodovacieho stromu sú uvedené v tabuľke \ref{tab:benchmarks}.
+Výkon algoritmov určených na tvorbu rozhodovacieho stromu bol porovnaný na dátovej sade, ktorú je možné vidieť v tabuľke \ref{tab:skeletonActionRaw}. Každý algoritmus bol spustený 1000x aby sa zamedzilo náhodným odchýlkam v testovaní. Výsledky v podobe najkratšieho, priemerného a najdlhšieho času nutného na spracovanie vstupných dát do rozhodovacieho stromu sú uvedené v tabuľke \ref{tab:benchmarks}.
 
 \begin{table}[!ht]
     \centering
@@ -1325,7 +1326,7 @@ Z tabuľky je možné jasné vidieť, že najlepšie dopadol algoritmus CART, dr
     \label{pic:treeGraph}
 \end{figure}
 
-Rozdiel v čase trvania algoritmu CART v porovnaní s D4.5 je potom daný jedinou využívanou metrikou algoritmu CART pri konštrukcií rozhodovacieho stromu, a síce Gini indexom. V prípade, že by výstup algoritmov ID3 a D4.5 bol totožný, je predpoklad, že časy trvania by boli veľmi podobné a dokonca v prospech algoritmu ID3. Ten však v danej dátovej sade nedokázal nájsť najoptimálnejšie rozdelenie a teda musel vykonať viac krokov. Výsledkom je rozhodovací strom, ktorý má viac vrcholov ako by bolo nutné a zároveň umožňuje vstup do listu Seeking aj v prípade, že zdravie agenta tomu neodpovedá. Aby však vôbec algoritmus ID3 mohol byť na daných dátach porovnaný s ostatnými, musela byť jeho implementácia obohatená o možnosť spracovať kontinuálne hodnoty pomocou operátorov <= a >. Túto schopnosť štandardne algoritmus ID3 nemá a s tým súvisia aj dané problémy. Grafickú reprezentáciu rozhodovacieho stromu vytvorenú týmto algoritmom je možné vidieť na obrázku .
+Rozdiel v čase trvania algoritmu CART v porovnaní s D4.5 je potom daný jedinou využívanou metrikou algoritmu CART pri konštrukcií rozhodovacieho stromu, a síce Gini indexom. V prípade, že by výstup algoritmov ID3 a D4.5 bol totožný, je predpoklad, že časy trvania by boli veľmi podobné a dokonca v prospech algoritmu ID3. Ten však v danej dátovej sade nedokázal nájsť najoptimálnejšie rozdelenie a teda musel vykonať viac krokov. Výsledkom je rozhodovací strom, ktorý má viac vrcholov ako by bolo nutné a zároveň umožňuje vstup do listu Seeking aj v prípade, že zdravie agenta tomu neodpovedá. Aby však vôbec algoritmus ID3 mohol byť na daných dátach porovnaný s ostatnými, musela byť jeho implementácia obohatená o možnosť spracovať kontinuálne hodnoty pomocou operátorov <= a >. Túto schopnosť štandardne algoritmus ID3 nemá a s tým súvisia aj dané problémy. Grafickú reprezentáciu rozhodovacieho stromu vytvorenú týmto algoritmom je možné vidieť na obrázku \ref{pic:treeGraphID3}.
 
 \begin{figure}[!htbp]
     \centering
@@ -1334,7 +1335,31 @@ Rozdiel v čase trvania algoritmu CART v porovnaní s D4.5 je potom daný jedino
     \label{pic:treeGraphID3}
 \end{figure}
 
-%U algoritmu PPO ako zástupcu triedy reinforcement learningu boli zaznamenané údaje o dĺžke trénovacej epizódy. Porovnaniu z hľadiska počtu FPS v builde hry bolo podrobené vykonávanie rozhodnutí, či už na základe rozhodovacieho stromu alebo naučeného modelu.
+Časy uvedené v tabuľke \ref{tab:benchmarks} je možné dať do kontextu aj s reinforcement learning algoritmom PPO. Priemerný čas nutný na vykonanie 1000 tréningových krokov, pri simultánnom trénovaní 9 agentmi, nameraný na vzorke 1,2 milióna krokov bol 15004,994ms, teda okolo 15 sekúnd. K dosiahnutiu uspokojivého výsledku však agent musel vykonať stovky tisíc až jednotky miliónov krokov. Toto je samozrejme násobne viac ako je trvanie vytvorenie jedného rozhodovacieho stromu. Treba však brať do úvahy, že algoritmus na tvorbu rozhodovacieho stromu má testovacie dáta vopred pripravené. Z pohľadu strojového učenia obecne však hodnotu 15 sekúnd na vykonanie 1000 tréningových krokov považujeme na danom HW za veľmi slušnú, nakoľko v rámci jednotiek minút je možné natrénovať schopný model, ktorý dokáže vykonávať základné úkony popisované v tomto projekte. V praxi to znamená, že s danými nástrojmi a HW je možné dosiahnuť efektívny iteratívny vývoj pomocou ladenia hyper-parametrov, úpravou prostredia či vlastností a vnútornej logiky agenta. 
+
+\section{Porovnanie výkonu jednotlivých algoritmov pri rozhodovaní}
+\label{sec:editorPerformance}
+Ako, už bolo spomenuté, jednotlivé algoritmy boli porovnané aj z hľadiska výkonu pri rozhodovaní. Výsledky boli namerané v samostatnom builde pri vypnutej vertikálnej synchronizácií. Ako metrika bola zvolená priemerná hodnota FPS popisovaná v sekcií \ref{sec:GameLoop}. Nakoľko algoritmy CART a D4.5 vytvorili identický rozhodovací strom, ich výsledky boli zlúčené. 
+
+Testovanie prebiehalo vo viacerých scenároch. Prvým bola prázdna scéna. Tento scenár mal demonštrovať maximálnu priemernú hodnotu FPS na akú je možné sa na danom HW s danými nastaveniami grafiky dostať. Následne boli porovnané medzi sebou jednotlivé algoritmy. Scéna v tomto prípade obsahovala 30 agentov, ktorí mali vypnuté vykresľovanie modelov a hráčsku postavu. Namerané výsledky je možné vidieť v tabuľke \ref{tab:benchmarksGame}.
+
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}{|l|c|}
+    \hline
+        \textbf{Scenár} & \textbf{Priemerná hodnota FPS} \\ \hline
+        Prázdna scéna & 628,81 \\ 
+        D4.5, CART & 602,46 \\ 
+        ID3 & 605,34 \\ 
+        PPO & 598,75 \\ \hline
+    \end{tabular}
+    \caption{Porovnanie priemernej hodnoty FPS pri rozhodovaní}
+    \label{tab:benchmarksGame}
+\end{table}
+
+Z nameraných hodnôt je možné si všimnúť, že rozdiel medzi priemernou hodnotou FPS v prázdnej scéne a s aktívnymi agentmi sa pohybuje medzi 19-30 FPS, čo za daných okolností nie je prekvapujúce. Rozdiely medzi algoritmami D4.5, CART a ID3 sú malé, dokonca mierne v prospech stromu vytvoreného algoritmom ID3, takže. Rozdiel medzi priemernou hodnotu FPS reinforcement learning algoritmu PPO a zvyšných algoritmov taktiež neukázal žiadne výrazné výkyvy. Úzkym hrdlom vo všetkých prípadoch bolo CPU, nakoľko vykresľovanie 3D modelov jednotlivých agentov bolo vypnuté. 
+
+Všetky otestované metódy je teda možné z hľadiska výkonu využiť aj v reálnom nasadení. Pri praktickom nasadení by aj vykresľovanie modelov agentov aj ich rozhodovanie podliehalo určitej implementácií LOD systému, ktorý by úplne zakázal či aspoň výrazne obmedzil vykresľovanie modelov, ktoré sú vzdialené, či za prekážkou. Podobný systém sa dá aplikovať aj na samotné rozhodovanie, kedy nie je nutné, aby NPC, ktoré je vzdialené od hráča vykonávalo rozhodovací proces periodicky v rámci desatín sekúnd alebo dokonca menej. V závislosti od úrovne simulácie je možné na takýchto NPC rozhodovanie aj úplne zamedziť.
 
 \section{Empirické porovnanie}
 \label{sec:Gameplay}

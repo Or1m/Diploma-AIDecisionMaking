@@ -85,7 +85,6 @@
 \AddAcronym{CART}{Classification and Regression Tree}
 \AddAcronym{CLR}{Common Language Runtime}
 \AddAcronym{CSV}{Comma-Separated Values}
-\AddAcronym{DDR4}{Double Data Rate 4}
 \AddAcronym{DOTS}{Unity's Data-Oriented Technology Stack}
 \AddAcronym{FOV}{Field Of View}
 \AddAcronym{FPS}{Frames Per Second}
@@ -98,7 +97,6 @@
 \AddAcronym{LOD}{Level Of Detail}
 \AddAcronym{MA-POCA}{Multi-Agent Posthumous Credit Assignment}
 \AddAcronym{NPC}{Non-Playable Character}
-\AddAcronym{PC}{Personal Computer}
 \AddAcronym{PPO}{Proximal Policy Optimization}
 \AddAcronym{RAM}{Random-Access Memory}
 \AddAcronym{SAC}{Soft Actor Critic}
@@ -244,7 +242,7 @@ Pri supervised learningu je možné relatívne jednoducho implementovať cost fu
 
 Algoritmus PPO využíva tzv. policy gradient method \cite{PPOPaper}, čo znamená, že narozdiel napríklad od algoritmov Q-learningu sa agent neučí z uložených predchádzajúcich pokusov ale priamo aktuálne vykonaných akciách v prostredí. Nevýhodou tohto typu algoritmov býva menšia efektivita využitia trénovacích vzoriek, nakoľko vzorky nie sú využité pri učení opakovane, a teda vyššie nároky na ich počet. Ako už však bolo spomenuté, túto nevýhodu sa PPO snaží minimalizovať.  
 
-Algoritmus sa v každom kroku snaží minimalizovať cost funkciu pomocou malých odchýlok od predchádzajúcej policy. Maximálna veľkosť odchýlky je zabezpečená pomocou funkcie clip() v objective funkcií a dá sa ladiť pomocou hyper-parametru \(\varepsilon\) \cite{PPOPaper}. Objective funkcia, ktorá sa typicky nevyskytuje v iných algoritmoch, je nasledovná:
+Algoritmus sa v každom kroku snaží minimalizovať cost funkciu pomocou malých odchýlok od predchádzajúcej policy. Maximálna veľkosť odchýlky je zabezpečená pomocou funkcie clip() v účelovej funkcií a dá sa ladiť pomocou hyper-parametru \(\varepsilon\) \cite{PPOPaper}. Účelová funkcia, ktorá sa typicky nevyskytuje v iných algoritmoch, je nasledovná:
 
 \[L^{CLIP}(\theta) = \hat{E}_t [min(r_t(\theta))\hat{A}_t, clip(r_t(\theta), 1 - \varepsilon, 1 + \varepsilon)\hat{A}_t]\]
 
@@ -257,12 +255,12 @@ kde:
   \item \(\varepsilon\) je hyper-parameter, obecne nadobúda hodnotu v rozsahu 0,1--0,2
 \end{itemize}
 
-Objective funkcia sa teda snaží optimalizovať očakávanie v priebehu časového kroku \(\hat{E}_t\). Hodnota \(\hat{E}_t\) je daná menšou z hodnôt \(r_t(\theta))\hat{A}_t\), čo je normálna policy, a jej variantou obmedzenou hyper-parametrom \(\varepsilon\). Toto obmedzenie zabraňuje veľkým zmenám od predchádzajúcej policy. Priebeh funkcie v závislosti toho, či je odhad výhody kladný alebo záporný je možné vidieť na obrázku \ref{pic:clipping}.
+Účelová funkcia sa teda snaží optimalizovať očakávanie v priebehu časového kroku \(\hat{E}_t\). Hodnota \(\hat{E}_t\) je daná menšou z hodnôt \(r_t(\theta))\hat{A}_t\), čo je normálna policy, a jej variantou obmedzenou hyper-parametrom \(\varepsilon\). Toto obmedzenie zabraňuje veľkým zmenám od predchádzajúcej policy. Priebeh funkcie v závislosti toho, či je odhad výhody kladný alebo záporný je možné vidieť na obrázku \ref{pic:clipping}.
 
 \begin{figure}[!htbp]
     \centering
     \includegraphics[width=.7\textwidth]{Figures/clip.png}
-    \caption{Priebeh objective funkcie pre kladný a záporný odhad výhody \cite{PPOPaper}}
+    \caption{Priebeh účelovej funkcie pre kladný a záporný odhad výhody \cite{PPOPaper}}
     \label{pic:clipping}
 \end{figure}
 
@@ -313,7 +311,7 @@ Hlavným dôvodom pre výber tohto nástroja bola jeho otvorenosť a priama podp
 \begin{figure}[!htbp]
     \centering
     \includegraphics[width=1\textwidth]{Figures/mlagents.png}
-    \caption{Titulný obrázok ML-Agents \cite{mlagentsWeb}}
+    \caption{Titulný obrázok nástroja ML-Agents \cite{mlagentsWeb}}
     \label{pic:mlagetnsLogo}
 \end{figure}
 
@@ -497,7 +495,7 @@ Poslednou kompetenciou GameManagera je periodicky v rámci metódy OnUpdate() zi
 \begin{figure}[!htbp]
     \centering
     \includegraphics[width=.65\textwidth]{Figures/pauseUI.png}
-    \caption{GUI element s umožňujúci návrat do hlavnej ponuky alebo ukončenia hry}
+    \caption{GUI element s umožňujúci návrat do hlavnej ponuky alebo ukončenie hry}
     \label{pic:PauseUI}
 \end{figure}
 
@@ -513,7 +511,7 @@ Obe tlačidlá na GUI elemente zobrazenom na obrázku \ref{pic:PauseUI} obsahuj�
 V tomto prípade bol tlačidlám predaný objekt GameManager a volané boli jeho dve verejné metódy OpenMainMenu() a QuitGame() zobrazené vo výpise \ref{src:MMQuit}.
 
 \vspace{8pt}
-\begin{lstlisting}[label=src:MMQuit,caption={Metódy na návrat do hlavnej ponuky a ukončenie hry}]
+\begin{lstlisting}[label=src:MMQuit,caption={Návrat do hlavnej ponuky a ukončenie hry}]
 public void OpenMainMenu()
 {
     SceneManager.LoadScene(0);
@@ -556,7 +554,7 @@ Tlačidlo Options potom využíva rovnaký prístup na zobrazenie ponuky s výbe
 Každá vnorená ponuka, ktorá sa stane aktívna sa začne periodicky dopytovať objektu InputManager, či bola stlačená príslušná klávesa na návrat do predchádzajúcej ponuky. Na tento účel bola vytvorená jednoduchá trieda zobrazená vo výpise \ref{src:SubMenu}.
 
 \vspace{8pt}
-\begin{lstlisting}[label=src:SubMenu,caption={Trieda SubMenu}]
+\begin{lstlisting}[label=src:SubMenu,caption={Trieda SubMenu reprezentujúca vnorenú ponuku}]
 public class SubMenu : MonoBehaviour
 {
     [SerializeField]
@@ -652,7 +650,7 @@ Existuje množstvo prístupov k tejto problematike a v závislosti od typu hry �
 V tomto projekte bol využitý základný systém využívajúci možností vstavanej Unity komponenty Character Controller a to ako na pohyb tak aj na zisťovanie, či sa hráč nachádza na pevnej zemi. Hráčovi je okrem základného pohybu do rôznych smerov umožnené skákať, či spomaliť svoj pohyb, čím sa zníži rozsah šírenia zvuku jeho krokov. Pohyb hráča taktiež podlieha základnej simulácií gravitácie. Metódu Update() komponenty PlayerMovement, ktorá obstaráva vyššie popísanú funkcionalitu je možné vidieť vo výpise \ref{src:PlayerMovement}.
 
 \vspace{8pt}
-\begin{lstlisting}[label=src:PlayerMovement,caption={Metódy komponenty PlayerMovement obstarávajúce pohyb hráčskej postavy}]
+\begin{lstlisting}[label=src:PlayerMovement,caption={Realizácia pohybu hráčskej postavy}]
 void Update()
 {
     var currentSpeed = speed;
@@ -692,7 +690,7 @@ private void UpdateGrounded(ref float currentSpeed)
 }
 \end{lstlisting}
 
-Vo výpise \ref{src:PlayerMovement} je možné si povšimnúť, že pokiaľ sa hráčska postava nachádza na zemi, je možné zmeniť jej smer na osách X a Z, vyskočiť, či znížiť rýchlosť pohybu na polovicu, čo sa prejaví pri šírení zvuku krokov. V tomto prípade je aj vyresetovaná rýchlosť postavy na ose Y a to na nulu. V momente kedy hráč stlačí tlačidlo skoku, je táto rýchlosť nastavená na hodnotu výšky skoku a počas nasledujúcich snímkov bude klesať rýchlosťou danou hodnotou gravitačnej konštanty vynásobenej časom medzi jednotlivými snímkami. Keď postava dopadne na zem je táto rýchlosť opäť vyresetovaná a medzi jednotlivými snímkami sa mení len minimálne v závislosti na hodnote FPS a teda mierne tlačí postavu k zemi, čím sa eliminujú problémy s prípadnou zlou detekciu zeme pri nerovnom teréne.
+Vo výpise \ref{src:PlayerMovement} je možné si povšimnúť, že pokiaľ sa hráčska postava nachádza na zemi, je možné zmeniť jej smer na osách X a Z, vyskočiť, či znížiť rýchlosť pohybu na polovicu, čo sa prejaví pri šírení zvuku krokov. V tomto prípade je aj vyresetovaná rýchlosť postavy na ose Y a to na nulu. V momente kedy hráč stlačí tlačidlo skoku, je táto rýchlosť nastavená na hodnotu výšky skoku a počas nasledujúcich snímkov bude klesať rýchlosťou danou hodnotou gravitačnej konštanty vynásobenej časom medzi jednotlivými snímkami. Keď postava dopadne na zem je táto rýchlosť opäť vyresetovaná a medzi jednotlivými snímkami sa mení len minimálne v závislosti od hodnoty FPS a teda mierne tlačí postavu k zemi, čím sa eliminujú problémy s prípadnou zlou detekciu zeme pri nerovnom teréne.
 
 Následne sa na základe hráčskeho vstupu vypočíta smer a rýchlosť pohybu, ktorým sa má postava vydať a výsledná hodnota, opäť vynásobená časom medzi jednotlivými snímkami, je odoslaná do metódy Move() komponenty Character Controller. Táto metóda vykoná pohyb postavy, pokiaľ to kolízna kapsula či výška nerovného terénu dovolí. Násobenie hodnotou Time.deltaTime, teda časom medzi jednotlivými snímkami spôsobí, že rýchlosť pohybu bude nezávislá od snímkovej frekvencie hry.
 
@@ -749,7 +747,7 @@ Prefab v editore Unity je možné chápať ako šablónu herného objektu spolu 
 Proces inštancovania NPC agentov, ktorý je možné vidieť vo výpise \ref{src:GameManOnStart}, vyvoláva už spomínaný objekt GameManager na základe nastavení uložených v objekte ConfigManager. Volaná metóda určuje, ktorý konkrétny prefab bude pri inštancovaní použitý.
 
 \vspace{8pt}
-\begin{lstlisting}[label=src:GameManOnStart,caption={Inštancovanie NPC agentov na základe nastavení}]
+\begin{lstlisting}[label=src:GameManOnStart,caption={Inštancovanie NPC agentov v závislosti od nastavení}]
 public void OnStart() 
 {
     if (!spawner)
@@ -775,7 +773,7 @@ Oba typy NPC zdieľajú komponentu SkeletonBody, ktorá je konkretizáciou tried
 Posledným spoločným prvkom je komponenta Hearing, ktorá obstaráva počutie NPC agentov. Táto komponenta implementuje generické rozhranie ISense<T>, ktoré reprezentuje každý zo zmyslov agenta. V tomto prípade je ako generikum použitá spomínaná štruktúra Noise. Rozhranie samotné je možné vidieť vo výpise \ref{src:ISense}.
 
 \vspace{8pt}
-\begin{lstlisting}[label=src:ISense,caption={Generické rozhranie ISense<T>}]
+\begin{lstlisting}[label=src:ISense,caption={Generické rozhranie ISense}]
 public interface ISense<T>
 {
     bool IsActivated { get; }
@@ -1044,7 +1042,7 @@ behaviors:
     summary_freq: 60000
 \end{lstlisting}
 
-Graf kumulatívnej odmeny agenta pri pri použití hyper-parametrov z výpisu \ref{src:params} je zobrazený na obrázku \ref{plt:firstScenario}. Na tomto grafe je možné vidieť, že zhruba po \(1,2 \times 10^5\) krokoch sa agent bezchybne naučil nájsť svoj cieľ a prakticky všetky ďalšie tréningové epizódy končili úspechom.
+Graf kumulatívnej odmeny modelu pri pri použití hyper-parametrov z výpisu \ref{src:params} je zobrazený na obrázku \ref{plt:firstScenario}. Na tomto grafe je možné vidieť, že zhruba po \(1,2 \times 10^5\) krokoch sa agent bezchybne naučil nájsť svoj cieľ a prakticky všetky ďalšie tréningové epizódy končili úspechom.
 
 %\vspace{8pt}
 \begin{figure}[!htbp]
@@ -1065,7 +1063,7 @@ Graf kumulatívnej odmeny agenta pri pri použití hyper-parametrov z výpisu \r
           \addplot table [x=Step, y=Value, col sep=comma] {Data/SkeletonAgentBrain1_Skeleton_Agent.csv};
         \end{axis}
     \end{tikzpicture}
-    \caption{Graf kumulatívnej odmeny v závislosti na počte krokov v prvom tréningovom scenári}
+    \caption{Graf kumulatívnej odmeny modelu v prvom tréningovom scenári}
     \label{plt:firstScenario}
 \end{figure}
 
@@ -1101,7 +1099,7 @@ Na obrázku \ref{pic:secondScenario} je možné si všimnúť jednotlivé body, 
           \addplot table [x=Step, y=Value, col sep=comma] {Data/SkeletonAgentBrain3_Skeleton_Agent.csv};
         \end{axis}
     \end{tikzpicture}
-    \caption{Graf kumulatívnej odmeny v závislosti na počte krokov v druhom tréningovom scenári}
+    \caption{Graf kumulatívnej odmeny modelu v druhom tréningovom scenári}
     \label{plt:secondScenario}
 \end{figure}
 
@@ -1145,7 +1143,7 @@ Kumulatívnu odmenu po týchto zmenách je možné vidieť v grafe \ref{plt:thir
           \addplot table [x=Step, y=Value, col sep=comma] {Data/SkeletonAgentBrain3.5_Skeleton_Agent.csv};
         \end{axis}
     \end{tikzpicture}
-    \caption{Graf kumulatívnej odmeny v závislosti na počte krokov v treťom tréningovom scenári}
+    \caption{Graf kumulatívnej odmeny modelu v treťom tréningovom scenári}
     \label{plt:thirdcenario}
 \end{figure}
 
@@ -1221,7 +1219,7 @@ V tomto scenári mali agent aj hráčska postava veľmi podobnú rýchlosť pohy
           \addplot table [x=Step, y=Value, col sep=comma] {Data/SkeletonAgentBrain4.2_Skeleton_Agent.csv};
         \end{axis}
     \end{tikzpicture}
-    \caption{Graf kumulatívnej odmeny v závislosti na počte krokov vo štvrtom tréningovom scenári}
+    \caption{Graf kumulatívnej odmeny modelu krokov vo štvrtom tréningovom scenári}
     \label{plt:fourthcenario}
 \end{figure}
 
@@ -1255,7 +1253,7 @@ Vďaka konzistentnosti vo vektore pozorovaní či ustálenému spôsobu pohybu u
           \addplot table [x=Step, y=Value, col sep=comma] {Data/SkeletonAgentBrain6.6_Skeleton_Agent.csv};
         \end{axis}
     \end{tikzpicture}
-    \caption{Graf kumulatívnej odmeny v závislosti na počte krokov vo finálnom tréningovom scenári}
+    \caption{Graf kumulatívnej odmeny modelu vo finálnom tréningovom scenári}
     \label{plt:finalScenario}
 \end{figure}
 
@@ -1267,7 +1265,7 @@ Vďaka konzistentnosti vo vektore pozorovaní či ustálenému spôsobu pohybu u
 \label{sec:Compare}
 Táto kapitola je venovaná porovnaniu využitých algoritmov machine learningu. Jednotlivé algoritmy určené na vytváranie rozhodovacieho stromu boli porovnané z hľadiska času tejto konštrukcie a z hľadiska ich výstupov. U algoritmu PPO ako zástupcu triedy reinforcement learningu boli zaznamenané údaje o dĺžke trénovacej epizódy. Porovnaniu z hľadiska výkonu bolo podrobené aj vykonávanie rozhodnutí, či už na základe rozhodovacieho stromu alebo naučeného modelu. V závere kapitoly sú potom uvedené poznatky založené na empirickom pozorovaní rozdielov v chovaní jednotlivých typov NPC a diskusia týchto výsledkov.
 
-Všetky výkonnostné testy boli vykonané na PC zostave, s nasledujúcimi parametrami:
+Všetky výkonnostné testy boli vykonané na zostave, s nasledujúcimi parametrami:
 \begin{itemize}
     \item \textbf{Procesor} -- AMD Ryzen 9 5900X
     \begin{itemize}
@@ -1305,7 +1303,7 @@ Výkon algoritmov určených na tvorbu rozhodovacieho stromu bol porovnaný na d
         \textbf{D4.5} & 39.976 & 41.415 & 75.001 \\ 
         \textbf{CART} & 21.787 & 23.673 & 37.998 \\ \hline
     \end{tabular}
-    \caption{Porovnanie času spracovania vstupných dát medzi algoritmami ID3, D4.5 a CART}
+    \caption{Porovnanie času spracovania vstupných dát algoritmami ID3, D4.5 a CART}
     \label{tab:benchmarks}
 \end{table}
 
@@ -1362,7 +1360,7 @@ Po stránke výkonu sú si síce jednotlivé prístupy veľmi podobné no existu
 \label{sec:Conclusion}
 V rámci tejto diplomovej práce sa podarilo vytvoriť herné 3D prostredie v engine Unity s využitím programovacieho jazyka C\#, v ktorom sú na rozhodovanie NPC využité rôzne algoritmy z oblasti strojového učenia. Toto prostredie je zasadené do pirátskej tematiky a obsahuje hernú slučku v ktorej sa hráč môže voľne pohybovať po ostrove s plne funkčnou kamerou z pohľadu tretej osoby. Hráč môže pri preskúmavaní prostredia spomaliť svoj pohyb, aby na seba neupútal pozornosť či vykonať skok v súlade so simuláciou gravitácie. V hernom prostredí sa nachádzajú rôzne predmety, ktoré hráč môže zbierať a ich určitý počet je vyžadovaný na úspešne dokončenie hry. Hra samotná potom obsahuje aj ďalšie prvky ako napríklad hlavnú ponuku či grafické užívateľské rozhranie. V hlavnej ponuke si hráč môže vybrať algoritmus, ktorý bude využitý pri ďalšom priechode hrou. Grafické užívateľské rozhranie potom hráčovi ukazuje aktuálny stav zdravia či predmetov v inventári.
 
-V hernom prostredí sa spolu s hráčovou postavou nachádzajú nepriateľské NPC v podobe agresívnych kostlivcov, ktorí sa snažia hráčovi znemožniť ďalší priebeh hrou. Útoky od týchto nepriateľov udeľujú hráčovi veľké poškodenie, čo môže vyústiť až k úplnej strate zdravia a nutnosti opakovať hru. Na rozhodovanie NPC agentov sú využité algoritmy na tvorbu rozhodovacieho stromu ID3, D4.5, CART a reinforcement learning algoritmus PPO. Tvorba rozhodovacieho stromu zo vstupnej dátovej sady je implementovaná v jazyku python mimo hlavného projektu, takže je možné dynamicky meniť chovanie NPC úpravou týchto dát bez nutnosti kompilácie či buildu projektu. Výstupný rozhodovací strom je potom v engine Unity spracovaný a prevedený do objektovej štruktúry, ktorú je možné v reálnom čase prechádzať a prehodnocovať aktuálne chovanie NPC na základe percepcie agenta či iných kritérií. 
+V hernom prostredí sa spolu s hráčskou postavou nachádzajú nepriateľské NPC v podobe agresívnych kostlivcov, ktorí sa snažia hráčovi znemožniť ďalší priebeh hrou. Útoky od týchto nepriateľov udeľujú hráčovi veľké poškodenie, čo môže vyústiť až k úplnej strate zdravia a nutnosti opakovať hru. Na rozhodovanie NPC agentov sú využité algoritmy na tvorbu rozhodovacieho stromu ID3, D4.5, CART a reinforcement learning algoritmus PPO. Tvorba rozhodovacieho stromu zo vstupnej dátovej sady je implementovaná v jazyku python mimo hlavného projektu, takže je možné dynamicky meniť chovanie NPC úpravou týchto dát bez nutnosti kompilácie či buildu projektu. Výstupný rozhodovací strom je potom v engine Unity spracovaný a prevedený do objektovej štruktúry, ktorú je možné v reálnom čase prechádzať a prehodnocovať aktuálne chovanie NPC na základe percepcie agenta či iných kritérií. 
 
 Protikladom k tomuto prístupu bolo využitie reinforcement learningu, pomocou ktorého sa podarilo v rámci niekoľkých iterácií a trénovacích scenárov natrénovať funkčný model agenta. Ten sa dokáže pohybovať 3D prostredím, reaguje na hráčovu postavu a svoje okolie pomocou simulácie zraku a sluchu a snaží sa zvoliť optimálnu stratégiu aby hráča odhalil, priblížil sa k nemu postupnými útokmi ho vyradil z hry.
 

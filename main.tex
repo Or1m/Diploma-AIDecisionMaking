@@ -6,16 +6,12 @@
 \usepackage{dcolumn} % stĺpce tabuľky s číselnými hodnotami
 \usepackage{subfig} % makrá pre "podobrázky" a "podtabuľky"
 \usepackage[csharp]{diplomalst} % sádzanie
-\usepackage{svg}
-\usepackage{amsmath}
-\usepackage{pgfplots}
-%\usepackage[python]{diplomalst}
-%\usepackage{tcolorbox} % oramovanie
+\usepackage{amsmath} % matematika
+\usepackage{pgfplots} % grafy
 
 % ------------------------------------------------------
 
-% Definované vlastné metódy, triedy a príslušné farby
-% viz bakalarka
+% Definovanie vlastných vecí
 
 \pgfplotsset{compat=1.18}
 
@@ -65,10 +61,8 @@
 
 % Abstrakty
 \CzechAbstract{Tato diplomová práce si klade za cíl vytvořit 3D herní prostředí, ve kterém se může hráčská postava volně pohybovat a interagovat s NPC agenty, jejichž rozhodování je řízené různými algoritmy strojového učení. První část této práce je věnována seznámení se s problematikou strojového učení, vymezení pojmů a popisu využitých algoritmů. Tyto algoritmy jsou rozděleny do dvou skupin. První spadá do oblasti konstrukce rozhodovacího stromu na základě vstupní datové sady a konkrétně jde o algoritmy ID3, D4.5 a CART. Druhá skupina patří do oblasti reinforcement learningu. Jako zástupce této skupiny byl zvolen algoritmus PPO. Druhá část práce ve stručnosti popisuje využité technologie, jejich výhody, nevýhody, motivaci pro jejich využití a zvažované alternativy. Prostřední část je zaměřená na celkovou tvorbu herního prostředí, herní smyčky, hráčské postavy a jednotlivých NPC agentů. U těch byl kladen důraz na implementaci jejich chování a percepce v závislosti na typu algoritmu využitého pro rozhodování. Následně se práce věnuje problematice spojené s trénováním reinforcement learning modelu, který byl iterativně trénovaný na scénářích se zvyšující se obtížností. V závěru jsou potom jednotlivé algoritmy porovnány z hlediska výkonu při učení nebo rozhodování, jako i jiných aspektů. Tyto výsledky jsou následně diskutovány v kontextu případného reálného nasazení a problémů s tím spojených.}
-%SK
+%SK original
 %Táto diplomová práca si kladie za cieľ vytvoriť 3D herné prostredie, v ktorom sa môže hráčska postava voľne pohybovať a interagovať NPC agentmi, ktorých rozhodovanie je riadené rôznymi algoritmami strojového učenia. Prvá čast tejto práce je venovaná oboznámeniu sa s problematikou strojového učenia, vymedzeniu pojmov a popisu využitých algoritmov. Tieto algoritmy sú rozdelené do dvoch skupín. Prvá spadá do oblasti konštrukcie rozhodovacieho stromu na základe vstupnej dátovej sady a konkrétne ide o algoritmy ID3, D4.5 a CART. Druhá skupina patrí do oblasti reinforcement learningu. Ako zástupca tejto skupiny bol zvolený algoritmus PPO. Druhá časť práce v stručnosti popisuje využité technológie, ich výhody, nevýhody, motiváciu za ich využitím, či zvažované alternatívy. Prostredná časť je zameraná na celkovú tvorbu herného prostredia, hernej slučky, hráčskej postavy a jednotlivých NPC agentov. U tých bol kladený dôraz na implementáciu ich chovania a percepcie v závislosti od typu algoritmu využitého na rozhodovanie. Následne sa práca venuje problematike spojenej s trénovaním reinforcement learning modelu, ktorý bol iteratívne trénovaný na scenároch so zvyšujúcou sa obtiažnosťou. V závere sú potom porovnané jednotlivé algoritmy z hľadiska výkonu pri učení či rozhodovaní ako aj iných aspektov a tieto výsledky sú následne diskutované v kontexte prípadného reálneho nasadenia a problémov s tým spojených.}
-
-%TODO - pis po cesky asi
 
 \CzechKeywords{strojové učení, posílené učení, umělá inteligence, rozhodovací stromy, ID3, D4.5, CART, PPO, počítačová hra, Unity engine, C\#, Python}
 
@@ -90,14 +84,12 @@
 \AddAcronym{BC}{Behavioral Cloning}
 \AddAcronym{CART}{Classification and Regression Tree}
 \AddAcronym{CLR}{Common Language Runtime}
-\AddAcronym{CPU}{Central Processing Unit}
 \AddAcronym{CSV}{Comma-Separated Values}
 \AddAcronym{DDR4}{Double Data Rate 4}
 \AddAcronym{DOTS}{Unity's Data-Oriented Technology Stack}
 \AddAcronym{FOV}{Field Of View}
 \AddAcronym{FPS}{Frames Per Second}
 \AddAcronym{GAIL}{Generative Adversarial Imitation Learning}
-\AddAcronym{GPU}{Graphics Processing Unit}
 \AddAcronym{GUI}{Graphic User Interface}
 \AddAcronym{HW}{Hardvér}
 \AddAcronym{ID3}{Iterative Dichotomiser 3}
@@ -105,15 +97,12 @@
 \AddAcronym{LINQ}{Language Integrated Query}
 \AddAcronym{LOD}{Level Of Detail}
 \AddAcronym{MA-POCA}{Multi-Agent Posthumous Credit Assignment}
-\AddAcronym{MDP}{Markov Decision Process}
-\AddAcronym{MS}{Microsoft}
 \AddAcronym{NPC}{Non-Playable Character}
 \AddAcronym{PC}{Personal Computer}
 \AddAcronym{PPO}{Proximal Policy Optimization}
-\AddAcronym{PPO}{Proximal Policy Optimization}
 \AddAcronym{RAM}{Random-Access Memory}
+\AddAcronym{SAC}{Soft Actor Critic}
 \AddAcronym{SQL}{Structured Query Language}
-\AddAcronym{SSD}{Solid-State Drive}
 \AddAcronym{TRPO}{Trust Region Policy Optimization}
 \AddAcronym{VR}{Virtual Reality}
 \AddAcronym{YAML}{YAML Ain't Markup Language}
@@ -232,7 +221,7 @@ Gini index vyjadruje pravdepodobnosť, že náhodne vybraný objekt bude nesprá
 \label{sec:ReinfoOverview}
 Ako už bolo spomenuté na začiatku tejto kapitoly, algoritmy strojového učenia spadajúce do triedy reinforcement learningu sa vyznačujú tým, že pracujú s agentom, ktorý je vložený do určitého prostredia a učenie prebieha na základe spätnej väzby. Agent nemá explicitne určené, čo je jeho cieľom. 
 
-Formálne je možné proces popísať na základe MDP, ktorý umožňuje matematicky modelovať rozhodovací proces agenta v dynamickom prostredí. Tento model pracuje s pojmami agent, stav, akcia, odmena a policy. Po vykonaní určitej akcie \textit{A} v danom prostredí sa agent dostane do stavu \textit{S}. Agent dostáva spätnú väzbu vo forme odmeny \textit{R} na základe akcií, ktoré vykoná a stavu, do ktorého sa dostane. Policy určuje optimálnu akciu agenta na základe aktuálneho stavu s cieľom maximalizovať odmenu \cite{Markov}. Zápornú hodnotu odmeny je možné chápať ako trest. Opakovaním daného postupu potom agent upravuje svoj rozhodovací proces. Tento postup je znázornený na obrázku \ref{pic:reinfoPic}.
+Formálne je možné proces popísať na základe Markovovho rozhodovacieho procesu, ktorý umožňuje matematicky modelovať rozhodovací proces agenta v dynamickom prostredí. Tento model pracuje s pojmami agent, stav, akcia, odmena a policy. Po vykonaní určitej akcie \textit{A} v danom prostredí sa agent dostane do stavu \textit{S}. Agent dostáva spätnú väzbu vo forme odmeny \textit{R} na základe akcií, ktoré vykoná a stavu, do ktorého sa dostane. Policy určuje optimálnu akciu agenta na základe aktuálneho stavu s cieľom maximalizovať odmenu \cite{Markov}. Zápornú hodnotu odmeny je možné chápať ako trest. Opakovaním daného postupu potom agent upravuje svoj rozhodovací proces. Tento postup je znázornený na obrázku \ref{pic:reinfoPic}.
   
 \begin{figure}[!htbp]
     \centering
@@ -287,7 +276,7 @@ V tejto kapitole sú v stručnosti popísané najdôležitejšie technológie vy
 
 \section{Unity Engine}
 \label{sec:Unity}
-Unity je herný engine určený k tvorbe 2D a 3D interaktívneho obsahu renderovaného v reálnom čase vyvíjaný spoločnosťou Unity Technologies od roku 2005 \cite{Unity}. Engine je vytvorený v programovacom jazyku C++, vývoj obsahu však prebieha v jazyku C\# či pomocou vizuálneho skriptovacieho nástroja Bolt vo forme rozšírenia od spoločnosti Unity Technologies. V posledných rokoch sa vývoj enginu Unity sústredí primárne na menšie hry a mobilný trh s dôrazom na monetizáciu mobilných hier pomocou mikro-transakcií a analytické nástroje pre vývojárov. Engine samotný však umožňuje tvorbu rôzneho druhu obsahu pre širokú škálu platforiem od herných konzolí cez desktopové operačné systémy až po VR, MS HoloLens, AndroidTV či web vo forme WebGL \cite{UnityMultiplatform}. Engine Unity je možné využívať zdarma v rámci štúdia či pri malých projektoch, ktorých predaje nepresahujú čiastku \$100K za posledných 12 mesiacov \cite{UnityPersonal}.
+Unity je herný engine určený k tvorbe 2D a 3D interaktívneho obsahu renderovaného v reálnom čase vyvíjaný spoločnosťou Unity Technologies od roku 2005 \cite{Unity}. Engine je vytvorený v programovacom jazyku C++, vývoj obsahu však prebieha v jazyku C\# či pomocou vizuálneho skriptovacieho nástroja Bolt vo forme rozšírenia od spoločnosti Unity Technologies. V posledných rokoch sa vývoj enginu Unity sústredí primárne na menšie hry a mobilný trh s dôrazom na monetizáciu mobilných hier pomocou mikro-transakcií a analytické nástroje pre vývojárov. Engine samotný však umožňuje tvorbu rôzneho druhu obsahu pre širokú škálu platforiem od herných konzolí cez desktopové operačné systémy až po VR, Microsoft HoloLens, AndroidTV či web vo forme WebGL \cite{UnityMultiplatform}. Engine Unity je možné využívať zdarma v rámci štúdia či pri malých projektoch, ktorých predaje nepresahujú čiastku \$100K za posledných 12 mesiacov \cite{UnityPersonal}.
 
 Engine Unity bol pri tvorbe tohto projektu zvolený z dôvodu predchádzajúcich skúseností, možnosti tvorby v programovacom jazyku C\#, množstvu dostupných materiálov a kvalite dokumentácie, ktorému sa konkurencia hlavne v podobe enginu Unreal nemôže rovnať. Taktiež umožňuje rýchlejšiu tvorbu a prototypovanie ako väčšina konkurenčných nástrojov a rozsah projektu si nevyžadoval špeciálne nástroje a technológie obsiahnuté napríklad v už spomínanom konkurenčnom engine Unreal. Zároveň sa pomocou projektov ako ML-Agents či Perception čoraz viac stáva vyhľadávanou platformou na poli výskumu a tvorby v oblasti strojového učenia.
 
@@ -299,7 +288,7 @@ V tomto projekte sú využité dva programovacie jazyky. Hlavným jazykom je jaz
 \label{sec:langsCShartp}
 C\# je univerzálny vysoko-úrovňový multi-paradigmatický staticky typovaný programovací jazyk predstavený v roku 2000 spoločnosťou Microsoft. Od svojho predstavenia je jazyk C\# neustále vyvíjaný a obohacovaný o nové vlastnosti. Primárnou paradigmou C\# je objektovo orientované programovanie, poskytuje však množstvo vlastností funkcionálnych jazykov ako LISP či Haskell. Základná syntax C\# je podobná jazykom C, C++ a Java, tá je však obohatená o unikátne prvky ako LINQ, ktoré by sa dali pripodobniť skôr jazyku SQL. C\# má integrovanú automatickú správu pamäte vykonávanú tzv. Garbage Collectorom \cite{DotNetBook}. Výhodou tejto správy je, že nekladie nároky na vývojára, aby pamäť ručne uvoľňoval, robí to však z jazyka C\# nie úplne najvhodnejšiu voľbu na určité výkonovo-orientované aplikácie, ktorými sú aj moderné vysoko-rozpočtové herné tituly. Toto je však možné sčasti obísť metódami ako object pooling apod.
 
-Spolu s jazykom C\# je nutné spomenúť aj .NET ekosystém, vyvíjaný priamo firmou MS, ktorý poskytuje runtime prostredie CLR a širokú škálu knižníc a možností umožňujúcich pohodlné nasadenie C\# v rôznych webových, desktopových či cloudových aplikáciách \cite{DotNetBook}.
+Spolu s jazykom C\# je nutné spomenúť aj .NET ekosystém, vyvíjaný priamo firmou Microsoft, ktorý poskytuje runtime prostredie CLR a širokú škálu knižníc a možností umožňujúcich pohodlné nasadenie C\# v rôznych webových, desktopových či cloudových aplikáciách \cite{DotNetBook}.
 
 Engine Unity využíva jazyk C\# vo verzií 9.0 a kompilátor Roslyn. Nie všetky vlastnosti jazyka C\# 9.0, ako napríklad kovariantné návratové typy sú však v Unity dostupné \cite{compiler}. To isté platí aj o knižniciach .NET ekosystému. Spoločnosť Unity odporúča využívať špecifikáciu .NET Standard, kde je zaručená najväčšia kompatibilita s rôznymi platformami. Podporovaná verzia .NET Standard potom závisí od verzie samotného enginu \cite{netUnity}. 
 
@@ -460,7 +449,7 @@ public class Pickup : MonoBehaviour
 
 V metóde Start(), teda na začiatku svojho životného cyklu, ktorý sa odohrá po spustení scény sa každý zberateľný objekt zaregistruje v objekte GameManager, čo spôsobí napojenie na event OnPickedUp, a umožní GameManagerovi v správnej chvíli zareagovať na získanie predmetu hráčom a aktualizovať GUI či inventár bez nutnosti periodického dopytovania. Nakoľko je odberateľovi eventu odosielaná aj daná inštancia objektu, je jednoduché zistiť typ predmetu, ktorý hráč zobral.
 
-Metóda OnTriggerEnter() je potom zavolaná v momente, keď hráčov kontroler začne kolidovať s komponentou Box Collider daného objektu. K tomu je nutné nastaviť tento Box Collider ako tzv. trigger a zároveň mať na objekte prítomnú komponentu Rigidbody, ktorá obstaráva simuláciu fyziky. V tomto momente sa zároveň pomocou korutiny LerpPosition() začne objekt rýchlo pohybovať do pravého horného rohu obrazovky, kde sa nachádza UI element zobrazujúci hráčovi počet zozbieraných predmetov, a následne sa deaktivuje. Tento efekt bol často využívaný v starších 2D platformových hrách. Zberateľný predmet je možné vidieť na obrázku \ref{pic:Pickup}.
+Metóda OnTriggerEnter() je potom zavolaná v momente, keď hráčov kontroler začne kolidovať s komponentou Box Collider daného objektu. K tomu je nutné nastaviť tento Box Collider ako tzv. trigger a zároveň mať na objekte prítomnú komponentu Rigidbody, ktorá obstaráva simuláciu fyziky. V tomto momente sa zároveň pomocou korutiny LerpPosition() začne objekt rýchlo pohybovať do pravého horného rohu obrazovky, kde sa nachádza GUI element zobrazujúci hráčovi počet zozbieraných predmetov, a následne sa deaktivuje. Tento efekt bol často využívaný v starších 2D platformových hrách. Zberateľný predmet je možné vidieť na obrázku \ref{pic:Pickup}.
 
 \begin{figure}[!htbp]
     \centering
@@ -1280,24 +1269,24 @@ Táto kapitola je venovaná porovnaniu využitých algoritmov machine learningu.
 
 Všetky výkonnostné testy boli vykonané na PC zostave, s nasledujúcimi parametrami:
 \begin{itemize}
-    \item \textbf{CPU} -- AMD Ryzen 9 5900X
+    \item \textbf{Procesor} -- AMD Ryzen 9 5900X
     \begin{itemize}
         \item \textbf{Počet jadier} -- 12
         \item \textbf{Počet vláken} -- 24
         \item \textbf{Frekvencia} -- 3,7GHz (4,8GHz)
     \end{itemize}
-    \item \textbf{GPU} -- GAINWARD GeForce RTX 3070 Ti Phoenix
+    \item \textbf{Grafická karta} -- GAINWARD GeForce RTX 3070 Ti Phoenix
     \begin{itemize}
         \item \textbf{Veľkosť grafickej pamäte} -- 8GB
         \item \textbf{Frekvencia grafického procesoru} -- 1575MHz (1785MHz)
     \end{itemize}
-    \item \textbf{RAM} -- Crucial Ballistix Red 32GB (4x8GB)
+    \item \textbf{Pamäť RAM} -- Crucial Ballistix Red 32GB (4x8GB)
     \begin{itemize}
         \item \textbf{Typ pamäte} -- DDR4
         \item \textbf{Frekvencia} -- 3600MHz
         \item \textbf{Časovanie} -- CL16 (16-18-18-38)
     \end{itemize}
-    \item \textbf{SSD} -- Samsung 980 1TB
+    \item \textbf{Disk} -- Samsung 980 1TB
     \begin{itemize}
         \item \textbf{Rozhranie} -- M.2 (PCIe 3.0 4x NVMe)
     \end{itemize}
@@ -1360,7 +1349,7 @@ Testovanie prebiehalo vo viacerých scenároch. Prvým bola prázdna scéna. Ten
     \label{tab:benchmarksGame}
 \end{table}
 
-Z nameraných hodnôt je možné si všimnúť, že rozdiel medzi priemernou hodnotou FPS v prázdnej scéne a s aktívnymi agentmi sa pohybuje medzi 19-30 FPS, čo za daných okolností nie je prekvapujúce. Rozdiely medzi algoritmami D4.5, CART a ID3 sú malé, dokonca mierne v prospech stromu vytvoreného algoritmom ID3, takže. Rozdiel medzi priemernou hodnotu FPS reinforcement learning algoritmu PPO a zvyšných algoritmov taktiež neukázal žiadne výrazné výkyvy. Úzkym hrdlom vo všetkých prípadoch bolo CPU, nakoľko vykresľovanie 3D modelov jednotlivých agentov bolo vypnuté. 
+Z nameraných hodnôt je možné si všimnúť, že rozdiel medzi priemernou hodnotou FPS v prázdnej scéne a s aktívnymi agentmi sa pohybuje medzi 19-30 FPS, čo za daných okolností nie je prekvapujúce. Rozdiely medzi algoritmami D4.5, CART a ID3 sú malé, dokonca mierne v prospech stromu vytvoreného algoritmom ID3, takže. Rozdiel medzi priemernou hodnotu FPS reinforcement learning algoritmu PPO a zvyšných algoritmov taktiež neukázal žiadne výrazné výkyvy. Úzkym hrdlom vo všetkých prípadoch bol procesor, nakoľko vykresľovanie 3D modelov jednotlivých agentov bolo vypnuté. 
 
 \section{Empirické porovnanie a diskusia výsledkov}
 \label{sec:Discussion}
